@@ -32,8 +32,8 @@ glitch_this $pngfile -c -s 4 -sd 600 -f -o $python_glitchedfile
 #     -pointsize 200 -draw "text -640,0 ''" -channel RGBA -fill '#cecd35' \
 #     $glitchedfile $pngfile
 
-convert -gravity center -font "Font-Awesome-5-Free-Solid" \
-    -pointsize 200 -draw "text 0,0 ''" -channel RGBA -fill '#cecd35' \
+convert -gravity center -font "Hack" \
+    -pointsize 200 -draw "text 0,0 '~ session locked ~'" -channel RGBA -fill '#cecd35' \
     $python_glitchedfile $pngfile
 
 # -u disables circle indicator when entering characters

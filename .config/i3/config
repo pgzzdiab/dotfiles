@@ -31,11 +31,6 @@ default_border pixel 2
 
 default_floating_border normal
 
-###############        Bar         ##################
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-
-###############        picom         ##################
-exec_always --no-startup-id picom -b
 
 ###############        focus script         ##################
 bindsym $mod+a exec /usr/bin/i3-winmotion
@@ -147,11 +142,17 @@ bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -193,22 +194,23 @@ bindsym $mod+i workspace 8
 bindsym $mod+n workspace prev
 bindsym $mod+m workspace next
 
-# focus the parent container
-bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+2 move container to workspace number $ws2
-bindsym $mod+Shift+3 move container to workspace number $ws3
-bindsym $mod+Shift+4 move container to workspace number $ws4
-bindsym $mod+Shift+5 move container to workspace number $ws5
-bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+7 move container to workspace number $ws7
-bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+9 move container to workspace number $ws9
-bindsym $mod+Shift+0 move container to workspace number $ws10
+# # focus the parent container
+# bindsym $mod+Shift+1 move container to workspace number $ws1
+# bindsym $mod+Shift+2 move container to workspace number $ws2
+# bindsym $mod+Shift+3 move container to workspace number $ws3
+# bindsym $mod+Shift+4 move container to workspace number $ws4
+# bindsym $mod+Shift+5 move container to workspace number $ws5
+# bindsym $mod+Shift+6 move container to workspace number $ws6
+# bindsym $mod+Shift+7 move container to workspace number $ws7
+# bindsym $mod+Shift+8 move container to workspace number $ws8
+# bindsym $mod+Shift+9 move container to workspace number $ws9
+# bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
+
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
@@ -263,14 +265,38 @@ bindsym $mod+p exec --no-startup-id ~/.config/i3/display.sh
 
 # gaps
 gaps inner 15
-gaps outer -5
+gaps outer -12
 
 # wallpaper
 # exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
 exec --no-startup-id feh --bg-center ~/Images/logo_diabeloop_bleu_rvb.png --image-bg "#263238"
 
-
 show_marks yes
+
+#################
+### Autostart ###
+#################
+
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id picom -b
+# exec --no-startup-id feh --bg-scale /usr/share/wallpapers/current
+# exec --no-startup-id polybar --config=~/.config/i3/polybar.conf eDP1
+# exec --no-startup-id nm-applet
+# exec --no-startup-id dcnnt start
+# exec --no-startup-id discord
+# exec --no-startup-id slack
+# exec --no-startup-id google-chrome
+# exec --no-startup-id sudo openfortivpn
+
+####################
+### Window rules ###
+####################
+
+# assign [class="discord"] $ws7
+# assign [class="chrome"] $ws2
+# assign [class="slack"] $ws5
+# assign [class="spotify"] $ws5
+# Doesnt work pls fix
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -286,4 +312,3 @@ show_marks yes
 #     }
 # }
 
-exec --no-startup-id sudo openfortivpn
