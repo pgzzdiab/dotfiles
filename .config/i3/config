@@ -41,6 +41,7 @@ default_floating_border normal
 
 # take a screenshot using flameshot
 bindsym $mod+z exec "flameshot screen --clipboard"
+bindsym $mod+a exec --no-startup-id flameshot gui
 
 # # Screenshots
 # bindsym --release Print exec mkdir -p ~/Pictures/screenshots && \
