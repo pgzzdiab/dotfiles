@@ -33,22 +33,18 @@ default_floating_border normal
 
 
 ###############        focus script         ##################
-bindsym $mod+a exec /usr/bin/i3-winmotion
+# bindsym $mod+a exec /usr/bin/i3-winmotion
 
 ###############       alt+tab      ##################
-exec_always --no-startup-id i3-cycle-focus.py --history 2
-bindsym $mod+Tab exec --no-startup-id i3-cycle-focus.py --switch
-
- # NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
+# exec_always --no-startup-id i3-cycle-focus.py --history 2
+# bindsym $mod+Tab exec --no-startup-id i3-cycle-focus.py --switch
 
 # take a screenshot using flameshot
 bindsym $mod+z exec "flameshot screen --clipboard"
 
 # # Screenshots
 # bindsym --release Print exec mkdir -p ~/Pictures/screenshots && \
-#         exec maim -u ~/Pictures/screenshots/$(date "+%Y-%m-%d_%H-%M-%S").png
+#         exec maim -u ~/Pictures/screenshots/$().png
 # bindsym --release Control+Print \
 #         exec maim -u | xclip -selection clipboard -t image/png 
 # bindsym --release Shift+Print exec mkdir -p ~/Pictures/screenshots && \
@@ -66,6 +62,8 @@ bindsym $mod+z exec "flameshot screen --clipboard"
 # bindsym $mod+y border pixel 30
 # bindsym $mod+n border normal
 
+# for_window [class="^.*"] border pixel 0
+
 # -------------------------------------------------------------------------- #
 #         color
 # -------------------------------------------------------------------------- #
@@ -75,18 +73,16 @@ bindsym $mod+z exec "flameshot screen --clipboard"
 # client.unfocused        #090B10 #090B10 #090B10 #090B10 #090B10
 
 # class                 border  backgr. text    indicator child_border
-client.focused          #ffffff #263238 #ffffff #ffffff   #263238
-client.focused_inactive #ffffff #263238 #ffffff #ffffff   #263238
+client.focused          #263238 #263238 #263238 #263238   #263238
+client.focused_inactive #263238 #263238 #263238 #263238   #263238
 client.unfocused        #333333 #263238 #888888 #292d2e   #263238
-# client.urgent           #2f343a #900000 #ffffff #900000   #900000
-# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+# client.urgent           #2f343a #900000 #263238 #900000   #900000
+# client.placeholder      #000000 #0c0c0c #263238 #000000   #0c0c0c
 
-for_window [class="termite"] border pixel 20
-for_window [class="kitty"] border pixel 20
-for_window [class="tmux"] border pixel 20
-for_window [class="firefox"] border pixel 1
-for_window [class="google-chrome"] border pixel 1
-for_window [class="brave"] border pixel 1
+for_window [class="kitty"] border pixel 10
+# for_window [class="firefox"] border pixel 1
+# for_window [class="google-chrome"] border pixel 1
+# for_window [class="brave"] border pixel 1
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
@@ -228,8 +224,6 @@ for_window [class="Kmix"] floating enable; border none
 for_window [class="Klipper"] floating enable; border none
 for_window [class="Plasmoidviewer"] floating enable; border none
 for_window [class="(?i)*nextcloud*"] floating disable
-for_window [class="plasmashell" window_type="notification"] border none, move right 700px, move down 450px
-no_focus [class="plasmashell" window_type="notification"]
 for_window [title="Desktop — Plasma"] kill; floating enable; border none
 
 #
@@ -265,7 +259,7 @@ bindsym $mod+p exec --no-startup-id ~/.config/i3/display.sh
 
 # gaps
 gaps inner 15
-gaps outer -12
+gaps outer -13
 
 # wallpaper
 # exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
@@ -281,7 +275,6 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id picom -b
 # exec --no-startup-id feh --bg-scale /usr/share/wallpapers/current
 # exec --no-startup-id polybar --config=~/.config/i3/polybar.conf eDP1
-# exec --no-startup-id nm-applet
 # exec --no-startup-id dcnnt start
 # exec --no-startup-id discord
 # exec --no-startup-id slack

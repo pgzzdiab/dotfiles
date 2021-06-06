@@ -616,7 +616,7 @@ else
 		Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 		Plug 'ayu-theme/ayu-vim'                           " colorscheme
 endif
-Plug 'Yggdroot/indentLine'                         " add visual indent
+" Plug 'Yggdroot/indentLine'                         " add visual indent
 " Plug 'Th3Whit3Wolf/space-nvim'                       " colorscheme
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
 " Plug 'hrsh7th/vim-unmatchparen'                        " highlight unmatch surrounding
@@ -678,6 +678,86 @@ call plug#end()
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " <<<<<<<<<<<<<<<<<<<< Load lua configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
+
+if has('nvim')
+	" -------------------------------------------------------------
+	"  barbar
+	"  ------------------------------------------------------------
+
+	" -- barbar.nvim --
+	" Gets the highlight value of highlight group `name`
+	" Set `layer` to either 'fg' or 'bg'
+	" function GetHiVal(name, layer)
+	" 	return synIDattr(synIDtrans(hlID(a:name)), a:layer . '#')
+	" endf
+
+	" " Creates highlight group `name` with guifg `guifg`, and guibg s:barbar_bg
+	" " If a third argument is provided gui is set to that
+	" function BarbarHi(name, guifg, ...)
+	" 	let gui = a:0 > 0 ? 'gui=' . get(a:, 1, '') : ''
+	" 	exe 'hi!' a:name 'guifg=' a:guifg 'guibg=' s:barbar_bg gui
+	" endf
+
+	" let g:bufferline = get(g:, 'bufferline', {
+	" 			\ 'closable': v:false, 'no_name_title': '[No Name]'
+	" 			\ })
+	" let s:barbar_bg  = '#21242b'
+
+	" let fg_visible  = GetHiVal('Normal', 'fg')     " #abb2bf
+	" let fg_sign     = GetHiVal('NonText', 'fg')    " #3b4048
+	" let fg_modified = GetHiVal('WarningMsg', 'fg') " #e5c07b
+	" let fg_tabpages = GetHiVal('Directory', 'fg')  " #61AFEF
+
+	" call BarbarHi('BufferTabpageFill', fg_sign)
+	" call BarbarHi('BufferTabpages', fg_tabpages, 'bold')
+	" call BarbarHi('BufferVisible', fg_visible)
+	" call BarbarHi('BufferVisibleSign', fg_sign)
+	" call BarbarHi('BufferVisibleMod', fg_modified)
+	" call BarbarHi('BufferVisibleIndex', fg_sign)
+	" call BarbarHi('BufferInactive', '#707070')
+	" call BarbarHi('BufferInactiveSign', fg_sign)
+	" call BarbarHi('BufferInactiveMod', fg_modified)
+	" call BarbarHi('BufferInactiveIndex', fg_sign)
+	" call BarbarHi('BufferInactiveTarget', 'red', 'bold')
+	" call BarbarHi('BufferModifiedIndex', fg_sign)
+
+	" map <M-w>         :BufferClose<CR>
+	" map <leader><M-w> :BufferClose!<CR>
+
+	" " Magic buffer-picking mode
+	" nnoremap <silent> <C-Space> :BufferPick<CR>
+	" " Sort automatically by...
+	" nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
+	" nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
+	" " Move to previous/next
+	" nnoremap <silent> <C-Tab>         :BufferNext<CR>
+	" nnoremap <silent> <C-S-Tab>       :BufferPrevious<CR>
+	" nnoremap <silent> <Leader><Tab>   :BufferNext<CR>
+	" nnoremap <silent> <Leader><S-Tab> :BufferPrevious<CR>
+	" " Re-order to previous/next
+	" nnoremap <silent> <M-.> :BufferMoveNext<CR>
+	" nnoremap <silent> <M-,> :BufferMovePrevious<CR>
+	" " Goto buffer in position...
+	" nnoremap <silent> <A-1> :BufferGoto 1<CR>
+	" nnoremap <silent> <A-2> :BufferGoto 2<CR>
+	" nnoremap <silent> <A-3> :BufferGoto 3<CR>
+	" nnoremap <silent> <A-4> :BufferGoto 4<CR>
+	" nnoremap <silent> <A-5> :BufferGoto 5<CR>
+	" nnoremap <silent> <A-6> :BufferGoto 6<CR>
+	" nnoremap <silent> <A-7> :BufferGoto 7<CR>
+	" nnoremap <silent> <A-8> :BufferGoto 8<CR>
+	" nnoremap <silent> <A-9> :BufferLast<CR>
+	" nnoremap <silent> <Leader>1 :BufferGoto 1<CR>
+	" nnoremap <silent> <Leader>2 :BufferGoto 2<CR>
+	" nnoremap <silent> <Leader>3 :BufferGoto 3<CR>
+	" nnoremap <silent> <Leader>4 :BufferGoto 4<CR>
+	" nnoremap <silent> <Leader>5 :BufferGoto 5<CR>
+	" nnoremap <silent> <Leader>6 :BufferGoto 6<CR>
+	" nnoremap <silent> <Leader>7 :BufferGoto 7<CR>
+	" nnoremap <silent> <Leader>8 :BufferGoto 8<CR>
+	" nnoremap <silent> <Leader>9 :BufferLast<CR>
+
+endif
 
 if has('nvim')
 	" some neovim packges are configured here
@@ -1293,13 +1373,6 @@ if has('nvim')
 	let g:qfenter_keymap.topen = ['<C-t>']
 endif
 
-if has('nvim')
-	" -------------------------------------------------------------
-	"  barbar
-	"  ------------------------------------------------------------
-	let g:barbar_bg='#263238'
-
-endif
 
 if has('nvim')
 	" --------------------------------------------------------------------------
@@ -1558,7 +1631,7 @@ xmap (j <Plug>SendDownV
 " autocmd Filetype python nnoremap <F10> <Esc>:REPLPDBN<Cr>
 " autocmd Filetype python nnoremap <F11> <Esc>:REPLPDBS<Cr>
 
-" -------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- #
 "" QuickRun
 " -------------------------------------------------------------------------- "
 "nnoremap <M-i> :QuickRun -mode n<CR>
@@ -1765,7 +1838,7 @@ endif
 " ------------------------------------------------------------------------- "
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-" highlight ColorColumn guibg=#272D38
+highlight ColorColumn guibg=#222b30
 set colorcolumn=80
 
 " ------------------------------------------------------------------------- "

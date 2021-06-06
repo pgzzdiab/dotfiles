@@ -2,17 +2,6 @@
 -- Neovim lua configuration
 -- -------------------------------------------------------------------------- #
 
--- ----------------- theme -------------------------------------------------- #
-vim.g.material_style = 'oceanic'
-vim.g.material_italic_comments=true
-vim.g.material_italic_keywords=true
-vim.g.material_italic_functions=true
-vim.g.material_italic_variables=true
-vim.g.material_contras=true
-vim.g.material_borders=true
-vim.g.material_disable_background = true
-require('material').set()
-
 -- -------------------------------------------------------------------------- #
 -- ----------------- octo --------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
@@ -692,4 +681,15 @@ vim.g.nvim_tree_bindings = {
 	["q"]              = tree_cb("close"),
 }
 -- require'nvim-tree.view'.View.width = 50
+
+-- ----------------- theme -------------------------------------------------- #
+vim.g.material_style = 'oceanic'
+vim.g.material_italic_comments=true
+vim.g.material_italic_keywords=true
+vim.g.material_italic_functions=true
+vim.g.material_italic_variables=true
+vim.g.material_contras=true
+vim.g.material_borders=true
+vim.g.material_disable_background = true
+require('material').set()
 

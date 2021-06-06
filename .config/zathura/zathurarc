@@ -1,4 +1,4 @@
-set font "inconsolata 15"
+set font "Fira Code 12"
 # ------- mapping --------- #
 
 set statusbar-h-padding 0
@@ -51,10 +51,9 @@ set render-loading-bg           "#000700" # bg
 set render-loading-fg           "#f5ac78" # fg
 
 # Recolor book content's color
-set recolor-lightcolor          "#000700" # bg
-# set recolor-lightcolor          "#15100d" # bg
-set recolor-darkcolor           "#d6976c" # fg
-# set recolor                     "true"
-set recolor                     "false"
+set recolor-lightcolor          "#263238" # bg
+set recolor-darkcolor           "#B0BEC5" # fg
+set recolor                     "true"
+# set recolor                     "false"
 # set recolor-keephue             true      # keep original color
 set selection-clipboard clipboard
