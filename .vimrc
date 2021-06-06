@@ -241,8 +241,8 @@ function! CheckPyFile()
 				normal!o> AUTEUR:         P. GAUTHIER ( CEA TEAM )
 				let created = "> CREATED         " . expand(strftime('%y/%m/%d %T'))
 				call append(5, created)
-				let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
-				call append(6, modif)
+				" let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
+				" call append(6, modif)
 				normal!GGo
 				normal!o> DESCRIPTION:    TODO    
 				normal!o"""
@@ -260,15 +260,18 @@ function! CheckPyFile()
 endfunction
 
 " When closing the buffer the 'modified date' is updated
-autocmd BufWinLeave *.py :call UpdateDatePyFile()
-function! UpdateDatePyFile()
-		if (stridx(getline("7"), "> LAST MODIFIED:  ") !~ -1)
-				:7d
-				let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
-				call append(6, modif)
-				:update
-		endif
-endfunction
+" autocmd BufWinLeave *.py :call UpdateDatePyFile()
+" autocmd FileChangedShell *.py :call UpdateDatePyFile()
+" function! UpdateDatePyFile()
+" 	" if &modified
+" 	if (stridx(getline("7"), "> LAST MODIFIED:  ") !~ -1)
+" 			:7d
+" 			let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
+" 			call append(6, modif)
+" 			:update
+" 	endif
+" 	" endif
+" endfunction
 
 
 
@@ -320,6 +323,8 @@ else
 	" execute "set <M-o>=\eo"
 endif
 
+noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
+noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
 map Q <Nop>                                        " disable entring in ex mode
 noremap j gj
 noremap k gk
@@ -505,8 +510,8 @@ endif
 " Plug 'chimay/wheel/'                                 " better join lines
 " Plug 'jeetsukumaran/ctrlp-pythonic.vim'
 " Plug 'junegunn/loclisteasy-align'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- tmux ------------------------------------- "
@@ -1301,7 +1306,7 @@ if has('nvim')
 	" -- LUA TREE
 	" -- -----------------------------------------------------------------------
 	nnoremap <C-n> :NvimTreeToggle<CR>
-	nnoremap <leader>r :NvimTreeRefresh<CR>
+	nnoremap <leader>t :NvimTreeRefresh<CR>
 	nnoremap <leader>n :NvimTreeFindFile<CR>
 else
 	" -------------------------------------------------------------------------- "
@@ -1563,16 +1568,16 @@ xmap (j <Plug>SendDownV
 " Fzf
 " -------------------------------------------------------------------------- "
 " nnoremap <Leader> <C-w>
-let g:fzf_action = {
-	\ 'ctrl-t': 'tab split',
-	\ 'ctrl-s': 'split',
-	\ 'ctrl-v': 'vsplit' }
-nnoremap mr :Rg<CR>
+" let g:fzf_action = {
+" 	\ 'ctrl-t': 'tab split',
+" 	\ 'ctrl-s': 'split',
+" 	\ 'ctrl-v': 'vsplit' }
+" nnoremap mr :Rg<CR>
 " nnoremap mt :Tags<CR>
 " nnoremap mm :Marks<CR>
 " nnoremap <C-n> :BLines<CR>
 " nnoremap <C-o> :FzfPreviewProjectFiles<CR>
-nmap <C-D> :Files<CR>
+" nmap <C-D> :Files<CR>
 " nmap <C-b> :Buffers<CR>
 " nmap <Leader>: :History:<CR>
 " nmap <Leader>gm :Maps<CR>
@@ -1610,9 +1615,9 @@ else
 	nnoremap <silent><nowait> ga  :<C-u>CocList diagnostics<cr> " Show all diagnostics.
 	nnoremap <silent><nowait> <Leader>u  :<C-u>CocList extensions<cr> " Manage extensions.
 	" Symbol renaming.
-	nmap <leader>rn <Plug>(coc-rename)
-	xmap <leader>f  <Plug>(coc-format-selected)
-	nmap <leader>f  <Plug>(coc-format-selected)
+	" nmap <leader>rn <Plug>(coc-rename)
+	" xmap <leader>f  <Plug>(coc-format-selected)
+	" nmap <leader>f  <Plug>(coc-format-selected)
 endif
 
 " ___________________________________________________________________________ "

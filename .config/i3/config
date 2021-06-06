@@ -266,7 +266,8 @@ gaps inner 15
 gaps outer -5
 
 # wallpaper
-exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
+# exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
+exec --no-startup-id feh --bg-center ~/Images/logo_diabeloop_bleu_rvb.png --image-bg "#263238"
 
 
 show_marks yes
