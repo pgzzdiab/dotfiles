@@ -260,7 +260,7 @@ bindsym $mod+p exec --no-startup-id ~/.config/i3/display.sh
 
 # gaps
 gaps inner 15
-gaps outer -13
+gaps outer -5
 
 # wallpaper
 # exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg

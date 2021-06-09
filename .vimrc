@@ -1446,10 +1446,10 @@ else
 	execute "set <M-d> =\ed"
 	execute "set <M-k> =\ek"
 	execute "set <M-j> =\ej"
-	execute "set <M-L> =\eL"
 	execute "set <M-H> =\eH"
 	execute "set <M-h> =\eh"
 	execute "set <M-l> =\el"
+	execute "set <M-L> =\el"
 	execute "set <M-;> =\e;"
 	execute "set <M-g> =\en"
 	execute "set <M-g> =\en"
@@ -1504,10 +1504,10 @@ nnoremap <leader>a :ToggleAutosave<CR>
 " -------------------------------------------------------------------------- "
 map <M-k> <Plug>(IndentWisePreviousEqualIndent)
 map <M-j> <Plug>(IndentWiseNextEqualIndent)
-map <M-L> <Plug>(IndentWisePreviousGreaterIndent)
-map <M-H> <Plug>(IndentWisePreviousLesserIndent)
-map <M-h> <Plug>(IndentWiseNextLesserIndent)
-map <M-l> <Plug>(IndentWiseNextGreaterIndent)
+" map <M-L> <Plug>(IndentWisePreviousGreaterIndent)
+" map <M-H> <Plug>(IndentWisePreviousLesserIndent)
+" map <M-h> <Plug>(IndentWiseNextLesserIndent)
+" map <M-l> <Plug>(IndentWiseNextGreaterIndent)
 " map <M-E> <Plug>(IndentWisePreviousAbsoluteIndent)
 " map <M-e> <Plug>(IndentWiseNextAbsoluteIndent)
 " map <M-e> <Plug>(IndentWiseBlockScopeBoundaryBegin)
@@ -1526,8 +1526,8 @@ map <M-l> <Plug>(IndentWiseNextGreaterIndent)
 " map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
 " map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
 " map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
-nnoremap mj <Plug>(PythonsenseStartOfNextPythonFunction)
-nnoremap <buffer> Mj <Plug>(PythonsenseEndOfPythonFunction)
+map <buffer> mj <Plug>(PythonsenseStartOfNextPythonFunction)
+map <buffer> Mj <Plug>(PythonsenseEndOfPythonFunction)
 map <buffer> mk <Plug>(PythonsenseStartOfPythonFunction)
 map <buffer> Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
 " map <buffer> g: <Plug>(PythonsensePyWhere)" easy-align
