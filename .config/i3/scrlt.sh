@@ -33,7 +33,7 @@ glitch_this $pngfile -c -s 4 -sd 600 -f -o $python_glitchedfile
 #     $glitchedfile $pngfile
 
 convert -gravity center -font "Hack" \
-    -pointsize 150 -draw "text 0,0 '~ session locked ~'" -gravity South -channel RGBA -fill '#cecd35' -undercolor '#000000' \
+    -pointsize 150 -draw "text 0,0 '~ session locked ~'" -gravity South -channel RGBA -fill '#cecd35'\
     $python_glitchedfile $pngfile
 
 # -u disables circle indicator when entering characters

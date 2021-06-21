@@ -1,4 +1,4 @@
-set font "Fira Code 12"
+set font "Fira Code 11"
 # ------- mapping --------- #
 
 set statusbar-h-padding 0
@@ -19,35 +19,35 @@ set notification-error-bg       "#0b152f" # bg
 set notification-error-fg       "#fb4934" # bright:red
 set notification-warning-bg     "#0b152f" # bg
 set notification-warning-fg     "#fabd2f" # bright:yellow
-set notification-bg             "#000700" # bg
+set notification-bg             "#263238" # bg
 set notification-fg             "#b8bb26" # bright:green
 
-set completion-bg               "#000700" # bg2
+set completion-bg               "#263238" # bg2
 set completion-fg               "#ebdbb2" # fg
-set completion-group-bg         "#000700" # bg1
+set completion-group-bg         "#263238" # bg1
 set completion-group-fg         "#928374" # gray
-set completion-highlight-bg     "#000700" # bright:blue
+set completion-highlight-bg     "#263238" # bright:blue
 set completion-highlight-fg     "#504945" # bg2
 
 # Define the color in index mode
-set index-bg                    "#000700" # bg2
+set index-bg                    "#263238" # bg2
 set index-fg                    "#f5ac78" # fg
-set index-active-bg             "#000700" # bright:blue
+set index-active-bg             "#263238" # bright:blue
 set index-active-fg             "#f5ac78" # bg2
 
-set inputbar-bg                 "#000700" # bg
+set inputbar-bg                 "#263238" # bg
 set inputbar-fg                 "#f5ac78" # fg
 
-set statusbar-bg                "#000700" # bg2
+set statusbar-bg                "#263238" # bg2
 set statusbar-fg                "#f5ac78" # fg
 
 set highlight-color             "#fabd2f" # bright:yellow
 set highlight-active-color      "#fe8019" # bright:orange
 
-set default-bg                  "#15100d" # bg
+set default-bg                  "#263238" # bg
 set default-fg                  "#f5ac78" # fg
 set render-loading              true
-set render-loading-bg           "#000700" # bg
+set render-loading-bg           "#263238" # bg
 set render-loading-fg           "#f5ac78" # fg
 
 # Recolor book content's color

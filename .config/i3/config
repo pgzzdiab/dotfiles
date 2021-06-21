@@ -259,12 +259,14 @@ bindsym $mod+b mode "resize"
 bindsym $mod+p exec --no-startup-id ~/.config/i3/display.sh  
 
 # gaps
-gaps inner 15
-gaps outer -5
+gaps inner 30
+gaps outer -10
+gaps top -29
 
 # wallpaper
 # exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
-exec --no-startup-id feh --bg-center ~/Images/logo_diabeloop_bleu_rvb.png --image-bg "#263238"
+# exec --no-startup-id feh --bg-scale --image-bg "#263238"
+exec --no-startup-id hsetroot -solid '#263238'
 
 show_marks yes
 

@@ -41,12 +41,15 @@ set completeopt=menuone,noselect  " completion menu
 " set shortmess+=c                                             " Remove messages from in-completion menus
 
 " ----------------- indent ---------------------------------------------------
-set autoindent                    " autoindent files
-set smartindent                   " auto indent while editing
-set noexpandtab
 set softtabstop=0
 set shiftwidth=2
-set tabstop=2
+set tabstop=4                       " 4 spaces to represent tab
+set expandtab
+set smarttab
+
+set autoindent                      " autoindent files
+set smartindent                   " auto indent while editing
+set ai                              " acitve indentation objects
 
 set scrolloff=20                    " limit of line to scroll
 set showtabline=2                   " always show tab number
@@ -61,7 +64,7 @@ set path+=**                        " add previous directory for gf, :find, ..
 set wildmenu                        " activate completion menu
 set laststatus=2                    " activate always status bar
 
-set ai                              " acitve indentation objects
+
 set showcmd                         " activate show command area below statusline
 " set cmdheight=2                   " Better display for messages
 set updatetime=100                  " Smaller updatetime for CursorHold & CursorHoldI
@@ -274,7 +277,6 @@ endfunction
 " endfunction
 
 
-
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -344,8 +346,10 @@ nnoremap sv *``                                    " search current word under c
 " map ck i\<CR><ESC>                                 " cut linne with an \
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
 nnoremap K i<cr><esc>                              " cut line
-nnoremap H ^                                       " go end of line
-nnoremap L g_                                      " go start of line
+" unmap H
+" unmap L
+:map H ^
+:map L g_
 inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
 nnoremap <M-f> <Esc><Esc>:update<CR>
 " nnoremap c<space> i<space><Esc>                    " insert a space a space
@@ -396,12 +400,12 @@ nnoremap <C-p> :lcl<CR>                     " close loclist
 
 "
 "
-" ------------------------ search------------------------------------
+" ------------------------ search ------------------------------------------- #
 "
 nnoremap <silent> ff :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighting and clear any message already displayed.
 
 "
-" ------------------------ registers ------------------------------
+" ------------------------ registers ---------------------------------------- #
 "
 " List contents of all registers
 " nnoremap <silent> "" :registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>
@@ -409,11 +413,11 @@ nnoremap <silent> ff :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighti
 command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
 "
-" --------------------- Tags -----------------------------------
+" --------------------- Tags ------------------------------------------------ #
 " nnoremap <C-W>[ :call FollowTag()<CR>zt   " Follow tag in a vertical window
 "
 "
-" ------------------------ python pdb------------------------------------
+" ------------------------ python pdb --------------------------------------- #
 "
 " Add easy nbreakpoint shortcut with correct identation
 nnoremap <silent> <C-Y> :let a='import pdb; pdb.set_trace()'\|put=a<CR>kJi<CR><ESC>
@@ -422,20 +426,16 @@ nnoremap <silent> <C-Y> :let a='import pdb; pdb.set_trace()'\|put=a<CR>kJi<CR><E
 " split
 "
 noremap <C-w>f :vertical resize 84<CR>
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 "max height Ctrl-w _
 "maz width Ctrl-w |.
 noremap <silent> <C-Left> :vertical resize +3<CR>
 noremap <silent> <C-Right> :vertical resize -3<CR>
 noremap <silent> <C-Up>  :resize +3<CR>
 noremap <silent> <C-Down> :resize -3<CR>
-
-
-
-
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -463,38 +463,38 @@ call plug#begin(g:plug_install_files)
 " ------------------ Neovim plugins  ---------------------------
 " --------------------------------------------------------------
 if has('nvim')
-		Plug 'neovim/nvim-lspconfig'                           " lsp configuration
-		Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
-		Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
-		Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
-		Plug 'hrsh7th/nvim-compe'                              " completion plugin
-		Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
-		Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
-		Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
+        Plug 'neovim/nvim-lspconfig'                           " lsp configuration
+        Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
+        Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
+        Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
+        Plug 'hrsh7th/nvim-compe'                              " completion plugin
+        Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
+        Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
+        Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
-		Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
-		Plug 'Pocco81/NoCLC.nvim'                              " remove line number in unfocused pan
-		Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
-		Plug 'kyazdani42/nvim-tree.lua'                        " file tree
-		Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
-		Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
+        Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
+        Plug 'Pocco81/NoCLC.nvim'                              " remove line number in unfocused pan
+        Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
+        Plug 'kyazdani42/nvim-tree.lua'                        " file tree
+        Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
+        Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
 
-		" Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
-		" Plug 'pwntester/octo.nvim'                             " neovim github plugin
-		" Plug 'nvim-lua/popup.nvim'                             " to install telescope
-		" Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists
-		" Plug 'glepnir/indent-guides.nvim'                    " indent line
-		" Plug 'nvim-lua/completion-nvim'                        " completion plugin
-		" Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
-		" Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
-		" Plug 'Shougo/denite.nvim'                            " file , buffers manager
-		" Plug 'ncm2/float-preview.nvim/'
+        " Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
+        " Plug 'pwntester/octo.nvim'                             " neovim github plugin
+        " Plug 'nvim-lua/popup.nvim'                             " to install telescope
+        " Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists
+        " Plug 'glepnir/indent-guides.nvim'                      " indent line
+        " Plug 'nvim-lua/completion-nvim'                        " completion plugin
+        " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
+        " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
+        " Plug 'Shougo/denite.nvim'                              " file , buffers manager
+        " Plug 'ncm2/float-preview.nvim/'
 else
-		Plug 'preservim/nerdtree'                              " file explorer
-		" Plug 'neoclide/coc.nvim', {'branch': 'release'}        " new community driven completion engine
-		" Plug 'dense-analysis/ale'                            " syntax checking and semantic errors
-		Plug 'vim-airline/vim-airline'                       " add visual line
-		Plug 'vim-airline/vim-airline-themes'                " theme for airline
+        Plug 'preservim/nerdtree'                              " file explorer
+        " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
+        " Plug 'dense-analysis/ale'                            " syntax checking and semantic errors
+        Plug 'vim-airline/vim-airline'                         " add visual line
+        Plug 'vim-airline/vim-airline-themes'                  " theme for airline
 endif
 
 " --------------------------------------------------------------
@@ -516,43 +516,41 @@ endif
 " --------------------------------------------------------------------------- "
 " ---------------------- tmux ------------------------------------- "
 " --------------------------------------------------------------------------- "
-Plug 'roxma/vim-tmux-clipboard'       " share " register with tmux
+Plug 'roxma/vim-tmux-clipboard'                         " share register with tmux
 
 " --------------------------------------------------------------------------- "
 " ---------------------- IDE ------------------------------------- "
 " --------------------------------------------------------------------------- "
-" Plug 'pechorin/any-jump.vim'                            " inspection code plugin
+" Plug 'pechorin/any-jump.vim'                          " inspection code plugin
 Plug 'brooth/far.vim'                                   " search and replace
 Plug 'tpope/vim-commentary'                             " comment objects
-" Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
-" Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
+Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
+Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
-Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
+" Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
 Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
-Plug 'justinmk/vim-sneak'                              " jump using 2-chars
-Plug 'svermeulen/vim-subversive'                       " substitution
+Plug 'justinmk/vim-sneak'                               " jump using 2-chars
+Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
-Plug 'AndrewRadev/sideways.vim'                        " move func args
-Plug 'flwyd/vim-conjoin'                               " better join lines
+Plug 'AndrewRadev/sideways.vim'                         " move func args
+Plug 'flwyd/vim-conjoin'                                " better join lines
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
 " --------------------------------------------------------------------------- "
-" Plug 'yssl/QFEnter'                                     " open buffers from quickfix list easy
+" Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
 " Plug 'MathSquared/vim-python-sql'
-" Plug 'https://github.com/tpope/vim-endwise'          " end certain structures automatically
-" Plug 'https://github.com/romainl/vim-qf'             " help with the quickfix lists
-" Plug 'antoinemadec/coc-fzf'                          " integrate fzf with coc.vim
-" Plug 'westurner/venv.vim'
+" Plug 'https://github.com/tpope/vim-endwise'           " end certain structures automatically
+" Plug 'https://github.com/romainl/vim-qf'              " help with the quickfix lists
+" Plug 'antoinemadec/coc-fzf'                           " integrate fzf with coc.vim
 "
 " --------------------------------------------------------------
 " ---------------------- git -----------------------------------
 " --------------------------------------------------------------
-Plug 'tpope/vim-fugitive'                              " git integration plugin
-" Plug 'rbong/vim-flog'                                  " See git branches
+Plug 'tpope/vim-fugitive'                               " git integration plugin
+Plug 'rbong/vim-flog'                                   " Commit viewer
 " Plug 'https://github.com/airblade/vim-gitgutter'
 " Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'rbong/vim-flog'                                " Commit viewer
 "
 " --------------------------------------------------------------
 " ---------------------- run in vim ----------------------------
@@ -575,6 +573,7 @@ Plug 'jeetsukumaran/vim-buffergator'                   " buffer list
 Plug 'mgedmin/python_open_module.vim'                  " Python standard library source code
 Plug 'kkoomen/vim-doge'                                " Docstring generator
 " Plug 'jmcantrell/vim-virtualenv'                       " Tool for python venv
+" Plug 'westurner/venv.vim'
 " Plug 'tell-k/vim-autopep8'                           " autoformat python
 " Plug 'wincent/terminus'                              " send text to as windows
 " Plug 'ivanov/vim-ipython' 
@@ -805,7 +804,7 @@ if has('nvim')
 	nnoremap <silent> <A-u> :BufferGoto 6<CR>
 	nnoremap <silent> <A-i> :BufferGoto 7<CR>
 	nnoremap <silent> <A-o> :BufferGoto 8<CR>
-	nnoremap <silent> <A-p> :BufferLast<CR>
+	" nnoremap <silent> <A-p> :BufferLast<CR>
 
 	" Close buffer
 	" execute "set <M-c>=\ec"
@@ -830,8 +829,8 @@ let g:grepper_quickfix=1          " USe location list
 let g:grepper_open=1
 let g:grepper_switch=1              " Go into the location list after a search
 let g:grepper_side=1                " Open a new window and show matches with surrounding contextu
-nmap gs  <plug>(GrepperOperator)
-xmap gs  <plug>(GrepperOperator)
+nmap gq  <plug>(GrepperOperator)
+xmap gq  <plug>(GrepperOperator)
 
 " --------------------------------------------------------------
 " echo doc
@@ -1502,8 +1501,8 @@ nnoremap <leader>a :ToggleAutosave<CR>
 " -------------------------------------------------------------------------- "
 " indentwise
 " -------------------------------------------------------------------------- "
-map <M-k> <Plug>(IndentWisePreviousEqualIndent)
-map <M-j> <Plug>(IndentWiseNextEqualIndent)
+map [= <Plug>(IndentWisePreviousEqualIndent)
+map ]= <Plug>(IndentWiseNextEqualIndent)
 " map <M-L> <Plug>(IndentWisePreviousGreaterIndent)
 " map <M-H> <Plug>(IndentWisePreviousLesserIndent)
 " map <M-h> <Plug>(IndentWiseNextLesserIndent)
@@ -1512,29 +1511,6 @@ map <M-j> <Plug>(IndentWiseNextEqualIndent)
 " map <M-e> <Plug>(IndentWiseNextAbsoluteIndent)
 " map <M-e> <Plug>(IndentWiseBlockScopeBoundaryBegin)
 " map <M-e> <Plug>(IndentWiseBlockScopeBoundaryEnd)"
-
-" -------------------------------------------------------------------------- "
-" pythonsense
-" -------------------------------------------------------------------------- "
-" map <buffer> ac <Plug>(PythonsenseOuterClassTextObject)
-" map <buffer> ic <Plug>(PythonsenseInnerClassTextObject)
-" map <buffer> af <Plug>(PythonsenseOuterFunctionTextObject)
-" map <buffer> if <Plug>(PythonsenseInnerFunctionTextObject)
-" map <buffer> ad <Plug>(PythonsenseOuterDocStringTextObject)
-" map <buffer> id <Plug>(PythonsenseInnerDocStringTextObject)
-" map <buffer> ]] <Plug>(PythonsenseStartOfNextPythonClass)
-" map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
-" map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
-" map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
-map <buffer> mj <Plug>(PythonsenseStartOfNextPythonFunction)
-map <buffer> Mj <Plug>(PythonsenseEndOfPythonFunction)
-map <buffer> mk <Plug>(PythonsenseStartOfPythonFunction)
-map <buffer> Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
-" map <buffer> g: <Plug>(PythonsensePyWhere)" easy-align
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-" xmap ga <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-" nmap ga <Plug>(EasyAlign)"
 
 " -------------------------------------------------------------------------- "
 " Sideway
@@ -1692,6 +1668,31 @@ else
 	" xmap <leader>f  <Plug>(coc-format-selected)
 	" nmap <leader>f  <Plug>(coc-format-selected)
 endif
+
+" -------------------------------------------------------------------------- "
+" pythonsense
+" -------------------------------------------------------------------------- "
+" map <buffer> ac <Plug>(PythonsenseOuterClassTextObject)
+" map <buffer> ic <Plug>(PythonsenseInnerClassTextObject)
+" map <buffer> af <Plug>(PythonsenseOuterFunctionTextObject)
+" map <buffer> if <Plug>(PythonsenseInnerFunctionTextObject)
+" map <buffer> ad <Plug>(PythonsenseOuterDocStringTextObject)
+" map <buffer> id <Plug>(PythonsenseInnerDocStringTextObject)
+" map <buffer> ]] <Plug>(PythonsenseStartOfNextPythonClass)
+" map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
+" map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
+" map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
+
+autocmd BufReadPost *
+      \ map mj <Plug>(PythonsenseStartOfNextPythonFunction)
+      \ map Mj <Plug>(PythonsenseEndOfPythonFunction)
+      \ map mk <Plug>(PythonsenseStartOfPythonFunction)
+      \ map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
+" map <buffer> g: <Plug>(PythonsensePyWhere)" easy-align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+" xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+" nmap ga <Plug>(EasyAlign)"
 
 " ___________________________________________________________________________ "
 " ___________________________________________________________________________ "
@@ -1880,3 +1881,6 @@ hi! CursorLineNr guifg=#FFEE99 guibg=#0F1419
 "  vim signature
 "  ------------------------------------------------------------
 hi SignatureMarkText guifg=#B0BEC5 guibg=#263238
+
+
+

@@ -130,7 +130,10 @@ alias red5="redshift -O 5000K"
 alias poly="./.config/polybar/launch.sh"
 alias ex="exec xset r rate 120 150"
 alias vpn="sudo openfortivpn"
-alias back="feh --bg-center ~/Images/logo_diabeloop_bleu_rvb.png --image-bg '#263238'"
+alias back="hsetroot -solid '#263238'"
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 fm6000 -r
+
+
+complete -C "/home/pierre/.local/bin/aws_completer" aws
