@@ -35,11 +35,11 @@ set index-fg                    "#f5ac78" # fg
 set index-active-bg             "#263238" # bright:blue
 set index-active-fg             "#f5ac78" # bg2
 
-set inputbar-bg                 "#263238" # bg
-set inputbar-fg                 "#f5ac78" # fg
+set inputbar-bg                 "#000000" # bg
+set inputbar-fg                 "#B0BEC5" # fg
 
-set statusbar-bg                "#263238" # bg2
-set statusbar-fg                "#f5ac78" # fg
+set statusbar-bg                "#000000" # bg2
+set statusbar-fg                "#B0BEC5" # fg
 
 set highlight-color             "#fabd2f" # bright:yellow
 set highlight-active-color      "#fe8019" # bright:orange

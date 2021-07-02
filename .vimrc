@@ -414,7 +414,7 @@ command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | 
 
 "
 " --------------------- Tags ------------------------------------------------ #
-" nnoremap <C-W>[ :call FollowTag()<CR>zt   " Follow tag in a vertical window
+nnoremap <C-W>[ :call FollowTag()<CR>zt   " Follow tag in a vertical window
 "
 "
 " ------------------------ python pdb --------------------------------------- #
@@ -478,6 +478,7 @@ if has('nvim')
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
         Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
+        Plug 'sindrets/diffview.nvim'                          " diffview
 
         " Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
         " Plug 'pwntester/octo.nvim'                             " neovim github plugin
@@ -700,62 +701,30 @@ if has('nvim')
 	" let g:bufferline = get(g:, 'bufferline', {
 	" 			\ 'closable': v:false, 'no_name_title': '[No Name]'
 	" 			\ })
-	" let s:barbar_bg  = '#21242b'
 
-	" let fg_visible  = GetHiVal('Normal', 'fg')     " #abb2bf
-	" let fg_sign     = GetHiVal('NonText', 'fg')    " #3b4048
-	" let fg_modified = GetHiVal('WarningMsg', 'fg') " #e5c07b
-	" let fg_tabpages = GetHiVal('Directory', 'fg')  " #61AFEF
+"     let bufferline.icon_custom_colors = v:false
+" 	let s:barbar_bg  = '#263238'
 
-	" call BarbarHi('BufferTabpageFill', fg_sign)
-	" call BarbarHi('BufferTabpages', fg_tabpages, 'bold')
-	" call BarbarHi('BufferVisible', fg_visible)
-	" call BarbarHi('BufferVisibleSign', fg_sign)
-	" call BarbarHi('BufferVisibleMod', fg_modified)
-	" call BarbarHi('BufferVisibleIndex', fg_sign)
-	" call BarbarHi('BufferInactive', '#707070')
-	" call BarbarHi('BufferInactiveSign', fg_sign)
-	" call BarbarHi('BufferInactiveMod', fg_modified)
-	" call BarbarHi('BufferInactiveIndex', fg_sign)
-	" call BarbarHi('BufferInactiveTarget', 'red', 'bold')
-	" call BarbarHi('BufferModifiedIndex', fg_sign)
+"     let fg_target = 'red'
+"     let fg_current  = s:fg(['Normal'], '#efefef')
+" 	let fg_visible  = GetHiVal('Normal', 'fg')     " #abb2bf
+"     let fg_inactive = s:fg(['TabLineFill'], '#000000')
+" 	let fg_sign     = GetHiVal('NonText', 'fg')    " #3b4048
+" 	let fg_modified = GetHiVal('WarningMsg', 'fg') " #e5c07b
+" 	let fg_tabpages = GetHiVal('Directory', 'fg')  " #61AFEF
 
-	" map <M-w>         :BufferClose<CR>
-	" map <leader><M-w> :BufferClose!<CR>
-
-	" " Magic buffer-picking mode
-	" nnoremap <silent> <C-Space> :BufferPick<CR>
-	" " Sort automatically by...
-	" nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
-	" nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
-	" " Move to previous/next
-	" nnoremap <silent> <C-Tab>         :BufferNext<CR>
-	" nnoremap <silent> <C-S-Tab>       :BufferPrevious<CR>
-	" nnoremap <silent> <Leader><Tab>   :BufferNext<CR>
-	" nnoremap <silent> <Leader><S-Tab> :BufferPrevious<CR>
-	" " Re-order to previous/next
-	" nnoremap <silent> <M-.> :BufferMoveNext<CR>
-	" nnoremap <silent> <M-,> :BufferMovePrevious<CR>
-	" " Goto buffer in position...
-	" nnoremap <silent> <A-1> :BufferGoto 1<CR>
-	" nnoremap <silent> <A-2> :BufferGoto 2<CR>
-	" nnoremap <silent> <A-3> :BufferGoto 3<CR>
-	" nnoremap <silent> <A-4> :BufferGoto 4<CR>
-	" nnoremap <silent> <A-5> :BufferGoto 5<CR>
-	" nnoremap <silent> <A-6> :BufferGoto 6<CR>
-	" nnoremap <silent> <A-7> :BufferGoto 7<CR>
-	" nnoremap <silent> <A-8> :BufferGoto 8<CR>
-	" nnoremap <silent> <A-9> :BufferLast<CR>
-	" nnoremap <silent> <Leader>1 :BufferGoto 1<CR>
-	" nnoremap <silent> <Leader>2 :BufferGoto 2<CR>
-	" nnoremap <silent> <Leader>3 :BufferGoto 3<CR>
-	" nnoremap <silent> <Leader>4 :BufferGoto 4<CR>
-	" nnoremap <silent> <Leader>5 :BufferGoto 5<CR>
-	" nnoremap <silent> <Leader>6 :BufferGoto 6<CR>
-	" nnoremap <silent> <Leader>7 :BufferGoto 7<CR>
-	" nnoremap <silent> <Leader>8 :BufferGoto 8<CR>
-	" nnoremap <silent> <Leader>9 :BufferLast<CR>
-
+" 	call BarbarHi('BufferTabpageFill', fg_sign)
+" 	call BarbarHi('BufferTabpages', fg_tabpages, 'bold')
+" 	call BarbarHi('BufferVisible', fg_visible)
+" 	call BarbarHi('BufferVisibleSign', fg_sign)
+" 	call BarbarHi('BufferVisibleMod', fg_modified)
+" 	call BarbarHi('BufferVisibleIndex', fg_sign)
+" 	call BarbarHi('BufferInactive', '#707070')
+" 	call BarbarHi('BufferInactiveSign', fg_sign)
+" 	call BarbarHi('BufferInactiveMod', fg_modified)
+" 	call BarbarHi('BufferInactiveIndex', fg_sign)
+" 	call BarbarHi('BufferInactiveTarget', 'red', 'bold')
+" 	call BarbarHi('BufferModifiedIndex', fg_sign)
 endif
 
 if has('nvim')
@@ -778,13 +747,13 @@ if has('nvim')
 	" Move to previous/next execute "set <M-m>=\em"
 	" execute "set <M-n>=\en"
 	" execute "set <M-m>=\em"
-	nnoremap <silent> <A-n> :BufferPrevious<CR>
-	nnoremap <silent> <A-m> :BufferNext<CR>
+	nnoremap <silent> <A-[> :BufferPrevious<CR>
+	nnoremap <silent> <A-]> :BufferNext<CR>
 	" Re-order to previous/next
 	" execute "set <M-M>=\eM"
 	" execute "set <M-N>=\eN"
-	nnoremap <silent> <A-N> :BufferMovePrevious<CR>
-	nnoremap <silent> <A-M> :BufferMoveNext<CR>
+	nnoremap <silent> <A-{> :BufferMovePrevious<CR>
+	nnoremap <silent> <A-}> :BufferMoveNext<CR>
 	" Goto buffer in position...
 	" execute "set <M-q>=\eq"
 	" execute "set <M-w>=\ew"
@@ -804,7 +773,7 @@ if has('nvim')
 	nnoremap <silent> <A-u> :BufferGoto 6<CR>
 	nnoremap <silent> <A-i> :BufferGoto 7<CR>
 	nnoremap <silent> <A-o> :BufferGoto 8<CR>
-	" nnoremap <silent> <A-p> :BufferLast<CR>
+	nnoremap <silent> <A-0> :BufferLast<CR>
 
 	" Close buffer
 	" execute "set <M-c>=\ec"
@@ -1032,91 +1001,91 @@ let g:subversivePromptWithCurrent=1
 "let g:subversivePreserveCursorPosition=1 "cursor will not move when substitutions are applied
 
 " -------------------- theme ------------------------------------------------ "
-if has('nvim')
-	" we use lualine
-else
-	" --------------------------------------------------------------
-	" airline
-	" --------------------------------------------------------------
-	let g:airline_theme = 'desertink'
-	"  general options 
-	let g:airline_inactive_collapse=1
-	let g:airline_inactive_alt_sep=1
-	let g:airline_powerline_fonts = 1
-	let g:airline#extensions#tabline#enabled = 1
-	let g:airline#extensions#tabline#show_buffers = 0
-	let g:airline#extensions#tabline#show_tabs = 1
-	" enable/disable displaying tab type (e.g. [buffers]/[tabs]) >
-	let g:airline#extensions#tabline#close_symbol = ''
-	let g:airline#extensions#tabline#show_close_button = 0
-	" let g:airline#extensions#tabline#buffer_min_count = 0   " show tabline only if there is more than 1 buffer
+"if has('nvim')
+"	" we use lualine
+"else
+"	" --------------------------------------------------------------
+"	" airline
+"	" --------------------------------------------------------------
+"	let g:airline_theme = 'desertink'
+"	"  general options 
+"	let g:airline_inactive_collapse=1
+"	let g:airline_inactive_alt_sep=1
+"	let g:airline_powerline_fonts = 1
+"	let g:airline#extensions#tabline#enabled = 1
+"	let g:airline#extensions#tabline#show_buffers = 0
+"	let g:airline#extensions#tabline#show_tabs = 1
+"	" enable/disable displaying tab type (e.g. [buffers]/[tabs]) >
+"	let g:airline#extensions#tabline#close_symbol = ''
+"	let g:airline#extensions#tabline#show_close_button = 0
+"	" let g:airline#extensions#tabline#buffer_min_count = 0   " show tabline only if there is more than 1 buffer
 
-	let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-	let g:airline#extensions#tabline#fnamemod = ':t' " show only file name on tabs
+"	let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+"	let g:airline#extensions#tabline#fnamemod = ':t' " show only file name on tabs
 
-	let g:airline#extensions#tabline#show_tab_type = 1
-	"  enable/disable displaying tab number in tabs mode. >
+"	let g:airline#extensions#tabline#show_tab_type = 1
+"	"  enable/disable displaying tab number in tabs mode. >
 
-	let g:airline#extensions#tabline#show_splits = 0
-	let g:airline#extensions#tabline#buffer_idx_mode=0
-	let g:airline#extensions#tabline#show_tab_nr=1
-	let g:airline#extensions#tabline#tab_nr_type=0
-	let g:airline#extensions#tabline#buffer_nr_show=0
+"	let g:airline#extensions#tabline#show_splits = 0
+"	let g:airline#extensions#tabline#buffer_idx_mode=0
+"	let g:airline#extensions#tabline#show_tab_nr=1
+"	let g:airline#extensions#tabline#tab_nr_type=0
+"	let g:airline#extensions#tabline#buffer_nr_show=0
 
-	" let g:airline#extensions#tabline#buffer_nr_format = '%s:'
+"	" let g:airline#extensions#tabline#buffer_nr_format = '%s:'
 
-	" Show superindex numbers in tabline
+"	" Show superindex numbers in tabline
 
-	" let g:airline#themes#clean#palette = 1
-	" let g:airline_stl_path_style = 'short'
-	" let g:airline_detect_paste=1
-	" let g:airline_inactive_alt_sep=0
-	let g:airline#extensions#whitespace#checks = ['']
-	let g:airline_skip_empty_sections = 1
-	"
-	" --------------- extensions ------------------------------------------------
-	let g:airline#extensions#tagbar#enabled = 0
-	let g:airline#extensions#tagbar#flags = 'f'
-	let g:airline#extensions#gutentags#enabled = 1
-	let g:airline#extensions#grepper#enabled = 1
-	" let g:airline#extensions#virtualenv#enabled = 1         " Enable virtualenv plugin
-	let g:airline#extensions#coc#enabled = 0
+"	" let g:airline#themes#clean#palette = 1
+"	" let g:airline_stl_path_style = 'short'
+"	" let g:airline_detect_paste=1
+"	" let g:airline_inactive_alt_sep=0
+"	let g:airline#extensions#whitespace#checks = ['']
+"	let g:airline_skip_empty_sections = 1
+"	"
+"	" --------------- extensions ------------------------------------------------
+"	let g:airline#extensions#tagbar#enabled = 0
+"	let g:airline#extensions#tagbar#flags = 'f'
+"	let g:airline#extensions#gutentags#enabled = 1
+"	let g:airline#extensions#grepper#enabled = 1
+"	" let g:airline#extensions#virtualenv#enabled = 1         " Enable virtualenv plugin
+"	let g:airline#extensions#coc#enabled = 0
 
-	" --------------------- sections -------------------------------------------- "
-	let g:airline#parts#ffenc#skip_expected_string=''   "   'utf-8[unix]'
-	let g:airline_section_c = airline#section#create([
-				\ 'file',
-				\ 'readonly'
-				\ ])
-	let g:filetype=''
-	let g:airline_section_z = airline#section#create([
-				\ '%l',
-				\ '%{(" ")}' . "│" . " ",
-				\ '%p',
-				\ '%{(" ")}' . "│" . " ",
-				\ '%c'
-				\ ])
-	let g:airline_section_y = airline#section#create([
-				\ '%{("")}' . "│" . "",
-				\ ])
-	let g:airline_section_warning = ''
-	" let g:airline_section_error = ''
-	let g:airline#extensions#default#layout = [['a', 'c'], ['warning', 'error', 'z']]
+"	" --------------------- sections -------------------------------------------- "
+"	let g:airline#parts#ffenc#skip_expected_string=''   "   'utf-8[unix]'
+"	let g:airline_section_c = airline#section#create([
+"				\ 'file',
+"				\ 'readonly'
+"				\ ])
+"	let g:filetype=''
+"	let g:airline_section_z = airline#section#create([
+"				\ '%l',
+"				\ '%{(" ")}' . "│" . " ",
+"				\ '%p',
+"				\ '%{(" ")}' . "│" . " ",
+"				\ '%c'
+"				\ ])
+"	let g:airline_section_y = airline#section#create([
+"				\ '%{("")}' . "│" . "",
+"				\ ])
+"	let g:airline_section_warning = ''
+"	" let g:airline_section_error = ''
+"	let g:airline#extensions#default#layout = [['a', 'c'], ['warning', 'error', 'z']]
 
-	" ---------------- mapping tab ---------------------------------------------- "
-	let g:airline#extensions#tabline#buffer_idx_format = {
-					\ '0': 'Q',
-					\ '1': 'W',
-					\ '2': 'E',
-					\ '3': 'R',
-					\ '4': 'T',
-					\ '5': 'Y',
-					\ '6': 'U',
-					\ '7': 'I',
-					\ '8': 'O',
-					\ '9': 'P'
-					\}
-endif
+"	" ---------------- mapping tab ---------------------------------------------- "
+"	let g:airline#extensions#tabline#buffer_idx_format = {
+"					\ '0': 'Q',
+"					\ '1': 'W',
+"					\ '2': 'E',
+"					\ '3': 'R',
+"					\ '4': 'T',
+"					\ '5': 'Y',
+"					\ '6': 'U',
+"					\ '7': 'I',
+"					\ '8': 'O',
+"					\ '9': 'P'
+"					\}
+"endif
 
 " --------------------------------------------------------------
 " vimtex
@@ -1314,7 +1283,7 @@ let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 	nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
 	vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
 
-	" -- show hover doc
+	" -- show hover hover
 	nnoremap <silent> gh <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
 	" -- or use command
 	" nnoremap <silent>gh :Lspsaga hover_doc<CR>
@@ -1328,7 +1297,7 @@ let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 	nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 
 	" -- preview definition
-	nnoremap <silent> gf <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
+	nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
 
 	" -- show diagnostic
 	" nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
@@ -1422,14 +1391,14 @@ endif
 " -------------------------------------------------------------
 "  vim sneak
 "  ------------------------------------------------------------
-nmap z <Plug>Sneak_s
-nmap Z <Plug>Sneak_S
+nmap x <Plug>Sneak_s
+nmap X <Plug>Sneak_S
 " visual-mode
-xmap z <Plug>Sneak_s
-xmap Z <Plug>Sneak_S
+xmap x <Plug>Sneak_s
+xmap X <Plug>Sneak_S
 " operator-pending-mode
-omap z <Plug>Sneak_s
-omap Z <Plug>Sneak_S
+omap x <Plug>Sneak_s
+omap X <Plug>Sneak_S
 let g:sneak#label = 1
 
 map f <Plug>Sneak_f
@@ -1456,18 +1425,6 @@ else
 	execute "set <M-p> =\ep"
 " execute "set <M-b> =\en"
 endif
-
-" -------------------------------------------------------------
-"  vim sneak
-"  ------------------------------------------------------------
-nmap z <Plug>Sneak_s
-nmap Z <Plug>Sneak_S
-" visual-mode
-xmap z <Plug>Sneak_s
-xmap Z <Plug>Sneak_S
-" operator-pending-mode
-omap z <Plug>Sneak_s
-omap Z <Plug>Sneak_S
 
 " --------- Wipe Grep ------------------------------------------------------- #
 nnoremap <M-'> :WipeReg<cr>
@@ -1652,7 +1609,7 @@ else
 	" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 	" nmap  <silent><C-c> :CocEnable<CR>
 	" nmap <M-c> :CocDiagnostics<CR>
-	nmap <silent> <M-p> <Plug>(coc-action-diagnosticPreview)
+	" nmap <silent> <M-p> <Plug>(coc-action-diagnosticPreview)
 	nmap <silent> gs <Plug>(coc-action-diagnosticToggle)
 	nmap <silent> gi <Plug>(coc-diagnostic-info)
 	nmap <silent> gb <Plug>(coc-diagnostic-prev)
@@ -1683,11 +1640,10 @@ endif
 " map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
 " map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
 
-autocmd BufReadPost *
-      \ map mj <Plug>(PythonsenseStartOfNextPythonFunction)
-      \ map Mj <Plug>(PythonsenseEndOfPythonFunction)
-      \ map mk <Plug>(PythonsenseStartOfPythonFunction)
-      \ map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
+autocmd BufReadPost * map mj <Plug>(PythonsenseStartOfNextPythonFunction)
+autocmd BufReadPost * map Mj <Plug>(PythonsenseEndOfPythonFunction)
+autocmd BufReadPost * map mk <Plug>(PythonsenseStartOfPythonFunction)
+autocmd BufReadPost * map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
 " map <buffer> g: <Plug>(PythonsensePyWhere)" easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 " xmap ga <Plug>(EasyAlign)
@@ -1817,7 +1773,8 @@ endif
 set background=dark
 
 set cursorline                               " Highlight current line
-hi CursorLine guibg=#0F1419
+" hi CursorLine guibg=#0F1419
+hi CursorLine guibg=#1E272C
 
 " -------------------------------------------------------------
 "  vim sneak
@@ -1839,7 +1796,7 @@ endif
 " ------------------------------------------------------------------------- "
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-highlight ColorColumn guibg=#222b30
+" highlight ColorColumn guibg=#1E272C
 set colorcolumn=80
 
 " ------------------------------------------------------------------------- "
@@ -1858,7 +1815,7 @@ set colorcolumn=80
 " ------------------------------------------------------------------------- "
 " ----------------- current line number color ----------------------------- "
 " ------------------------------------------------------------------------- "
-hi! CursorLineNr guifg=#FFEE99 guibg=#0F1419
+hi! CursorLineNr guifg=#B0BEC5 guibg=#1E272C
 " hi! LineNr guifg=#95E6CB guibg=#272D38
 " hi SignColumn guibg=NONE
 
@@ -1881,6 +1838,4 @@ hi! CursorLineNr guifg=#FFEE99 guibg=#0F1419
 "  vim signature
 "  ------------------------------------------------------------
 hi SignatureMarkText guifg=#B0BEC5 guibg=#263238
-
-
 

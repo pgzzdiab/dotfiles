@@ -130,7 +130,10 @@ alias red5="redshift -O 5000K"
 alias poly="./.config/polybar/launch.sh"
 alias ex="exec xset r rate 120 150"
 alias vpn="sudo openfortivpn"
-alias back="hsetroot -solid '#263238'"
+# alias back="hsetroot -solid '#000000'"
+alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
+# alias back="feh --bg-scale ~/Downloads/r5m6y5krgqm51.jpg"
+# alias ssh="kitty +kitten sshk"
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 fm6000 -r

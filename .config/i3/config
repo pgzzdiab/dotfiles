@@ -27,8 +27,7 @@ exec xset r rate 120 50
 # they are included here as an example. Modify as you see fit.
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 2
-
+default_border pixel 6
 default_floating_border normal
 
 
@@ -68,21 +67,14 @@ bindsym $mod+a exec --no-startup-id flameshot gui
 # -------------------------------------------------------------------------- #
 #         color
 # -------------------------------------------------------------------------- #
-# class                 border  
-# client.focused          #263238 #263238 #263238 #263238 #263238
-# client.focused_inactive #263238 #263238 #263238 #263238 8
-# client.unfocused        #090B10 #090B10 #090B10 #090B10 #090B10
-
 # class                 border  backgr. text    indicator child_border
-client.focused          #263238 #263238 #263238 #263238   #263238
-client.focused_inactive #263238 #263238 #263238 #263238   #263238
-client.unfocused        #333333 #263238 #888888 #292d2e   #263238
-# client.urgent           #2f343a #900000 #263238 #900000   #900000
-# client.placeholder      #000000 #0c0c0c #263238 #000000   #0c0c0c
+client.focused          #B0BEC5 #B0BEC5 #B0BEC5 #B0BEC5   #B0BEC5
+client.focused_inactive #B0BEC5 #B0BEC5 #B0BEC5 #B0BEC5   #B0BEC5
+client.unfocused        #161616 #161616 #161616 #161616   #161616
+# client.urgent           #2f343a #161616 #161616 #161616   #900000
+# client.placeholder      #000000 #0c0c0c #000000 #000000   #0c0c0c
 
-for_window [class="kitty"] border pixel 10
-# for_window [class="firefox"] border pixel 1
-# for_window [class="google-chrome"] border pixel 1
+for_window [class="google-chrome"] border pixel 2
 # for_window [class="brave"] border pixel 1
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
@@ -118,8 +110,7 @@ bindsym $mod+d exec --no-startup-id dmenu_run
 # bindsym $mod+d exec rofi -show drun -theme sidebar -show-icons
 
 # Lock the computer with a blur effect (See script)
-# bindsym $mod+c exec sh ~/.config/i3/lock.sh
-bindsym $mod+x exec sh ~/.config/i3/scrlt.sh
+# bindsym $mod+x exec sh ~/.config/i3/scrlt.sh
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
@@ -259,14 +250,15 @@ bindsym $mod+b mode "resize"
 bindsym $mod+p exec --no-startup-id ~/.config/i3/display.sh  
 
 # gaps
-gaps inner 30
+gaps inner 25
+# gaps outer -25
 gaps outer -10
-gaps top -29
+# gaps top -29
+
 
 # wallpaper
 # exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
-# exec --no-startup-id feh --bg-scale --image-bg "#263238"
-exec --no-startup-id hsetroot -solid '#263238'
+exec --no-startup-id hsetroot -solid '#000000'
 
 show_marks yes
 
