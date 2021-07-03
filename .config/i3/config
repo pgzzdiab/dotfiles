@@ -107,7 +107,8 @@ bindsym $mod+c kill
 # start dmenu (a program launcher)
 bindsym $mod+d exec --no-startup-id dmenu_run
 # Open the rofi search bar
-# bindsym $mod+d exec rofi -show drun -theme sidebar -show-icons
+bindsym $mod+Tab exec ~/.config/rofi/scripts/appsmenu.sh
+# bindsym $mod+Tab exec exec rofi -theme themes/appsmenu -show window
 
 # Lock the computer with a blur effect (See script)
 # bindsym $mod+x exec sh ~/.config/i3/scrlt.sh
@@ -268,7 +269,8 @@ show_marks yes
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id picom -b
-# exec --no-startup-id feh --bg-scale /usr/share/wallpapers/current
+exec --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
+#
 # exec --no-startup-id polybar --config=~/.config/i3/polybar.conf eDP1
 # exec --no-startup-id dcnnt start
 # exec --no-startup-id discord
