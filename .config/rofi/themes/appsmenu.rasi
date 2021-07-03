@@ -1,0 +1,149 @@
+configuration {
+	/* Override config */
+	modi: "drun,window,system:~/.config/rofi/scripts/powermenu.sh";
+	scroll-method: 0;
+	window-format: "{c} {t}";
+}
+
+* {
+  transparency: "real";
+/* background-color: transparent; */
+ background-color: #263238;
+  window-border: #263238;
+  foreground: #B0BEC5;
+  selected-normal-background: #192227;
+  spacing: 5;
+  text:       #B0BEC5;
+  text-alt:   #C3E88D;
+  font: "Fira Code Retina";
+  text-color: @text;
+}
+
+window {
+        background-color: rgba(0, 0, 0, 60%);
+	width: 100%;
+	height: 100%;
+	fullscreen: false;
+	position: center;
+	anchor: center;
+	font: "Fira Code Retina";
+}
+
+mainbox {
+	margin: 30% 30%;
+	children: [ inputbar, message, listview, wrapper-prompt ];
+}
+
+inputbar {
+	margin: 40 40 40 40;
+	font: "Fira Code Retina 15";
+	children: [ icon-search, entry, case-indicator];
+}
+
+icon-search {
+	expand: false;
+	size: 25;
+	filename: "edit-find-symbolic";
+}
+
+entry {
+	expand: true;
+	font: inherit;
+	margin: 20 20;
+}
+
+case-indicator {
+	font: inherit;
+}
+
+message {
+	text-color: @foreground;
+}
+
+listview {
+	expand: true;
+	layout: vertical;
+	columns: 3;
+	lines: 4;
+	cycle: true;
+	spacing: 0.3em;
+	scrollbar: true;
+}
+
+/* Elements */
+element {
+	orientation: vertical;
+	padding: 16;
+}
+
+element-icon {
+	size: 64;
+}
+
+element-text {
+	expand: true;
+	horizontal-align: 0.5;
+}
+
+element selected {
+	background-color: @background;
+	border: 2px;
+	border-radius: 0em;
+}
+
+/* Element normal */
+element normal.normal, element alternate.normal {
+	background-color: @background;
+	text-color: @foreground;
+}
+element selected.normal {
+	border-color: @foreground;
+	text-color: @foreground;
+}
+
+/* Element active */
+element normal.active, element alternate.active {
+	text-color: @secondary;
+}
+element selected.active {
+	border-color: @secondary;
+	text-color: @secondary;
+}
+
+/* Element urgent */
+element normal.urgent, element alternate.urgent {
+	text-color: @urgency;
+}
+element selected.urgent {
+	border-color: @urgency;
+	text-color: @urgency;
+}
+
+wrapper-prompt {
+	expand: false;
+	orientation: horizontal;
+	children: [ dummy, mode-switcher ];
+}
+
+dummy {
+	expand: true;
+}
+
+mode-switcher {
+	expand: false;
+}
+
+button {
+	width: 6em;
+	padding: 0.5em 0.5em;
+	margin: 0.5em 0.5em;
+}
+
+button selected {
+	border: 5px 0 1px 5px;
+	border-color: @primary;
+}
+
+prompt {
+	highlight: italic;
+}
