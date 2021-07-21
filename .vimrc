@@ -241,7 +241,7 @@ function! CheckPyFile()
 				normal!ggO# -*- coding: utf-8 -*
 				normal!o"""
 				call append(2, s:file)
-				normal!o> AUTEUR:         P. GAUTHIER ( CEA TEAM )
+				normal!o> AUTEUR:         P. GAUTHIER ( SIMS TEAM )
 				let created = "> CREATED         " . expand(strftime('%y/%m/%d %T'))
 				call append(5, created)
 				" let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
@@ -331,6 +331,9 @@ map Q <Nop>                                        " disable entring in ex mode
 noremap j gj
 noremap k gk
 noremap <space> y
+noremap <C-t> :tabclose<CR>
+noremap <A-t> :tabnew%<CR>
+noremap <C-f> :find 
 
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
 nnoremap <silent> "<space> "+yy                    " copy line into clipboard
@@ -465,6 +468,8 @@ call plug#begin(g:plug_install_files)
 if has('nvim')
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
         Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
+        " ------ wait PR mergerd to solve issue on preview windows size
+        " Plug 'jasonrhansen/lspsaga.nvim', {'branch': 'finder-preview-fixes'}  " light-weight lsp plugin based on neovim built-in lsp 
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
         Plug 'hrsh7th/nvim-compe'                              " completion plugin
@@ -479,17 +484,22 @@ if has('nvim')
         Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
         Plug 'sindrets/diffview.nvim'                          " diffview
+        Plug 'ThePrimeagen/git-worktree.nvim'                  " use git-worktree
 
-        " Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
+        Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
+        Plug 'nvim-lua/popup.nvim'                             " to install telescope
+        Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists
         " Plug 'pwntester/octo.nvim'                             " neovim github plugin
-        " Plug 'nvim-lua/popup.nvim'                             " to install telescope
-        " Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
         " Plug 'nvim-lua/completion-nvim'                        " completion plugin
         " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
         " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
         " Plug 'Shougo/denite.nvim'                              " file , buffers manager
         " Plug 'ncm2/float-preview.nvim/'
+
+        " Plug 'vijaymarupudi/nvim-fzf'                          " fzf
+        " Plug 'ibhagwan/fzf-lua'
+
 else
         Plug 'preservim/nerdtree'                              " file explorer
         " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -513,9 +523,10 @@ endif
 " Plug 'junegunn/loclisteasy-align'
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/vim-peekaboo'
 
 " --------------------------------------------------------------------------- "
-" ---------------------- tmux ------------------------------------- "
+" ---------------------- tmux ----------------------------------------------- "
 " --------------------------------------------------------------------------- "
 Plug 'roxma/vim-tmux-clipboard'                         " share register with tmux
 
@@ -566,13 +577,13 @@ Plug 'rbong/vim-flog'                                   " Commit viewer
 " --------------------------------------------------------------
 " ---------------------- buffers -------------------------------
 " --------------------------------------------------------------
-Plug 'jeetsukumaran/vim-buffergator'                   " buffer list
+" Plug 'jeetsukumaran/vim-buffergator'                   " buffer list
 
 " --------------------------------------------------------------
 "- ---------------------- Python -------------------------------
 " --------------------------------------------------------------
 Plug 'mgedmin/python_open_module.vim'                  " Python standard library source code
-Plug 'kkoomen/vim-doge'                                " Docstring generator
+Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " Plug 'jmcantrell/vim-virtualenv'                       " Tool for python venv
 " Plug 'westurner/venv.vim'
 " Plug 'tell-k/vim-autopep8'                           " autoformat python
@@ -798,8 +809,17 @@ let g:grepper_quickfix=1          " USe location list
 let g:grepper_open=1
 let g:grepper_switch=1              " Go into the location list after a search
 let g:grepper_side=1                " Open a new window and show matches with surrounding contextu
-nmap gq  <plug>(GrepperOperator)
-xmap gq  <plug>(GrepperOperator)
+let g:grepper_dir="repo"
+let g:grepper_side=1
+let g:grepper_tools=['ag']
+nmap gn  <plug>(GrepperOperator)
+xmap gn  <plug>(GrepperOperator)
+
+" --------------------------------------------------------------------------- "
+"  peekaboo 
+" --------------------------------------------------------------------------- "
+" let g:peekaboo_window="bel bo 10new"
+" let g:peekaboo_compact=1
 
 " --------------------------------------------------------------
 " echo doc
@@ -809,8 +829,8 @@ let g:echodoc#enable_at_startup=1
 " --------------------------------------------------------------
 " -------------------- buffergator ------------------------------------------ "
 " --------------------------------------------------------------
-let g:buffergator_viewport_split_policy='B'
-let g:buffergator_autoexpand_on_split = 0
+" let g:buffergator_viewport_split_policy='B'
+" let g:buffergator_autoexpand_on_split = 0
 
 " --------------------------------------------------------------
 " ------------------------- Indent  ----------------------------------------- "
@@ -834,7 +854,7 @@ let g:indent_guides_exclude_filetypes = ['help', 'startify']
 " doc
 " --------------------------------------------------------------
 let g:doge_doc_standard_python = 'sphinx'
-let g:doge_enable_mappings = 0
+" let g:doge_enable_mappings = 0
 let g:doge_mapping = '<Leader>do'
 
 "
@@ -943,11 +963,11 @@ if has('nvim')
 	" LUA TREE
 	" --------------------------------------------------------------
 	" let g:nvim_tree_side = 'right' "left by default
-	" let g:nvim_tree_width = 40 "30 by default
+	let g:nvim_tree_width = 50 "30 by default
 	let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache'] "empty by default
 	" let g:nvim_tree_gitignore = 1 "0 by default
-	" let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
-	" let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
+	let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
+	let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
 	let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
 	" let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
 	" let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
@@ -1232,30 +1252,29 @@ let $FZF_DEFAULT_OPTS='
     \ --color=info:5,prompt:5,pointer:12,marker:1,spinner:1,header:-1
     \ --layout=reverse  --margin=1,4'
 
-function! CreateCenteredFloatingWindow()
-    let width = min([&columns - 4, max([80, &columns - 20])])
-    let height = min([&lines - 4, max([20, &lines - 10])])
-    let top = ((&lines - height) / 2) - 1
-    let left = (&columns - width) / 2
-    let opts = {'relative': 'editor', 'row': top, 'col': left,
-			 \ 'width': width, 'height': height, 'style': 'minimal'}
-    let top = "┏" . repeat("━", width - 2) . "┓"
-    let mid = "┃" . repeat(" ", width - 2) . "┃"
-    let bot = "┗" . repeat("━", width - 2) . "┛"
-    let lines = [top] + repeat([mid], height - 2) + [bot]
-    let s:buf = nvim_create_buf(v:false, v:true)
-    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
-    call nvim_open_win(s:buf, v:true, opts)
-    set winhl=Normal:Floating
-    let opts.row += 1
-    let opts.height -= 2
-    let opts.col += 2
-    let opts.width -= 4
-    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    au BufWipeout <buffer> exe 'bw '.s:buf
-endfunction
-
-let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+" function! CreateCenteredFloatingWindow()
+"     let width = min([&columns - 4, max([80, &columns - 20])])
+"     let height = min([&lines - 4, max([20, &lines - 10])])
+"     let top = ((&lines - height) / 2) - 1
+"     let left = (&columns - width) / 2
+"     let opts = {'relative': 'editor', 'row': top, 'col': left,
+" 			 \ 'width': width, 'height': height, 'style': 'minimal'}
+"     let top = "┏" . repeat("━", width - 2) . "┓"
+"     let mid = "┃" . repeat(" ", width - 2) . "┃"
+"     let bot = "┗" . repeat("━", width - 2) . "┛"
+"     let lines = [top] + repeat([mid], height - 2) + [bot]
+"     let s:buf = nvim_create_buf(v:false, v:true)
+"     call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+"     call nvim_open_win(s:buf, v:true, opts)
+"     set winhl=Normal:Floating
+"     let opts.row += 1
+"     let opts.height -= 2
+"     let opts.col += 2
+"     let opts.width -= 4
+"     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+"     au BufWipeout <buffer> exe 'bw '.s:buf
+" endfunction
+" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -1316,15 +1335,20 @@ let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 endif
 
 " --------------------------------------------------------------------------
+" -- Grepper
+" -- -----------------------------------------------------------------------
+nnoremap <A-g> :Grepper<CR>
+
+" --------------------------------------------------------------------------
 " -- Telescope
 " -- -----------------------------------------------------------------------
  if has('nvim')
 	" Find files using Telescope command-line sugar.
-	" nnoremap <leader>t :Telescope <CR>
-	" nnoremap <leader>ff <cmd>Telescope find_files<cr>
-	" nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-	" nnoremap <leader>fb <cmd>Telescope buffers<cr>
-	" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+	nnoremap <leader>t :Telescope <CR>
+	nnoremap <leader>ff <cmd>Telescope find_files<cr>
+	nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+	nnoremap <leader>fb <cmd>Telescope buffers<cr>
+	nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 endif
 
 " --------------------------------------------------------------------------
@@ -1354,7 +1378,7 @@ if has('nvim')
 	" -- LUA TREE
 	" -- -----------------------------------------------------------------------
 	nnoremap <C-n> :NvimTreeToggle<CR>
-	nnoremap <leader>t :NvimTreeRefresh<CR>
+	" nnoremap <leader>t :NvimTreeRefresh<CR>
 	nnoremap <leader>n :NvimTreeFindFile<CR>
 else
 	" -------------------------------------------------------------------------- "
@@ -1398,18 +1422,18 @@ endif
 " -------------------------------------------------------------
 "  vim sneak
 "  ------------------------------------------------------------
-nmap x <Plug>Sneak_s
-nmap X <Plug>Sneak_S
+nmap f <Plug>Sneak_s
+nmap F <Plug>Sneak_S
 " visual-mode
-xmap x <Plug>Sneak_s
-xmap X <Plug>Sneak_S
+xmap f <Plug>Sneak_s
+xmap F <Plug>Sneak_S
 " operator-pending-mode
-omap x <Plug>Sneak_s
-omap X <Plug>Sneak_S
+omap f <Plug>Sneak_s
+omap F <Plug>Sneak_S
 let g:sneak#label = 1
 
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
+map x <Plug>Sneak_f
+map X <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 " -------------------------------------------------------------
@@ -1440,7 +1464,7 @@ nnoremap <M-'> :WipeReg<cr>
 nnoremap <A-d> :DogeGenerate<cr>
 
 " -------------------- buffergator ----------------------------------------- "
-map <M-b> :BuffergatorToggle<CR>
+" map <M-b> :BuffergatorToggle<CR>
  
 " -------------------------------------------------------------------------- "
 " smoothie
@@ -1582,18 +1606,19 @@ xmap (j <Plug>SendDownV
 " -------------------------------------------------------------------------- "
 " nnoremap <Leader> <C-w>
 " let g:fzf_action = {
-" 	\ 'ctrl-t': 'tab split',
-" 	\ 'ctrl-s': 'split',
-" 	\ 'ctrl-v': 'vsplit' }
-" nnoremap mr :Rg<CR>
-" nnoremap mt :Tags<CR>
+" 	\ 'C-t': 'tab split',
+" 	\ 'C-s': 'split',
+" 	\ 'C-v': 'vsplit' }
+nnoremap <leader>r :Rg<CR>
+" nnoremap <leader>t :Tags<CR>
 " nnoremap mm :Marks<CR>
-" nnoremap <C-n> :BLines<CR>
+nnoremap <leader>m :BLines<CR>
 " nnoremap <C-o> :FzfPreviewProjectFiles<CR>
-" nmap <C-D> :Files<CR>
-" nmap <C-b> :Buffers<CR>
+nmap <leader>f :Files<CR>
+nmap <leader>b :Buffers<CR>
 " nmap <Leader>: :History:<CR>
 " nmap <Leader>gm :Maps<CR>
+
 
 " -------------------------------------------------------------------------- "
 " coc

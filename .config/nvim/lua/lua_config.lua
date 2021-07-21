@@ -24,11 +24,11 @@ require'diffview'.setup {
       ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
     },
     file_panel = {
-      ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
-      ["<down>"]        = cb("next_entry"),
-      ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
-      ["<up>"]          = cb("prev_entry"),
-      ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
+      -- ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
+      -- ["<down>"]        = cb("next_entry"),
+      -- ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
+      -- ["<up>"]          = cb("prev_entry"),
+      -- ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
       ["o"]             = cb("select_entry"),
       ["<2-LeftMouse>"] = cb("select_entry"),
       ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
@@ -45,7 +45,9 @@ require'diffview'.setup {
 -- -------------------------------------------------------------------------- #
 -- ----------------- octo --------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
+
 -- require("plenary").setup()
+
 -- require"octo".setup {}
 -- require("octo").setup({
   -- date_format = "%Y %b %d %I:%M %p %Z";    -- date format
@@ -186,7 +188,7 @@ function lspStatus()
       local info_count = vim.lsp.diagnostic.get_count(0, 'Information') +  vim.lsp.diagnostic.get_count(0, 'Hint') 
       return ': ' .. error_count .. ': ' .. warning_count .. ': ' .. info_count
   else
-      return ''
+      return ': 0'
   end
 end
 
@@ -206,11 +208,7 @@ require'lualine'.setup {
 				color_info = "#0db9d7",
 			}
 		},
-		lualine_x = {
-			'encoding',
-			'fileformat',
-			'filetype'
-		},
+		lualine_x = {},
 		lualine_y = {'progress'},
 		lualine_z = {'location'}
 	}
@@ -219,54 +217,50 @@ require'lualine'.setup {
 ---------------------------------------------------------------------------------
 ---- TELESCOPE
 ---- ----------------------------------------------------------------------------
---require('telescope').setup{
---  -- defaults = {
---    -- vimgrep_arguments = {
---    --   'rg',
---    --   '--color=never',
---    --   '--no-heading',
---    --   '--with-filename',
---    --   '--line-number',
---    --   '--column',
---    --   '--smart-case'
---    -- },
---    -- prompt_position = "bottom",
---    -- prompt_prefix = "> ",
---    -- selection_caret = "> ",
---    -- entry_prefix = "  ",
---    -- initial_mode = "insert",
---    -- selection_strategy = "reset",
---    -- sorting_strategy = "descending",
---    -- layout_strategy = "horizontal",
---    -- layout_defaults = {
---    --   horizontal = {
---    --     mirror = false,
---    --   },
---    --   vertical = {
---    --     mirror = false,
---    --   },
---    -- },
---    -- file_sorter =  require'telescope.sorters'.get_fuzzy_file,
---    -- file_ignore_patterns = {},
---    -- generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
---    -- shorten_path = true,
---    -- winblend = 0,
---    -- width = 0.75,
---    -- preview_cutoff = 120,
---    -- results_height = 1,
---    -- results_width = 0.8,
---    -- border = {},
---    -- borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
---    -- color_devicons = true,
---    -- use_less = true,
---    -- set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
---    -- file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
---    -- grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
---    -- qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
-    -- -- Developer configurations: Not meant for general override
-    -- buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
-  -- }
--- }
+require('telescope').setup{
+  defaults = {
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case'
+    },
+    -- prompt_position = "bottom",
+    prompt_prefix = "> ",
+    selection_caret = "> ",
+    entry_prefix = "  ",
+    initial_mode = "insert",
+    selection_strategy = "reset",
+    sorting_strategy = "descending",
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {mirror = true, },
+      vertical = {mirror = false, }
+    },
+    file_sorter = require'telescope.sorters'.get_fuzzy_file,
+    file_ignore_patterns = {},
+    generic_sorter = require'telescope.sorters'.get_generic_fuzzy_sorter,
+    -- shorten_path = true,
+    winblend = 0,
+    -- width = 0.75,
+    -- preview_cutoff = 120,
+    -- results_height = 1,
+    -- results_width = 0.8,
+    border = {},
+    borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+    color_devicons = true,
+    use_less = false,
+    set_env = { ['COLORTERM'] = 'truecolor' },
+    -- default = nil,
+    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
+    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+    -- Developer configurations: Not meant for general overridebuffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
+  }
+}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp --------------------------------------------------- "
@@ -685,38 +679,42 @@ require('colorizer').setup()
 -------------------------------------------------------------------------------
 -- LUA TREE
 -- ----------------------------------------------------------------------------
-local tree_cb = require('nvim-tree.config').nvim_tree_callback
-vim.g.nvim_tree_bindings = {
-	["<CR>"] = ".YourVimFunction()<cr>",
-	["x"] = ":lua require'some_module'.some_function()<cr>",
-	["<CR>"]           = tree_cb("edit"),
-	["o"]              = tree_cb("edit"),
-	["<2-LeftMouse>"]  = tree_cb("edit"),
-	["<2-RightMouse>"] = tree_cb("cd"),
-	["]"]          = tree_cb("cd"),
-	["v"]          = tree_cb("vsplit"),
-	["x"]          = tree_cb("split"),
-	["t"]          = tree_cb("tabnew"),
-	["<"]              = tree_cb("prev_sibling"),
-	[">"]              = tree_cb("next_sibling"),
-	["u"]           = tree_cb("close_node"),
-	["<S-CR>"]         = tree_cb("close_node"),
-	["<Tab>"]          = tree_cb("preview"),
-	["I"]              = tree_cb("toggle_ignored"),
-	["H"]              = tree_cb("toggle_dotfiles"),
-	["R"]              = tree_cb("refresh"),
-	["a"]              = tree_cb("create"),
-	["d"]              = tree_cb("remove"),
-	["r"]              = tree_cb("rename"),
-	["<C-r>"]          = tree_cb("full_rename"),
-	["x"]              = tree_cb("cut"),
-	["c"]              = tree_cb("copy"),
-	["p"]              = tree_cb("paste"),
-	["[c"]             = tree_cb("prev_git_item"),
-	["]c"]             = tree_cb("next_git_item"),
-	["-"]              = tree_cb("dir_up"),
-	["q"]              = tree_cb("close"),
-}
+local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+  -- default mappings
+  vim.g.nvim_tree_bindings = {
+    { key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("edit") },
+    { key = {"<2-RightMouse>", "<C-]>"},    cb = tree_cb("cd") },
+    { key = "v",                        cb = tree_cb("vsplit") },
+    { key = "s",                        cb = tree_cb("split") },
+    { key = "t",                        cb = tree_cb("tabnew") },
+    { key = "<",                            cb = tree_cb("prev_sibling") },
+    { key = ">",                            cb = tree_cb("next_sibling") },
+    { key = "P",                            cb = tree_cb("parent_node") },
+    { key = "<BS>",                         cb = tree_cb("close_node") },
+    { key = "<S-CR>",                       cb = tree_cb("close_node") },
+    { key = "<Tab>",                        cb = tree_cb("preview") },
+    { key = "K",                            cb = tree_cb("first_sibling") },
+    { key = "J",                            cb = tree_cb("last_sibling") },
+    { key = "I",                            cb = tree_cb("toggle_ignored") },
+    { key = "H",                            cb = tree_cb("toggle_dotfiles") },
+    { key = "R",                            cb = tree_cb("refresh") },
+    { key = "a",                            cb = tree_cb("create") },
+    { key = "d",                            cb = tree_cb("remove") },
+    { key = "r",                            cb = tree_cb("rename") },
+    { key = "<C-r>",                        cb = tree_cb("full_rename") },
+    { key = "x",                            cb = tree_cb("cut") },
+    { key = "c",                            cb = tree_cb("copy") },
+    { key = "p",                            cb = tree_cb("paste") },
+    { key = "y",                            cb = tree_cb("copy_name") },
+    { key = "Y",                            cb = tree_cb("copy_path") },
+    { key = "gy",                           cb = tree_cb("copy_absolute_path") },
+    { key = "[c",                           cb = tree_cb("prev_git_item") },
+    { key = "]c",                           cb = tree_cb("next_git_item") },
+    { key = "-",                            cb = tree_cb("dir_up") },
+    { key = "q",                            cb = tree_cb("close") },
+    { key = "g?",                           cb = tree_cb("toggle_help") },
+  }
+
 -- require'nvim-tree.view'.View.width = 50
 
 -- ----------------- theme -------------------------------------------------- #
@@ -730,3 +728,10 @@ vim.g.material_borders=true
 vim.g.material_disable_background = true
 require('material').set()
 
+-- ----------------- git-worktree ------------------------------------------- #
+require("git-worktree").setup({
+    -- update_on_change = <boolean> -- default: true,
+    -- update_on_change_command = <str> -- default: "e .",
+    -- clearjumps_on_change = <boolean> -- default: true,
+    autopush = false
+})

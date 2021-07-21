@@ -132,8 +132,10 @@ alias ex="exec xset r rate 120 150"
 alias vpn="sudo openfortivpn"
 # alias back="hsetroot -solid '#000000'"
 alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
+alias pyradio="pyradio --stations .config/pyradio/stations.csv"
 # alias back="feh --bg-scale ~/Downloads/r5m6y5krgqm51.jpg"
 # alias ssh="kitty +kitten sshk"
+alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-35-181-151-248.eu-west-3.compute.amazonaws.com:git/simulation_framework/simulation_framework/external/commonlab_CEA/results dev/simulation_framework/simulation_framework/external/commonlab_CEA/results"
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 fm6000 -r
