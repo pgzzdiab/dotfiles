@@ -332,7 +332,7 @@ noremap j gj
 noremap k gk
 noremap <space> y
 noremap <C-t> :tabclose<CR>
-noremap <A-t> :tabnew%<CR>
+noremap <leader>t :tabnew%<CR>
 noremap <C-f> :find 
 
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
@@ -488,7 +488,9 @@ if has('nvim')
 
         Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
         Plug 'nvim-lua/popup.nvim'                             " to install telescope
-        Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists
+        Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
+        Plug 'https://github.com/lewis6991/gitsigns.nvim'
+        Plug 'tiagovla/tokyodark.nvim'
         " Plug 'pwntester/octo.nvim'                             " neovim github plugin
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
         " Plug 'nvim-lua/completion-nvim'                        " completion plugin
@@ -1344,7 +1346,7 @@ nnoremap <A-g> :Grepper<CR>
 " -- -----------------------------------------------------------------------
  if has('nvim')
 	" Find files using Telescope command-line sugar.
-	nnoremap <leader>t :Telescope <CR>
+	" nnoremap <leader>t :Telescope <CR>
 	nnoremap <leader>ff <cmd>Telescope find_files<cr>
 	nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 	nnoremap <leader>fb <cmd>Telescope buffers<cr>
@@ -1458,7 +1460,7 @@ else
 endif
 
 " --------- Wipe Grep ------------------------------------------------------- #
-nnoremap <M-'> :WipeReg<cr>
+" nnoremap <M-'> :WipeReg<cr>
 
 " ------------------- Doge -------------------------------------------------- #
 nnoremap <A-d> :DogeGenerate<cr>
@@ -1520,7 +1522,7 @@ nmap <leader>sA <Plug>SidewaysArgumentAppendLast
 " -------------------------------------------------------------------------- "
 " wrap
 " -------------------------------------------------------------------------- "
-nnoremap <silent> <M-;> :ArgWrap<CR><Esc>
+nnoremap <silent> <M-'> :ArgWrap<CR><Esc>
 
 " -------------------------------------------------------------------------- "
 " vimtweak
@@ -1615,6 +1617,7 @@ nnoremap <leader>r :Rg<CR>
 nnoremap <leader>m :BLines<CR>
 " nnoremap <C-o> :FzfPreviewProjectFiles<CR>
 nmap <leader>f :Files<CR>
+nmap <leader>fi :find 
 nmap <leader>b :Buffers<CR>
 " nmap <Leader>: :History:<CR>
 " nmap <Leader>gm :Maps<CR>
@@ -1796,11 +1799,13 @@ command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImpo
 " ------------------------------------------------------------------------- "
 colorscheme material
 let $BAT_THEME='material'
+
 if has('nvim')
 else
 		let g:material_theme_style = 'default'
 endif
 
+" colorscheme tokyodark
 
 set background=dark
 

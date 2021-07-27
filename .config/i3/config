@@ -16,9 +16,6 @@ set $mod Mod4
 font pango:Hack 8
 
 
-# keyboard config
-exec xset r rate 120 50
-
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
@@ -27,7 +24,7 @@ exec xset r rate 120 50
 # they are included here as an example. Modify as you see fit.
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 6
+default_border pixel 4
 default_floating_border normal
 
 
@@ -41,6 +38,8 @@ default_floating_border normal
 # take a screenshot using flameshot
 bindsym $mod+z exec "flameshot screen --clipboard"
 bindsym $mod+a exec --no-startup-id flameshot gui
+
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 # # Screenshots
 # bindsym --release Print exec mkdir -p ~/Pictures/screenshots && \
@@ -97,8 +96,7 @@ floating_modifier $mod
 # start application
 bindsym $mod+Return exec kitty
 bindsym $mod+g exec google-chrome
-bindsym $mod+s exec slack
-bindsym $mod+o exec nautilus
+bindsym $mod+0  exec nautilus
 
 # kill focused window
 bindsym $mod+c kill
@@ -177,6 +175,10 @@ bindsym $mod+t workspace 5
 bindsym $mod+y workspace 6
 bindsym $mod+u workspace 7
 bindsym $mod+i workspace 8
+bindsym $mod+o workspace 9
+bindsym $mod+p workspace 10
+bindsym $mod+bracketleft workspace 11
+bindsym $mod+bracketright workspace 12
 
 # switch to next or previous workspace
 bindsym $mod+n workspace prev
@@ -248,28 +250,22 @@ mode "resize" {
 
 bindsym $mod+b mode "resize"
 
+bindsym $mod+9 fullscreen disable; resize set 2532 160; floating enable; move window to position 14 20
+
 # choose working screen 
-bindsym $mod+p exec --no-startup-id ~/.config/i3/display.sh  
+bindsym $mod+s exec --no-startup-id ~/.config/i3/display.sh  
 
 # gaps
 gaps inner 25
 gaps outer -10
 
 # wallpaper
-# exec --no-startup-id feh --bg-scale ~/Images/wallpaper/vangogh1.jpg
-exec --no-startup-id hsetroot -solid '#000000'
-
-show_marks yes
-
-#################
-### Autostart ###
-#################
-
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-exec_always --no-startup-id picom -b
-exec --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
+# exec --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg
+exec --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/pawel-czerwinski-LVnXVYRpwwg-unsplash.jpg"
 #
-# exec --no-startup-id polybar --config=~/.config/i3/polybar.conf eDP1
+# keyboard config
+exec xset r rate 120 50
+
 # exec --no-startup-id dcnnt start
 # exec --no-startup-id discord
 # exec --no-startup-id slack

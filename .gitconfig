@@ -1,0 +1,10 @@
+[user]
+	email = pierre.gauthier@diabeloop.fr
+	name = pierre
+[credential]
+	helper = cache --timeout 3600
+[merge]
+    tool = fugitive
+[mergetool "fugitive"]
+    cmd = nvim -f -c "Gvdiffsplit!" "$MERGED"
+
