@@ -181,35 +181,24 @@ custom_gruvbox.normal.c.bg = '#263238'
 custom_gruvbox.normal.b.bg = '#263238'
 custom_gruvbox.normal.c.bg = '#263238'
 
-function lspStatus()
-  if not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
-      local error_count = vim.lsp.diagnostic.get_count(0, 'Error')
-      local warning_count = vim.lsp.diagnostic.get_count(0, 'Warning')
-      local info_count = vim.lsp.diagnostic.get_count(0, 'Information') +  vim.lsp.diagnostic.get_count(0, 'Hint') 
-      return ': ' .. error_count .. ': ' .. warning_count .. ': ' .. info_count
-  else
-      return ': 0'
-  end
-end
+-- function lspStatus()
+--   if not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+--       local error_count = vim.lsp.diagnostic.get_count(0, 'Error')
+--       local warning_count = vim.lsp.diagnostic.get_count(0, 'Warning')
+--       local info_count = vim.lsp.diagnostic.get_count(0, 'Information') +  vim.lsp.diagnostic.get_count(0, 'Hint') 
+--       return ': ' .. error_count .. ': ' .. warning_count .. ': ' .. info_count
+--   else
+--       return ': 0'
+--   end
+-- end
 
 require'lualine'.setup {
 	options = {theme=custom_gruvbox},
 	sections = {
 		lualine_a = {'mode'},
-		lualine_b = {'branch'},
-		lualine_c = {
-			'filename',
-			{
-				'diagnostics',
-				sources = {'nvim_lsp'},
-				symbols = {error = ' ', warn = ' ', info = ' '},
-				color_error = "#db4b4b",
-				color_warn = "#e0af68",
-				color_info = "#0db9d7",
-			}
-		},
+		lualine_b = {'filename'},
 		lualine_x = {},
-		lualine_y = {'progress'},
+		lualine_y = {'branch'},
 		lualine_z = {'location'}
 	}
 }
@@ -690,7 +679,7 @@ local tree_cb = require'nvim-tree.config'.nvim_tree_callback
     { key = "<",                            cb = tree_cb("prev_sibling") },
     { key = ">",                            cb = tree_cb("next_sibling") },
     { key = "P",                            cb = tree_cb("parent_node") },
-    { key = "<BS>",                         cb = tree_cb("close_node") },
+    { key = "C",                         cb = tree_cb("close_node") },
     { key = "<S-CR>",                       cb = tree_cb("close_node") },
     { key = "<Tab>",                        cb = tree_cb("preview") },
     { key = "K",                            cb = tree_cb("first_sibling") },
@@ -714,6 +703,27 @@ local tree_cb = require'nvim-tree.config'.nvim_tree_callback
     { key = "q",                            cb = tree_cb("close") },
     { key = "g?",                           cb = tree_cb("toggle_help") },
   }
+  local circle = "○"
+
+  -- -- DevIcons
+  -- local devIcons = require("nvim-web-devicons")
+  -- local override_icons = devIcons.get_icons()
+  -- for _, icon in pairs(override_icons) do icon.icon = circle end
+  -- devIcons.setup({override = override_icons, default = true})
+
+  -- -- NvimTree
+  -- vim.g.nvim_tree_icons = {
+  --   default = circle,
+  --   symlink = circle,
+  --   folder = {
+  --     default = circle,
+  --     open = circle,
+  --     empty = circle,
+  --     empty_open = circle,
+  --     symlink = circle,
+  --     symlink_open = circle
+  --   }
+  -- }
 
 -- require'nvim-tree.view'.View.width = 50
 

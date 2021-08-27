@@ -1,12 +1,14 @@
-#/bin/sh
+#!/bin/sh
 
 # glitchy lock script, source:
 # https://github.com/x-zvf/dotfiles/blob/master/scripts/scrlock.sh
 
+lockimage="~/Pictures/castor_junior.jpeg"
 pngfile="/tmp/sclock.png"
 bmpfile="/tmp/sclock.bmp"
 glitchedfile="/tmp/sclock_g.bmp"
 python_glitchedfile="/tmp/sclock_g.png"
+python_matte_glitchedfile="/tmp/sclock_g.png"
 
 scrot -z $pngfile
 
@@ -14,30 +16,39 @@ scrot -z $pngfile
 # magick convert -scale 20% -scale 500% $pngfile $bmpfile
 convert -scale 20% -scale 500% $pngfile $bmpfile
 
-# Glitch it with sox FROM: https://maryknize.com/blog/glitch_art_with_sox_imagemagick_and_vim/
-# sox -t ul -c 1 -r 48k $bmpfile -t ul $glitchedfile trim 0 100s : echo 0.4 0.8 10 0.9
+# glitch_this $pngfile -c -s 4 -sd 600 -f -o $python_glitchedfile
 
-# Rotate it by 90 degrees
-# magick convert -rotate 90 $glitchedfile $bmpfile
+convert $pngfile -blur 0x8 $python_glitchedfile
 
-#Glitch it again and rotate it back
-# sox -t ul -c 1 -r 48k $bmpfile -t ul $glitchedfile trim 0 90s : echo 0.9 0.9 15 1
-# magick convert -rotate -90 $glitchedfile $glitchedfile
+convert -gravity center -font "terminus" \
+     -pointsize 50 -draw "text 0,0 '<Type password to unlock>'" -gravity South -channel RGBA -fill '#ffffff' $python_glitchedfile $pngfile
 
-# use python packge glitch_this
-glitch_this $pngfile -c -s 4 -sd 600 -f -o $python_glitchedfile
+ # -u disables circle indicator when entering characters
+ # -e doesn't try to authenticate when no character is entered
+ i3lock -e -i $pngfile
+ rm $pngfile $bmpfile $pytHon_glitchedfile
 
-# Add lock icon, pixelate and convert back to png
-# magick convert -gravity center -font "Font-Awesome-5-Free-Solid" \
-#     -pointsize 200 -draw "text -640,0 ''" -channel RGBA -fill '#cecd35' \
-#     $glitchedfile $pngfile
+# ---------------------------------------------------------------------------------
+#!/bin/sh
 
-convert -gravity center -font "Hack" \
-    -pointsize 150 -draw "text 0,0 '~ session locked ~'" -gravity South -channel RGBA -fill '#cecd35'\
-    $python_glitchedfile $pngfile
+# OVERLAY="/home/pierre/Pictures/castor_junior.jpeg"
+# IMAGE="/tmp/lockbg.png"
 
-# -u disables circle indicator when entering characters
-# -e doesn't try to authenticate when no character is entered
-i3lock -e -i $pngfile
-# rm $pngfile $bmpfile $glitchedfile
-rm $pngfile $bmpfile $python_glitchedfile
+# rm "$IMAGE"
+# killall -q "i3lock"
+# while pgrep -x i3lock >/dev/null; do sleep 1; done
+
+# scrot "$IMAGE"
+# convert "$IMAGE" -scale 5% -resize 2000% "$OVERLAY" -font "Hack" \
+#     -pointsize 150 -draw "text 0,0 '~ session locked ~'" \
+#     -gravity center -composite -matte "$IMAGE"
+
+# BLANK='#00000000'
+# CLEAR='#00000000'
+# DEFAULT='#ffffff80'
+# TEXT='#ffffff'
+# WRONG='#ffa69ebb'
+# VERIFYING='#ffd6a5'
+
+# i3lock \
+# --image="$IMAGE" \

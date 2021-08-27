@@ -345,17 +345,12 @@ map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # 
 map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---")
 
 nnoremap sv *``                                    " search current word under cursor
-" map <space> y                                      " <space> is now to copy
-" map ck i\<CR><ESC>                                 " cut linne with an \
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
 nnoremap K i<cr><esc>                              " cut line
-" unmap H
-" unmap L
 :map H ^
 :map L g_
 inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
 nnoremap <M-f> <Esc><Esc>:update<CR>
-" nnoremap c<space> i<space><Esc>                    " insert a space a space
 
 " -------------------- quickfix list ----------------------------- #
 nnoremap <silent> <F5> :call ToggleQuickFix()<cr>"
@@ -478,6 +473,7 @@ if has('nvim')
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
         Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
+        " Plug 'SmiteshP/nvim-gps'                               " status line current function
         Plug 'Pocco81/NoCLC.nvim'                              " remove line number in unfocused pan
         Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
@@ -1154,9 +1150,9 @@ let g:startify_session_before_save = [
 let g:startify_files_number = 2
 let g:webdevicons_enable_startify = 1
 " let g:startify_session_autoload = 1
-let g:startify_change_to_dir = 1
+let g:startify_change_to_dir = 0
 " let g:workspace_session_directory = $HOME . '/.cache/sessions/'
-
+let g:startify_session_autoload = 1
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
 let g:startify_custom_header = [
@@ -1303,7 +1299,7 @@ let $FZF_DEFAULT_OPTS='
 " -- -----------------------------------------------------------------------
  if has('nvim')
 	" -- lsp provider to find the cursor word definition and reference
-	nnoremap <silent> gy <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
+	nnoremap <silent> cd <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
 	" -- or use command LspSagaFinder
 	" nnoremap <silent> gy :lspsaga lsp_finder<CR>
 
@@ -1325,7 +1321,7 @@ let $FZF_DEFAULT_OPTS='
 	nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 
 	" -- preview definition
-	nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
+	nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
 
 	" -- show diagnostic
 	" nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
@@ -1379,7 +1375,7 @@ if has('nvim')
 	" --------------------------------------------------------------------------
 	" -- LUA TREE
 	" -- -----------------------------------------------------------------------
-	nnoremap <C-n> :NvimTreeToggle<CR>
+	nnoremap <A-;> :NvimTreeToggle<CR>
 	" nnoremap <leader>t :NvimTreeRefresh<CR>
 	nnoremap <leader>n :NvimTreeFindFile<CR>
 else
