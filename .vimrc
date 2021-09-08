@@ -125,9 +125,6 @@ set listchars=tab:>-,trail:·,extends:❯,precedes:❮,nbsp:␣,eol:↲
 set list
 set showbreak=↪\ \ \ 
 
-" Don't lose visual selection after shifting
-xnoremap < <gv
-xnoremap > >gv
 "  autoformat options 
 set formatoptions-=o " dont inser comment leader when pressing <o> or <O>
 set formatoptions+=n " recognize number list form formating
@@ -343,7 +340,9 @@ map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # 
 " for print line
 map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---")
 
-nnoremap sv *``                                    " search current word under cursor
+" nnoremap <expr> fs ':%s/'.expand('<cword>').'//gn<CR>``' " search current word under cursor
+nnoremap fs *Nzz
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
 nnoremap K i<cr><esc>                              " cut line
 :map H ^
@@ -352,7 +351,7 @@ inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
 nnoremap <M-f> <Esc><Esc>:update<CR>
 
 " -------------------- quickfix list ----------------------------- #
-nnoremap <silent> <F5> :call ToggleQuickFix()<cr>"
+nnoremap <silent> <F5> :copen<cr>
 nnoremap ]c :cnext<CR>                             " go to next item in quickfix list
 nnoremap [c :cprev<CR>                             " go to previous item in quickfix list
 
@@ -396,7 +395,7 @@ nnoremap <C-w>p :lopen<CR>                  " open loclist
 "
 " ------------------------ search ------------------------------------------- #
 "
-nnoremap <silent> ff :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighting and clear any message already displayed.
+nnoremap <silent> sv :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighting and clear any message already displayed.
 
 "
 " ------------------------ registers ---------------------------------------- #
@@ -419,7 +418,6 @@ nnoremap <silent> <C-Y> :let a='import pdb; pdb.set_trace()'\|put=a<CR>kJi<CR><E
 "
 " split
 "
-noremap <C-w>f :vertical resize 84<CR>
 nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
@@ -461,6 +459,7 @@ Plug 'RRethy/vim-illuminate'
 if has('nvim')
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
         Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
+        " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
         " ------ wait PR mergerd to solve issue on preview windows size
         " Plug 'jasonrhansen/lspsaga.nvim', {'branch': 'finder-preview-fixes'}  " light-weight lsp plugin based on neovim built-in lsp 
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
@@ -471,20 +470,17 @@ if has('nvim')
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
         Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
-        " Plug 'SmiteshP/nvim-gps'                               " status line current function
-        Plug 'Pocco81/NoCLC.nvim'                              " remove line number in unfocused pan
-        Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
+        " Plug 'Pocco81/NoCLC.nvim'                              " remove line number in unfocused pan
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
         Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
         Plug 'sindrets/diffview.nvim'                          " diffview
-        Plug 'ThePrimeagen/git-worktree.nvim'                  " use git-worktree
-
+        " Plug 'ThePrimeagen/git-worktree.nvim'                  " use git-worktree
         Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
         Plug 'nvim-lua/popup.nvim'                             " to install telescope
         Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
         Plug 'https://github.com/lewis6991/gitsigns.nvim'
-        Plug 'tiagovla/tokyodark.nvim'
+        " Plug 'tiagovla/tokyodark.nvim'
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
         " Plug 'nvim-lua/completion-nvim'                        " completion plugin
         " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
@@ -507,7 +503,6 @@ endif
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
 " Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'RRethy/vim-illuminate'                         " highlihgt word under cursor
 " Plug 'mhinz/vim-mix-format'
 " Plug 't9md/vim-textmanip'                            " move blocks of text easy
 " Plug 't9md/vim-choosewin'
@@ -1307,8 +1302,20 @@ let $FZF_DEFAULT_OPTS='
 " -- -----------------------------------------------------------------------
 nnoremap <Down> :lua require"illuminate".next_reference{wrap=true}<cr>
 nnoremap <Up> :lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>
-nnoremap <C-p> :lua require"illuminate".toggle_pause()<cr>
+nnoremap <A-s> :lua require"illuminate".toggle_pause()<cr>
 
+" --------------------------------------------------------------------------
+" -- lsp
+" -- -----------------------------------------------------------------------
+nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> gv <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> ]d <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent> [d <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+" nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
+nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.definition()<cr>
+nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
 
 " --------------------------------------------------------------------------
 " -- Lspsaga
@@ -1320,13 +1327,11 @@ nnoremap <C-p> :lua require"illuminate".toggle_pause()<cr>
 	" nnoremap <silent> gy :lspsaga lsp_finder<CR>
 
 	" -- code action
-	nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
-	vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
+	" nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
+	" vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
 
 	" -- show hover hover
-	nnoremap <silent> gh <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
-	" -- or use command
-	" nnoremap <silent>gh :Lspsaga hover_doc<CR>
+	nnoremap <silent>gh :Lspsaga hover_doc<CR>
 
 	" -- scroll down hover doc or scroll in definition preview
 	" nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
@@ -1334,7 +1339,7 @@ nnoremap <C-p> :lua require"illuminate".toggle_pause()<cr>
 	" nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
 
 	" -- show signature help
-	nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
+	" nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 
 	" -- preview definition
 	nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
@@ -1519,12 +1524,12 @@ map ]= <Plug>(IndentWiseNextEqualIndent)
 " -------------------------------------------------------------------------- "
 " to stay in container
 " https://github.com/jeetsukumaran/vim-argwrap/commit/30edd6ba0a654d22db62359e4bca9d174f1eead5
-nnoremap <Leader>h :SidewaysLeft<cr>
-nnoremap <Leader>l :SidewaysRight<cr>
-nmap <leader>si <Plug>SidewaysArgumentInsertBefore
-nmap <leader>sa <Plug>SidewaysArgumentAppendAfter
-nmap <leader>sI <Plug>SidewaysArgumentInsertFirst
-nmap <leader>sA <Plug>SidewaysArgumentAppendLast
+" nnoremap <Leader>h :SidewaysLeft<cr>
+" nnoremap <Leader>l :SidewaysRight<cr>
+" nmap <leader>si <Plug>SidewaysArgumentInsertBefore
+" nmap <leader>sa <Plug>SidewaysArgumentAppendAfter
+" nmap <leader>sI <Plug>SidewaysArgumentInsertFirst
+" nmap <leader>sA <Plug>SidewaysArgumentAppendLast
 
 " -------------------------------------------------------------------------- "
 " anzu
@@ -1565,9 +1570,9 @@ nmap s <plug>(SubversiveSubstitute)
 nmap ss <plug>(SubversiveSubstituteLine)
 nmap S <plug>(SubversiveSubstituteToEndOfLine)
 " Substitute Over Range Motion
-nmap <leader>s <plug>(SubversiveSubstituteRange)
-xmap <leader>s <plug>(SubversiveSubstituteRange)
-nmap <leader>s <plug>(SubversiveSubstituteWordRange)
+" nmap <leader>s <plug>(SubversiveSubstituteRange)
+" xmap <leader>s <plug>(SubversiveSubstituteRange)
+" nmap <leader>s <plug>(SubversiveSubstituteWordRange)
 " need to confirm substitution
 nmap <leader>cs <plug>(SubversiveSubstituteRangeConfirm)
 xmap <leader>cs <plug>(SubversiveSubstituteRangeConfirm)

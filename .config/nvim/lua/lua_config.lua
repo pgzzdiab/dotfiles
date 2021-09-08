@@ -52,27 +52,6 @@ custom_gruvbox.normal.c.bg = '#263238'
 custom_gruvbox.normal.b.bg = '#263238'
 custom_gruvbox.normal.c.bg = '#263238'
 
--- function lspStatus()
---   if not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
---       local error_count = vim.lsp.diagnostic.get_count(0, 'Error')
---       local warning_count = vim.lsp.diagnostic.get_count(0, 'Warning')
---       local info_count = vim.lsp.diagnostic.get_count(0, 'Information') +  vim.lsp.diagnostic.get_count(0, 'Hint') 
---       return ': ' .. error_count .. ': ' .. warning_count .. ': ' .. info_count
---   else
---       return ': 0'
---   end
--- end
-
-require'lualine'.setup {
-	options = {theme=custom_gruvbox},
-	sections = {
-		lualine_a = {'mode'},
-		lualine_b = {'filename'},
-		lualine_x = {},
-		lualine_y = {'branch'},
-		lualine_z = {'location'}
-	}
-}
 
 ---------------------------------------------------------------------------------
 ---- TELESCOPE
@@ -127,59 +106,32 @@ require('telescope').setup{
 -- -------------------------------------------------------------------------- #
 local nvim_lsp=require('lspconfig')
 
--- add linters
--- nvim_lsp.efm.setup {}
+-- local on_attach=function(client, bufnr)
+-- 	-- Enable completion triggered by <c-x><c-o>
+-- 	-- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
--- Use an on_attach function to only map the following keys 
--- after the language server attaches to the current buffer
-local on_attach=function(client, bufnr)
-	-- local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-	-- local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-	-- Enable completion triggered by <c-x><c-o>
-	buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-	-- Mappings.
-	local opts={noremap=true, silent=true }
-	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-	buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-	buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-	buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-	buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-	-- buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-	-- buf_set_keymap('n', 'gh', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-	-- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-	-- buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-	-- buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-	-- buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-	-- buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-	-- buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-	-- buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-	-- buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-
-	-- vim.api.nvim_command("autocmd CursorHold <buffer> lua require'lspsaga.diagnostic'.show_line_diagnostics()")
-	-- vim.api.nvim_command("autocmd CursorMoved <buffer> lua vim.lsp.util.buf_clear_references()")
-
-end
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
--- local servers={ "rust_analyzer", "tsserver" }
--- for _, lsp in ipairs(servers) do
--- 	nvim_lsp[lsp].setup { on_attach=on_attach }
+-- 	-- Mappings.
+-- 	local opts={noremap=true, silent=true }
+-- 	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+-- 	buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+-- 	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+-- 	buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+-- 	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+-- 	buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+-- 	buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+-- 	buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+-- 	-- buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+-- 	-- buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+-- 	-- buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+-- 	-- buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+-- 	-- buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+-- 	-- buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+-- 	-- buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+-- 	-- buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+-- 	-- buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 -- end
 
--- require'lspconfig'.pylsp.setup{on_attach=require'completion'.on_attach}
-require'lspconfig'.pyright.setup{
-  on_attach = function(client)
-      -- [[ other on_attach code ]]
-      require 'illuminate'.on_attach(client)
-    end,
-}
-
-vim.api.nvim_set_keymap('n', '<A-s>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
-vim.api.nvim_set_keymap('n', '<A-a>', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
+nvim_lsp.pyright.setup{}
 
 -- replace the default lsp diagnostic letters with prettier symbols
 vim.fn.sign_define("LspDiagnosticsSignError", {text = "", numhl = "LspDiagnosticsDefaultError"})
@@ -295,6 +247,15 @@ local opts = {
 saga.init_lsp_saga(opts)
 
 -- require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- illuminate -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+-- require'lspconfig'.pyright.setup{
+--   on_attach = function(client)
+--       require 'illuminate'.on_attach(client)
+--     end,
+-- }
 
 -- -------------------------------------------------------------------------- #
 -- LSP color -----------------------------------------------------------------
@@ -622,12 +583,12 @@ require('material').set()
 -- vim.g.tokyodark_color_gamma = "0.9"
 
 -- ----------------- git-worktree ------------------------------------------- #
-require("git-worktree").setup({
-    -- update_on_change = <boolean> -- default: true,
-    -- update_on_change_command = <str> -- default: "e .",
-    -- clearjumps_on_change = <boolean> -- default: true,
-    autopush = false
-})
+-- require("git-worktree").setup({
+--     -- update_on_change = <boolean> -- default: true,
+--     -- update_on_change_command = <str> -- default: "e .",
+--     -- clearjumps_on_change = <boolean> -- default: true,
+--     autopush = false
+-- })
 
 -- ----------------- git-sign ----------------------------------------------- #
 require('gitsigns').setup()
