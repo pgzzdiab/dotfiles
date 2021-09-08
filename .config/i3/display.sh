@@ -31,6 +31,3 @@ case "$chosen" in
     dual) xrandr --output $INTERNAL_OUTPUT --auto --output $EXTERNAL_OUTPUT --auto --right-of $INTERNAL_OUTPUT --primary ;;
 
 esac
-
-# wallpaper
-feh --bg-fill ~/Pictures/druillet4.jpg

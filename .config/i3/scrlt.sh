@@ -23,32 +23,28 @@ convert $pngfile -blur 0x8 $python_glitchedfile
 convert -gravity center -font "terminus" \
      -pointsize 50 -draw "text 0,0 '<Type password to unlock>'" -gravity South -channel RGBA -fill '#ffffff' $python_glitchedfile $pngfile
 
- # -u disables circle indicator when entering characters
- # -e doesn't try to authenticate when no character is entered
- i3lock -e -i $pngfile
- rm $pngfile $bmpfile $pytHon_glitchedfile
+# -u disables circle indicator when entering characters
+# -e doesn't try to authenticate when no character is entered
+i3lock -e --indicator --clock -i $pngfile
 
-# ---------------------------------------------------------------------------------
-#!/bin/sh
+# i3lock --blur $blur \
+# 	   --verifsize=16 \
+# 	   --veriftext="..." \
+# 	   --radius $radius \
+# 	   --ring-width $width \
+# 	   --indicator --clock \
+# 	   --timesize=$timesize \
+# 	   --datesize=$datesize \
+# 	   --timestr="%I:%M" \
+# 	   --datestr="%B %d, %Y" \
+# 	   --linecolor=$blank \
+# 	   --insidecolor=$ic --ringcolor=$rc \
+# 	   --datecolor=$tc --timecolor=$tc \
+# 	   --separatorcolor=$rc --keyhlcolor=${khl#\#} \
+# 	   --bshlcolor=${bshl#\#} \
+# 	   --verifcolor=$tc --wrongcolor=$tc \
+# 	   --ringvercolor=${rvc:-$rc} --ringwrongcolor=$wc \
+# 	   --insidevercolor=$ic --insidewrongcolor=$ic \
 
-# OVERLAY="/home/pierre/Pictures/castor_junior.jpeg"
-# IMAGE="/tmp/lockbg.png"
+rm $pngfile $bmpfile $pytHon_glitchedfile
 
-# rm "$IMAGE"
-# killall -q "i3lock"
-# while pgrep -x i3lock >/dev/null; do sleep 1; done
-
-# scrot "$IMAGE"
-# convert "$IMAGE" -scale 5% -resize 2000% "$OVERLAY" -font "Hack" \
-#     -pointsize 150 -draw "text 0,0 '~ session locked ~'" \
-#     -gravity center -composite -matte "$IMAGE"
-
-# BLANK='#00000000'
-# CLEAR='#00000000'
-# DEFAULT='#ffffff80'
-# TEXT='#ffffff'
-# WRONG='#ffa69ebb'
-# VERIFYING='#ffd6a5'
-
-# i3lock \
-# --image="$IMAGE" \

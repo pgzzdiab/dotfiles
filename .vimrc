@@ -337,7 +337,6 @@ noremap <C-f> :find
 
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
 nnoremap <silent> "<space> "+yy                    " copy line into clipboard
-
 " for comment line
 map co :call FillLine('-', '#')<CR>                " for commenting fill rest of line with --- until char 79
 map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # ---..-- #
@@ -382,10 +381,7 @@ nnoremap qq :x<CR>
 nnoremap c* *``cgn
 nnoremap c# #``cgN
 
-nnoremap <Leader>h :vert terminal<CR>
-
 nnoremap <Leader>l :let &scrolloff=100-&scrolloff<CR>                " make edit line always centered
-" nnoremap <silent><Leader>t :TagbarToggle<CR>
 
 " ---------------------- loclist --------------------------
 nnoremap <silent> <F3> :call LNext(0)<CR>
@@ -393,7 +389,7 @@ nnoremap <silent> <F4> :call LNext(1)<CR>
 nnoremap ]l :lnext<CR>                             " go to next item in location list
 nnoremap [l :lprev<CR>                             " go to next item in location list
 nnoremap <C-w>p :lopen<CR>                  " open loclist
-nnoremap <C-p> :lcl<CR>                     " close loclist
+" nnoremap <C-p> :lcl<CR>                     " close loclist --------------- #
 " nnoremap <M-u> :lla <CR>                    " navigate to last item in list
 
 "
@@ -460,6 +456,8 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " ------------------ Neovim plugins  ---------------------------
 " --------------------------------------------------------------
+" Plug 'dominikduda/vim_current_word'
+Plug 'RRethy/vim-illuminate'
 if has('nvim')
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
         Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
@@ -487,7 +485,6 @@ if has('nvim')
         Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
         Plug 'https://github.com/lewis6991/gitsigns.nvim'
         Plug 'tiagovla/tokyodark.nvim'
-        " Plug 'pwntester/octo.nvim'                             " neovim github plugin
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
         " Plug 'nvim-lua/completion-nvim'                        " completion plugin
         " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
@@ -544,6 +541,7 @@ Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'AndrewRadev/sideways.vim'                         " move func args
 Plug 'flwyd/vim-conjoin'                                " better join lines
+" Plug 'qwertologe/nextval.vim'                           " better ctrl-a
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
@@ -1156,27 +1154,37 @@ let g:startify_session_autoload = 1
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
 let g:startify_custom_header = [
-			\ '                         ▄              ▄                  ',
-			\ '                        ▌▒█           ▄▀▒▌    wow          ',
-			\ '                        ▌▒▒▀        ▄▀▒▒▒▐                 ',
-			\ '                       ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐    much data science  ',
-			\ '                     ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐                 ',
-			\ '                   ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌    much code    ',
-			\ '                  ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌                ',
-			\ '                  ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐   data go brrrrrrrrrrr ',
-			\ '                 ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌               ',
-			\ '                 ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌               ',
-			\ '                 ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐               ',
-			\ '                ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌              ',
-			\ '                ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐               ',
-			\ '                 ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌               ',
-			\ '                 ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐                ',
-			\ '                  ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                ',
-			\ '                    ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                 ',
-			\ '                   ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                   ',
-			\ '                  ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀                      ',
+			\ '                                                                                                                                                                              ',
+			\ '     /\\\\\     /\\\  /\\\\\\\\\\\\\\\       /\\\\\       /\\\        /\\\  /\\\\\\\\\\\  /\\\\            /\\\\                  ',
+			\ '     \/\\\\\\   \/\\\ \/\\\///////////      /\\\///\\\    \/\\\       \/\\\ \/////\\\///  \/\\\\\\        /\\\\\\                 ',
+			\ '      \/\\\/\\\  \/\\\ \/\\\               /\\\/  \///\\\  \//\\\      /\\\      \/\\\     \/\\\//\\\    /\\\//\\\                ',
+			\ '       \/\\\//\\\ \/\\\ \/\\\\\\\\\\\      /\\\      \//\\\  \//\\\    /\\\       \/\\\     \/\\\\///\\\/\\\/ \/\\\               ',
+			\ '        \/\\\\//\\\\/\\\ \/\\\///////      \/\\\       \/\\\   \//\\\  /\\\        \/\\\     \/\\\  \///\\\/   \/\\\              ',
+			\ '         \/\\\ \//\\\/\\\ \/\\\             \//\\\      /\\\     \//\\\/\\\         \/\\\     \/\\\    \///     \/\\\             ',
+			\ '          \/\\\  \//\\\\\\ \/\\\              \///\\\  /\\\        \//\\\\\          \/\\\     \/\\\             \/\\\            ',
+			\ '           \/\\\   \//\\\\\ \/\\\\\\\\\\\\\\\    \///\\\\\/          \//\\\        /\\\\\\\\\\\ \/\\\             \/\\\           ',
+			\ '            \///     \/////  \///////////////       \/////             \///        \///////////  \///              \///           ',
+			\ '                                                                                                                                  ',
 			\ ]
-
+			" \ '                         ▄              ▄                  ',
+			" \ '                        ▌▒█           ▄▀▒▌    wow          ',
+			" \ '                        ▌▒▒▀        ▄▀▒▒▒▐                 ',
+			" \ '                       ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐    much data science  ',
+			" \ '                     ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐                 ',
+			" \ '                   ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌    much code    ',
+			" \ '                  ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌                ',
+			" \ '                  ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐   data go brrrrrrrrrrr ',
+			" \ '                 ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌               ',
+			" \ '                 ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌               ',
+			" \ '                 ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐               ',
+			" \ '                ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌              ',
+			" \ '                ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐               ',
+			" \ '                 ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌               ',
+			" \ '                 ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐                ',
+			" \ '                  ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                ',
+			" \ '                    ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                 ',
+			" \ '                   ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                   ',
+			" \ '                  ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀                      ',
 " -------------- make nerdtree work at startup ------------------------------ "
 " autocmd VimEnter *
 "                 \   if !argc()
@@ -1293,6 +1301,14 @@ let $FZF_DEFAULT_OPTS='
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
+
+" --------------------------------------------------------------------------
+" -- illuminate
+" -- -----------------------------------------------------------------------
+nnoremap <Down> :lua require"illuminate".next_reference{wrap=true}<cr>
+nnoremap <Up> :lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>
+nnoremap <C-p> :lua require"illuminate".toggle_pause()<cr>
+
 
 " --------------------------------------------------------------------------
 " -- Lspsaga
@@ -1451,7 +1467,7 @@ else
 	execute "set <M-g> =\en"
 	execute "set <M-g> =\en"
 	" execute "set <M-c> =\ep"
-	execute "set <M-p> =\ep"
+	" execute "set <M-p> =\ep"
 " execute "set <M-b> =\en"
 endif
 
@@ -1467,8 +1483,8 @@ nnoremap <A-d> :DogeGenerate<cr>
 " -------------------------------------------------------------------------- "
 " smoothie
 " -------------------------------------------------------------------------- "
-nmap <Down> :call  smoothie#downwards()<CR>
-nmap <Up> :call  smoothie#upwards()<CR>"
+" nmap <Down> :call  smoothie#downwards()<CR>
+" nmap <Up> :call  smoothie#upwards()<CR>"
 " nmap <Down> <C-d>
 " nmap <Up> <C-u>
 

@@ -134,11 +134,15 @@ alias vpn="sudo openfortivpn"
 # alias back="feh --bg-scale ~/Pictures/xUjtUYC.png"
 alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
+alias re="	pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten sshk"
 alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-36-211-140.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
 alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-36-211-140.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/dalla_man_optimization dev/results/simulation_framework/dalla_man_optimization"
+alias icat="kitty +kitten icat"
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# icat ~/Images/logo_diabeloop_bleu_rvb.png
+icat ~/Pictures/diabeloop-logo.png
 fm6000 -r
 
 
