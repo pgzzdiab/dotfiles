@@ -1,3 +1,4 @@
 Ubuntu configuration.
 Rice with tmux / neovim workflow
-![screen](screenshot/screenshot.png)
+
+![screen1](screenshots/screenshot.png)
