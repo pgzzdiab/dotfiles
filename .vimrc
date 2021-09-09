@@ -311,15 +311,6 @@ if has('nvim')
 else
 	execute "set <M-f>=\ef"
 	execute "set <M-'>=\e'"
-	" execute "set <M-q>=\eq"
-	" execute "set <M-w>=\ew"
-	" execute "set <M-e>=\ee"
-	" execute "set <M-r>=\er"
-	" execute "set <M-t>=\et"
-	" execute "set <M-y>=\ey"
-	" execute "set <M-u>=\eu"
-	" execute "set <M-i>=\ei"
-	" execute "set <M-o>=\eo"
 endif
 
 noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
@@ -331,6 +322,8 @@ noremap <space> y
 noremap <C-t> :tabclose<CR>
 noremap <leader>t :tabnew%<CR>
 noremap <C-f> :find 
+noremap " '
+noremap ' "
 
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
 nnoremap <silent> "<space> "+yy                    " copy line into clipboard
