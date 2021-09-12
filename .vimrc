@@ -273,6 +273,7 @@ endfunction
 " 	" endif
 " endfunction
 
+autocmd BufWritePre * :%s/\s\+$//e
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -312,15 +313,15 @@ else
 	execute "set <M-f>=\ef"
 	execute "set <M-'>=\e'"
 endif
-
+nnoremap <silent> vv <C-w>v
 noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
 noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
 map Q <Nop>                                        " disable entring in ex mode
 noremap j gj
 noremap k gk
 noremap <space> y
-noremap <C-t> :tabclose<CR>
-noremap <leader>t :tabnew%<CR>
+noremap tt :tabclose<CR>
+noremap gt :tabnew%<CR><C-o>
 noremap <C-f> :find 
 noremap " '
 noremap ' "
@@ -334,7 +335,7 @@ map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # 
 map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---")
 
 " nnoremap <expr> fs ':%s/'.expand('<cword>').'//gn<CR>``' " search current word under cursor
-nnoremap fs *Nzz
+nnoremap fj *N
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
 nnoremap K i<cr><esc>                              " cut line
@@ -388,7 +389,7 @@ nnoremap <C-w>p :lopen<CR>                  " open loclist
 "
 " ------------------------ search ------------------------------------------- #
 "
-nnoremap <silent> sv :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighting and clear any message already displayed.
+nnoremap <silent> ff :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighting and clear any message already displayed.
 
 "
 " ------------------------ registers ---------------------------------------- #
@@ -448,13 +449,10 @@ call plug#begin(g:plug_install_files)
 " ------------------ Neovim plugins  ---------------------------
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
-Plug 'RRethy/vim-illuminate'
 if has('nvim')
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
         Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
-        " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
-        " ------ wait PR mergerd to solve issue on preview windows size
-        " Plug 'jasonrhansen/lspsaga.nvim', {'branch': 'finder-preview-fixes'}  " light-weight lsp plugin based on neovim built-in lsp 
+        " Plug 'weilbith/nvim-lsp-smag'                        " Smart tags with lsp
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
         Plug 'hrsh7th/nvim-compe'                              " completion plugin
@@ -463,16 +461,16 @@ if has('nvim')
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
         Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
-        " Plug 'Pocco81/NoCLC.nvim'                              " remove line number in unfocused pan
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
         Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
         Plug 'sindrets/diffview.nvim'                          " diffview
-        " Plug 'ThePrimeagen/git-worktree.nvim'                  " use git-worktree
         Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
         Plug 'nvim-lua/popup.nvim'                             " to install telescope
-        Plug 'nvim-telescope/telescope.nvim'                   " highly extendable fuzzy finder over lists https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
-        Plug 'https://github.com/lewis6991/gitsigns.nvim'
+        Plug 'nvim-telescope/telescope.nvim'                   " https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
+        Plug 'lewis6991/gitsigns.nvim'
+        " Plug 'lewis6991/spellsitter.nvim'                       " spell checker
+
         " Plug 'tiagovla/tokyodark.nvim'
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
         " Plug 'nvim-lua/completion-nvim'                        " completion plugin
@@ -487,54 +485,49 @@ if has('nvim')
 else
         Plug 'preservim/nerdtree'                              " file explorer
         " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
-        " Plug 'dense-analysis/ale'                            " syntax checking and semantic errors
         Plug 'vim-airline/vim-airline'                         " add visual line
         Plug 'vim-airline/vim-airline-themes'                  " theme for airline
 endif
 
+
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
-" Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'mhinz/vim-mix-format'
 " Plug 't9md/vim-textmanip'                            " move blocks of text easy
 " Plug 't9md/vim-choosewin'
 " Plug 'junegunn/vim-easy-align'                       " Helps alignment TODO: LEARN
 " Plug 'sjl/gundo.vim'                                 " add undo tree
 " Plug 'chimay/wheel/'                                 " better join lines
-" Plug 'jeetsukumaran/ctrlp-pythonic.vim'
 " Plug 'junegunn/loclisteasy-align'
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Plug 'junegunn/fzf.vim'
-" Plug 'junegunn/vim-peekaboo'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- tmux ----------------------------------------------- "
 " --------------------------------------------------------------------------- "
-Plug 'roxma/vim-tmux-clipboard'                         " share register with tmux
+Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer with tmux
 
 " --------------------------------------------------------------------------- "
 " ---------------------- IDE ------------------------------------- "
 " --------------------------------------------------------------------------- "
-" Plug 'pechorin/any-jump.vim'                          " inspection code plugin
 Plug 'brooth/far.vim'                                   " search and replace
 Plug 'tpope/vim-commentary'                             " comment objects
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
-" Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
 Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
 Plug 'justinmk/vim-sneak'                               " jump using 2-chars
 Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'AndrewRadev/sideways.vim'                         " move func args
 Plug 'flwyd/vim-conjoin'                                " better join lines
-" Plug 'qwertologe/nextval.vim'                           " better ctrl-a
+Plug 'qwertologe/nextval.vim'                           " better ctrl-a
+" Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
+" Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
 " --------------------------------------------------------------------------- "
-" Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
 " Plug 'MathSquared/vim-python-sql'
 " Plug 'https://github.com/tpope/vim-endwise'           " end certain structures automatically
 " Plug 'https://github.com/romainl/vim-qf'              " help with the quickfix lists
@@ -545,8 +538,6 @@ Plug 'flwyd/vim-conjoin'                                " better join lines
 " --------------------------------------------------------------
 Plug 'tpope/vim-fugitive'                               " git integration plugin
 Plug 'rbong/vim-flog'                                   " Commit viewer
-" Plug 'https://github.com/airblade/vim-gitgutter'
-" Plug 'Xuyuanp/nerdtree-git-plugin'
 "
 " --------------------------------------------------------------
 " ---------------------- run in vim ----------------------------
@@ -585,8 +576,6 @@ Plug 'wellle/targets.vim'                              " Better objects
 Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
 Plug 'kana/vim-textobj-user'                           " add new text objects
 Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
-" Plug 'kana/vim-textobj-entire'                       " text object for the all buffer
-" Plug 'ColinKennedy/vim-textobj-block-party'          " text objects and motions for Python required +python
 " Plug 'christoomey/vim-system-copy'                   " mapping for clipoard
 "
 " --------------------------------------------------------------
@@ -611,26 +600,15 @@ else
 		Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 		Plug 'ayu-theme/ayu-vim'                           " colorscheme
 endif
-" Plug 'Yggdroot/indentLine'                         " add visual indent
-" Plug 'Th3Whit3Wolf/space-nvim'                       " colorscheme
+" Plug 'RRethy/vim-illuminate'
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
-" Plug 'hrsh7th/vim-unmatchparen'                        " highlight unmatch surrounding
 Plug 'ryanoasis/vim-devicons'                          " add icon
 Plug 'camspiers/animate.vim'                           " windows move animation
 Plug 'luochen1990/rainbow'                             " rainbow parenthesis
-" Plug 'nathanaelkane/vim-indent-guides'
 Plug 'psliwka/vim-smoothie'                            " Better scroll
 Plug 'mhinz/vim-startify'                              " add start page to vim
 Plug 'kshenoy/vim-signature'                           " show marks in signcolumn
 
-" Plug 'miyakogi/conoline.vim'                         " highlights the line of the cursor
-" Plug 'ipod825/war.vim'
-" Plug 'camspiers/lens.vim'                            " resize windows
-" Plug 'https://github.com/vim-scripts/fontzoom.vim'   " change font with +/-
-" Plug 'troydm/zoomwintab.vim'                         " zoom on a tab
-" Plug 'bluz71/vim-moonfly-statusline'                 " Minimal status bar
-" Plug 'altercation/vim-colors-solarized'              " color theme
-" Plug 'junegunn/seoul256.vim'
 " Plug 'vim/killersheep'                               " absolutely essential
 " old themes:
 " Plug 'morhetz/gruvbox'                               " color theme
@@ -675,54 +653,6 @@ call plug#end()
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
 if has('nvim')
-	" -------------------------------------------------------------
-	"  barbar
-	"  ------------------------------------------------------------
-
-	" -- barbar.nvim --
-	" Gets the highlight value of highlight group `name`
-	" Set `layer` to either 'fg' or 'bg'
-	" function GetHiVal(name, layer)
-	" 	return synIDattr(synIDtrans(hlID(a:name)), a:layer . '#')
-	" endf
-
-	" " Creates highlight group `name` with guifg `guifg`, and guibg s:barbar_bg
-	" " If a third argument is provided gui is set to that
-	" function BarbarHi(name, guifg, ...)
-	" 	let gui = a:0 > 0 ? 'gui=' . get(a:, 1, '') : ''
-	" 	exe 'hi!' a:name 'guifg=' a:guifg 'guibg=' s:barbar_bg gui
-	" endf
-
-	" let g:bufferline = get(g:, 'bufferline', {
-	" 			\ 'closable': v:false, 'no_name_title': '[No Name]'
-	" 			\ })
-
-"     let bufferline.icon_custom_colors = v:false
-" 	let s:barbar_bg  = '#263238'
-
-"     let fg_target = 'red'
-"     let fg_current  = s:fg(['Normal'], '#efefef')
-" 	let fg_visible  = GetHiVal('Normal', 'fg')     " #abb2bf
-"     let fg_inactive = s:fg(['TabLineFill'], '#000000')
-" 	let fg_sign     = GetHiVal('NonText', 'fg')    " #3b4048
-" 	let fg_modified = GetHiVal('WarningMsg', 'fg') " #e5c07b
-" 	let fg_tabpages = GetHiVal('Directory', 'fg')  " #61AFEF
-
-" 	call BarbarHi('BufferTabpageFill', fg_sign)
-" 	call BarbarHi('BufferTabpages', fg_tabpages, 'bold')
-" 	call BarbarHi('BufferVisible', fg_visible)
-" 	call BarbarHi('BufferVisibleSign', fg_sign)
-" 	call BarbarHi('BufferVisibleMod', fg_modified)
-" 	call BarbarHi('BufferVisibleIndex', fg_sign)
-" 	call BarbarHi('BufferInactive', '#707070')
-" 	call BarbarHi('BufferInactiveSign', fg_sign)
-" 	call BarbarHi('BufferInactiveMod', fg_modified)
-" 	call BarbarHi('BufferInactiveIndex', fg_sign)
-" 	call BarbarHi('BufferInactiveTarget', 'red', 'bold')
-" 	call BarbarHi('BufferModifiedIndex', fg_sign)
-endif
-
-if has('nvim')
 	" some neovim packges are configured here
 	" lua require('$HOME/.vim/lua/lua_config')
 	lua require('lua_config')
@@ -733,33 +663,18 @@ endif
 " <<<<<<<<<<<<<<<<<<<< Plugin Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
-let g:gh_token = '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'
-
 if has('nvim')
+
 	" -------------------------------------------------------------
 	"  barbar
 	"  ------------------------------------------------------------
-	" Move to previous/next execute "set <M-m>=\em"
-	" execute "set <M-n>=\en"
-	" execute "set <M-m>=\em"
+	" Move to previous/next
 	nnoremap <silent> <A-[> :BufferPrevious<CR>
 	nnoremap <silent> <A-]> :BufferNext<CR>
 	" Re-order to previous/next
-	" execute "set <M-M>=\eM"
-	" execute "set <M-N>=\eN"
 	nnoremap <silent> <A-{> :BufferMovePrevious<CR>
 	nnoremap <silent> <A-}> :BufferMoveNext<CR>
 	" Goto buffer in position...
-	" execute "set <M-q>=\eq"
-	" execute "set <M-w>=\ew"
-	" execute "set <M-e>=\ee"
-	" execute "set <M-r>=\er"
-	" execute "set <M-t>=\et"
-	" execute "set <M-y>=\ey"
-	" execute "set <M-u>=\eu"
-	" execute "set <M-i>=\ei"
-	" execute "set <M-o>=\eo"
-	" execute "set <M-p>=\ep"
 	nnoremap <silent> <A-q> :BufferGoto 1<CR>
 	nnoremap <silent> <A-w> :BufferGoto 2<CR>
 	nnoremap <silent> <A-e> :BufferGoto 3<CR>
@@ -771,14 +686,7 @@ if has('nvim')
 	nnoremap <silent> <A-0> :BufferLast<CR>
 
 	" Close buffer
-	" execute "set <M-c>=\ec"
 	nnoremap <silent> <A-c> :BufferClose<CR>
-	" Wipeout buffer
-	" :BufferWipeout<CR>
-	" Close commands
-	" :BufferCloseAllButCurrent<CR>
-	" :BufferCloseBuffersLeft<CR>
-	" :BufferCloseBuffersRight<CR>
 	" Magic buffer-picking mode
 	nnoremap <silent> <C-s> :BufferPick<CR>
 	" Sort automatically by...
@@ -789,7 +697,7 @@ endif
 " -------------------------------------------------------------
 "  Grepper
 "  ------------------------------------------------------------
-let g:grepper_quickfix=1          " USe location list
+let g:grepper_quickfix=0             " use location list
 let g:grepper_open=1
 let g:grepper_switch=1              " Go into the location list after a search
 let g:grepper_side=1                " Open a new window and show matches with surrounding contextu
@@ -799,22 +707,10 @@ let g:grepper_tools=['ag']
 nmap gn  <plug>(GrepperOperator)
 xmap gn  <plug>(GrepperOperator)
 
-" --------------------------------------------------------------------------- "
-"  peekaboo 
-" --------------------------------------------------------------------------- "
-" let g:peekaboo_window="bel bo 10new"
-" let g:peekaboo_compact=1
-
 " --------------------------------------------------------------
 " echo doc
 " --------------------------------------------------------------
 let g:echodoc#enable_at_startup=1
-
-" --------------------------------------------------------------
-" -------------------- buffergator ------------------------------------------ "
-" --------------------------------------------------------------
-" let g:buffergator_viewport_split_policy='B'
-" let g:buffergator_autoexpand_on_split = 0
 
 " --------------------------------------------------------------
 " ------------------------- Indent  ----------------------------------------- "
@@ -838,7 +734,6 @@ let g:indent_guides_exclude_filetypes = ['help', 'startify']
 " doc
 " --------------------------------------------------------------
 let g:doge_doc_standard_python = 'sphinx'
-" let g:doge_enable_mappings = 0
 let g:doge_mapping = '<Leader>do'
 
 "
@@ -851,21 +746,13 @@ let g:rainbow_conf = {
 \}
 
 " --------------------------------------------------------------
-" gitgutter
-" --------------------------------------------------------------
-" let g:gitgutter_signs = 0
-" let g:gitgutter_sign_added = '+'
-" let g:gitgutter_sign_modified = '~'
-" let g:gitgutter_sign_removed = '-'
-
-" --------------------------------------------------------------
 " tags
 " --------------------------------------------------------------
 " config project root markers.
-let g:gutentags_project_root = ['.root']
+" let g:gutentags_project_root = ['.root']
 " generate databases in my cache directory, prevent gtags files polluting
 " my project
-let g:gutentags_cache_dir = expand('~/.cache/tags')
+" let g:gutentags_cache_dir = expand('~/.cache/tags')
 " let g:tagbar_compact = 1
 " let g:tagbar_show_tag_linenumbers = 1
 " let g:tagbar_singleclick = 1
@@ -907,15 +794,15 @@ let g:gutentags_cache_dir = expand('~/.cache/tags')
 " " let g:tagbar_previewwin_pos = "aboveleft"
 " command! MakeTags !ctags -R .
 " " generate databases in my cache directory, prevent gtags files polluting my project
-let g:gutentags_ctags_exclude = [
-			\ "*.min.js", "*.min.css", "build", "vendor", ".git",
-			\ '*.tmp', '*.csproj.user', '*.cache', '*.pdb', '*.pyc',
-			\ '*.class', '*.sln', "node_modules", '*.less', '*.scss',
-			\ '*.exe', '*.dll', '*.mp3',  '*.ogg', '*.swp',
-			\ '*.swo', '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
-      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz',
-			\ '*.tar.bz2', '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
-      \ "*.vim/bundle/*", "tags*" , "*.idea/*"]
+" let g:gutentags_ctags_exclude = [
+" 			\ "*.min.js", "*.min.css", "build", "vendor", ".git",
+" 			\ '*.tmp', '*.csproj.user', '*.cache', '*.pdb', '*.pyc',
+" 			\ '*.class', '*.sln', "node_modules", '*.less', '*.scss',
+" 			\ '*.exe', '*.dll', '*.mp3',  '*.ogg', '*.swp',
+" 			\ '*.swo', '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+"       \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz',
+" 			\ '*.tar.bz2', '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+"       \ "*.vim/bundle/*", "tags*" , "*.idea/*"]
 " " generate datebases in my cache directory, prevent gtags files polluting my project
 " let g:gutentags_plus_switch = 1      " change focus to quickfix window after search
 " set previewheight=60                 " remap tag open in new split windows
@@ -1003,7 +890,7 @@ endif
 " submersive
 " --------------------------------------------------------------
 let g:subversivePromptWithCurrent=1
-"let g:subversivePreserveCursorPosition=1 "cursor will not move when substitutions are applied
+let g:subversivePreserveCursorPosition=1 "cursor will not move when substitutions are applied
 
 " -------------------- theme ------------------------------------------------ "
 "if has('nvim')
@@ -1142,18 +1029,16 @@ let g:startify_session_autoload = 1
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
 let g:startify_custom_header = [
-			\ '                                                                                                                                                                              ',
-			\ '     /\\\\\     /\\\  /\\\\\\\\\\\\\\\       /\\\\\       /\\\        /\\\  /\\\\\\\\\\\  /\\\\            /\\\\                  ',
-			\ '     \/\\\\\\   \/\\\ \/\\\///////////      /\\\///\\\    \/\\\       \/\\\ \/////\\\///  \/\\\\\\        /\\\\\\                 ',
-			\ '      \/\\\/\\\  \/\\\ \/\\\               /\\\/  \///\\\  \//\\\      /\\\      \/\\\     \/\\\//\\\    /\\\//\\\                ',
-			\ '       \/\\\//\\\ \/\\\ \/\\\\\\\\\\\      /\\\      \//\\\  \//\\\    /\\\       \/\\\     \/\\\\///\\\/\\\/ \/\\\               ',
-			\ '        \/\\\\//\\\\/\\\ \/\\\///////      \/\\\       \/\\\   \//\\\  /\\\        \/\\\     \/\\\  \///\\\/   \/\\\              ',
-			\ '         \/\\\ \//\\\/\\\ \/\\\             \//\\\      /\\\     \//\\\/\\\         \/\\\     \/\\\    \///     \/\\\             ',
-			\ '          \/\\\  \//\\\\\\ \/\\\              \///\\\  /\\\        \//\\\\\          \/\\\     \/\\\             \/\\\            ',
-			\ '           \/\\\   \//\\\\\ \/\\\\\\\\\\\\\\\    \///\\\\\/          \//\\\        /\\\\\\\\\\\ \/\\\             \/\\\           ',
-			\ '            \///     \/////  \///////////////       \/////             \///        \///////////  \///              \///           ',
-			\ '                                                                                                                                  ',
-			\ ]
+      \ '           ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓                      ',
+      \ '           ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒                      ',
+      \ '          ▓██  ▀█ ██▒▒███   ▒██░  ██▒ ▓██  █▒░▒██▒▓██    ▓██░                      ',
+      \ '          ▓██▒  ▐▌██▒▒▓█  ▄ ▒██   ██░  ▒██ █░░░██░▒██    ▒██                       ',
+      \ '          ▒██░   ▓██░░▒████▒░ ████▓▒░   ▒▀█░  ░██░▒██▒   ░██▒                      ',
+      \ '          ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░▓  ░ ▒░   ░  ░                      ',
+      \ '          ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░                      ',
+      \ '             ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░                         ',
+      \ '                   ░    ░  ░    ░ ░        ░   ░         ░         go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr                ',
+      \ ]
 			" \ '                         ▄              ▄                  ',
 			" \ '                        ▌▒█           ▄▀▒▌    wow          ',
 			" \ '                        ▌▒▒▀        ▄▀▒▒▒▐                 ',
@@ -1270,16 +1155,96 @@ let $FZF_DEFAULT_OPTS='
 " endfunction
 " let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
 
+" -------------------------------------------------------------------------- "
+" coc
+" -------------------------------------------------------------------------- "
+if has('nvim')
+else
+  if has('win32') "specific options for windows
+      let g:coc_node_path = 'C:\Program Files\nodejs\node'
+  endif
+  if has("patch-8.1.1564")
+    " Recently vim can merge signcolumn and number column into one
+    set signcolumn=number
+  else
+    set signcolumn=yes
+  endif
+
+  " ---------------- coc color ------------------------------------------------ #
+  highlight! CocWarningSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
+  highlight! CocErrorSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
+  highlight! CocInfoSign  guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
+  highlight! CocHintSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
+
+  highlight! CocWarningHighlight guibg=NONE gui=NONE cterm=NONE 
+  highlight! CocErrorHighlight guibg=NONE gui=NONE cterm=NONE 
+  highlight! CocInfoHighlight  guibg=NONE gui=NONE cterm=NONE 
+  highlight! CocHintHighlight guibg=NONE gui=NONE cterm=NONE 
+
+  " use location list
+  let g:coc_global_extensions = [
+              \ 'coc-highlight',
+              \ 'coc-lists',
+              \ 'coc-python',
+              \ 'coc-json',
+              \ 'coc-sql',
+              \ 'coc-snippets',
+              \ 'coc-css',
+              \ 'coc-html',
+              \ 'coc-diagnostic',
+              \ 'coc-syntax'
+              \ ]
+              " \ 'coc-tag',
+              " \ 'coc-tsserver',
+              " \ 'coc-vimtex',
+              " \ 'coc-sh',
+              " \ 'coc-prettier',
+  " See coc config in "coc-settings.json" with :CocConfig
+      "diagnostic.enable":,
+  " Map Alt-n to trigger completion: >
+  " function! s:check_back_space() abort
+  "     let col = col('.') - 1
+  "     return !col || getline('.')[col - 1]  =~# '\s'
+  " endfunction
+  "
+  " Use tab for trigger completion with characters ahead and navigate.
+  " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+  " other plugin before putting this into your config.
+  "
+  function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
+  "
+  " Highlight the symbol and its references when holding the cursor.
+  " autocmd CursorHold * silent call CocActionAsync('highlight')
+  "
+  " Add `:Format` command to format current buffer.
+  command! -nargs=0 Format :call CocAction('format')
+  "
+  " Add `:Fold` command to fold current buffer.
+  command! -nargs=? Fold :call CocAction('fold', <f-args>)
+  " Add `:OR` command for organize imports of the current buffer.
+  command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
+  " Add (Neo)Vim's native statusline support.
+  " NOTE: Please see `:h coc-status` for integrations with external plugins that
+  " provide custom statusline: lightline.vim, vim-airline.
+  " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+endif
+
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
-"           ___  ___  ___  ______ ______  _____  _   _  _____  _____         
+"           ___  ___  ___  ______ ______  _____  _   _  _____  _____
 "           |  \/  | / _ \ | ___ \| ___ \|_   _|| \ | ||  __ \/  ___|
 "           | .  . |/ /_\ \| |_/ /| |_/ /  | |  |  \| || |  \/\ `--. 
 "           | |\/| ||  _  ||  __/ |  __/   | |  | . ` || | __  `--. \
 "           | |  | || | | || |    | |     _| |_ | |\  || |_\ \/\__/ /
 "           \_|  |_/\_| |_/\_|    \_|     \___/ \_| \_/ \____/\____/ 
-"                ______  _      _   _  _____  _____  _   _  _____                
+"                ______  _      _   _  _____  _____  _   _  _____
 "                | ___ \| |    | | | ||  __ \|_   _|| \ | |/  ___|
 "                | |_/ /| |    | | | || |  \/  | |  |  \| |\ `--. 
 "                |  __/ | |    | | | || | __   | |  | . ` | `--. \
@@ -1290,12 +1255,12 @@ let $FZF_DEFAULT_OPTS='
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 
-" --------------------------------------------------------------------------
-" -- illuminate
-" -- -----------------------------------------------------------------------
-nnoremap <Down> :lua require"illuminate".next_reference{wrap=true}<cr>
-nnoremap <Up> :lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>
-nnoremap <A-s> :lua require"illuminate".toggle_pause()<cr>
+" " --------------------------------------------------------------------------
+" " -- illuminate
+" " -- -----------------------------------------------------------------------
+" nnoremap <Down> :lua require"illuminate".next_reference{wrap=true}<cr>
+" nnoremap <Up> :lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>
+" nnoremap <A-s> :lua require"illuminate".toggle_pause()<cr>
 
 " --------------------------------------------------------------------------
 " -- lsp
@@ -1517,17 +1482,12 @@ map ]= <Plug>(IndentWiseNextEqualIndent)
 " -------------------------------------------------------------------------- "
 " to stay in container
 " https://github.com/jeetsukumaran/vim-argwrap/commit/30edd6ba0a654d22db62359e4bca9d174f1eead5
-" nnoremap <Leader>h :SidewaysLeft<cr>
-" nnoremap <Leader>l :SidewaysRight<cr>
+nnoremap <Leader>h :SidewaysLeft<cr>
+nnoremap <Leader>l :SidewaysRight<cr>
 " nmap <leader>si <Plug>SidewaysArgumentInsertBefore
 " nmap <leader>sa <Plug>SidewaysArgumentAppendAfter
 " nmap <leader>sI <Plug>SidewaysArgumentInsertFirst
 " nmap <leader>sA <Plug>SidewaysArgumentAppendLast
-
-" -------------------------------------------------------------------------- "
-" anzu
-" -------------------------------------------------------------------------- "
-" <buffer><Leader>cf :Yapf<CR>"
 
 " -------------------------------------------------------------------------- "
 " wrap
@@ -1582,22 +1542,8 @@ nmap <leader>css <plug>(SubversiveSubstituteWordRangeConfirm)
 " -------------------------------------------------------------------------- "
 " animate
 " -------------------------------------------------------------------------- "
-" nnoremap <silent> <Up>    :call animate#window_delta_height(10)<CR>
-" nnoremap <silent> <Down>  :call animate#window_delta_height(-10)<CR>
 nnoremap <silent> <Left>  :call animate#window_delta_width(10)<CR>
 nnoremap <silent> <Right> :call animate#window_delta_width(-10)<CR>
-
-" -------------------------------------------------------------------------- "
-" sendto
-" -------------------------------------------------------------------------- "
-nmap (l <Plug>SendRight
-xmap (l <Plug>SendRightV
-nmap (h <Plug>SendLeft
-xmap (h <Plug>SendLeftV
-nmap (k <Plug>SendUp
-xmap (k <Plug>SendUpV
-nmap (j <Plug>SendDown
-xmap (j <Plug>SendDownV
 
 " -------------------------------------------------------------------------- "
 " repl
@@ -1632,6 +1578,10 @@ nmap <leader>b :Buffers<CR>
 " nmap <Leader>: :History:<CR>
 " nmap <Leader>gm :Maps<CR>
 
+" -------------------------------------------------------------------------- "
+"  symboloutline
+" --------------------------------------------------------------------------
+nnoremap <leader>S :SymbolsOutline<CR>
 
 " -------------------------------------------------------------------------- "
 " coc
@@ -1662,7 +1612,7 @@ else
 	" nmap <silent> me <Plug>(coc-diagnostic-error)
 	nmap <silent> gd <Plug>(coc-action-jumpDefinition)
 	nmap <silent> ge <Plug>(coc-action-jumpDeclaration)
-	nnoremap <silent> gr :call :<C-u>show_documentation<CR> " show Documentation
+	" nnoremap <silent> gr :call :<C-u>show_documentation<CR> " show Documentation
 	nnoremap <silent><nowait> ga  :<C-u>CocList diagnostics<cr> " Show all diagnostics.
 	nnoremap <silent><nowait> <Leader>u  :<C-u>CocList extensions<cr> " Manage extensions.
 	" Symbol renaming.
@@ -1674,6 +1624,7 @@ endif
 " -------------------------------------------------------------------------- "
 " pythonsense
 " -------------------------------------------------------------------------- "
+"  keep default mapping listed below
 " map <buffer> ac <Plug>(PythonsenseOuterClassTextObject)
 " map <buffer> ic <Plug>(PythonsenseInnerClassTextObject)
 " map <buffer> af <Plug>(PythonsenseOuterFunctionTextObject)
@@ -1684,118 +1635,16 @@ endif
 " map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
 " map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
 " map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
-
 autocmd BufReadPost * map mj <Plug>(PythonsenseStartOfNextPythonFunction)
 autocmd BufReadPost * map Mj <Plug>(PythonsenseEndOfPythonFunction)
 autocmd BufReadPost * map mk <Plug>(PythonsenseStartOfPythonFunction)
 autocmd BufReadPost * map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
-" map <buffer> g: <Plug>(PythonsensePyWhere)" easy-align
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-" xmap ga <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-" nmap ga <Plug>(EasyAlign)"
-
-" ___________________________________________________________________________ "
-" ___________________________________________________________________________ "
-" ___________________________________________________________________________ "
-"                             _____  _____  _____ 
-"                            /  __ \|  _  |/  __ \
-"                            | /  \/| | | || /  \/
-"                            | |    | | | || |    
-"                            | \__/\\ \_/ /| \__/\
-"                             \____/ \___/  \____/
-" ___________________________________________________________________________ "
-" ___________________________________________________________________________ "
-" ___________________________________________________________________________ "
-
-
-if has('win32') "specific options for windows
-    let g:coc_node_path = 'C:\Program Files\nodejs\node'
-endif
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
-" ---------------- coc color ------------------------------------------------ #
-highlight! CocWarningSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
-highlight! CocErrorSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
-highlight! CocInfoSign  guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
-highlight! CocHintSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
-
-highlight! CocWarningHighlight guibg=NONE gui=NONE cterm=NONE 
-highlight! CocErrorHighlight guibg=NONE gui=NONE cterm=NONE 
-highlight! CocInfoHighlight  guibg=NONE gui=NONE cterm=NONE 
-highlight! CocHintHighlight guibg=NONE gui=NONE cterm=NONE 
-
-" use location list
-let g:coc_global_extensions = [
-			\ 'coc-highlight',
-			\ 'coc-lists',
-			\ 'coc-python',
-			\ 'coc-json',
-			\ 'coc-sql',
-			\ 'coc-snippets',
-			\ 'coc-css',
-			\ 'coc-html',
-			\ 'coc-diagnostic',
-			\ 'coc-syntax'
-			\ ]
-			" \ 'coc-tag',
-			" \ 'coc-tsserver',
-			" \ 'coc-vimtex',
-			" \ 'coc-sh',
-			" \ 'coc-prettier',
-" See coc config in "coc-settings.json" with :CocConfig
-    "diagnostic.enable":,
-" Map Alt-n to trigger completion: >
-" function! s:check_back_space() abort
-"     let col = col('.') - 1
-"     return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
-"
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-"
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-"
-" Highlight the symbol and its references when holding the cursor.
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-"
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-"
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call CocAction('fold', <f-args>)
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
-" Add (Neo)Vim's native statusline support.
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline.
-" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-
-
-
-
-
-
-
 
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
-"                 _____  _____  _      _____ ______  _____          
+"                 _____  _____  _      _____ ______  _____
 "                /  __ \|  _  || |    |  _  || ___ \/  ___|
 "                | /  \/| | | || |    | | | || |_/ /\ `--. 
 "                | |    | | | || |    | | | ||    /  `--. \
@@ -1884,5 +1733,5 @@ hi! CursorLineNr guifg=#B0BEC5 guibg=#1E272C
 " -------------------------------------------------------------
 "  vim signature
 "  ------------------------------------------------------------
-hi SignatureMarkText guifg=#B0BEC5 guibg=#263238
+hi SignatureMarkText guifg=#B0BEC5 guibg=NONE
 

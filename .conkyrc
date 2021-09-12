@@ -1,0 +1,42 @@
+background no
+use_xft yes
+xftfont Fira Code:size=100
+xftalpha 0.5
+update_interval 1
+total_run_times 0
+border_width 1
+own_window yes
+own_window_class Conky
+own_window_type desktop
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_argb_visual true
+own_window_argb_value 0
+own_window_colour 000
+
+double_buffer yes
+
+minimum_width 100
+minimum_size 800 1200
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders yes
+alignment middle_middle
+
+gap_x 0
+gap_y 0
+stippled_borders 1
+border_inner_margin 4
+border_width 5
+
+no_buffers yes
+uppercase no
+cpu_avg_samples 5
+net_avg_samples 1
+
+use_spacer right
+text_buffer_size 256
+
+TEXT
+${font Poiret One:weight=Light:size=50}${color #999999}${alignc}${offset 70}${time %B, %A %d}${voffset 10}
+${font Poiret One:weight=Light:size=290}${color #999999}${alignc}${offset 40}${time %H:}${time %M:}${time %S}${voffset 40}
