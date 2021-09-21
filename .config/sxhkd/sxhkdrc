@@ -37,13 +37,14 @@ super + g
 # ranger
 super + semicolon
 	kitty -e ranger
+
 # file browser
 super + 0
 	nautilus
 # lock
 # super + x
 # 	~/.config/i3/scrlt.sh
-# choose working screen 
+# choose working screen
 super + s
 	~/.config/i3/display.sh
 
@@ -162,13 +163,13 @@ super + alt + ctrl + {h,j,k,l}
 # move a floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
-  
+
 # # Changing brightness
 # XF86MonBrightness{Up,Down}
 #     light {-A,-U} 4
 
 # # Changing the Volume
 # XF86Audio{Raise,Lower}Volume
-#     pamixer {-i,-d} 4 
+#     pamixer {-i,-d} 4
 # XF86AudioMute
 

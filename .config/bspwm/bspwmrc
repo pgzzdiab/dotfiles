@@ -85,7 +85,7 @@ nm-applet &     #network
 picom -b --experimental-backends &
 
 # conky
-.config/scripts/launch_conky.sh
+# .config/scripts/launch_conky.sh
 
 # setxkbmap -option caps:escape
 # xss-lock --transfer-sleep-lock -- i3lock --nofork

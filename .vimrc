@@ -1,9 +1,9 @@
 " ___________________________________________________________________________ "
 " ___________________________________________________________________________ "
 " ___________________________________________________________________________ "
-"  _             _  _  _        _                               __  _        
-" | |           (_)| || |      (_)                             / _|(_)       
-" | |__   _   _  _ | || |_  __  _  _ __     ___   ___   _ __  | |_  _   __ _ 
+"  _             _  _  _        _                               __  _
+" | |           (_)| || |      (_)                             / _|(_)
+" | |__   _   _  _ | || |_  __  _  _ __     ___   ___   _ __  | |_  _   __ _
 " | '_ \ | | | || || || __||__|| || '_ \   / __| / _ \ | '_ \ |  _|| | / _` |
 " | |_) || |_| || || || |_     | || | | | | (__ | (_) || | | || |  | || (_| |
 " |_.__/  \__,_||_||_| \__|    |_||_| |_|  \___| \___/ |_| |_||_|  |_| \__, |
@@ -51,7 +51,7 @@ set autoindent                      " autoindent files
 set smartindent                   " auto indent while editing
 set ai                              " acitve indentation objects
 
-set scrolloff=20                    " limit of line to scroll
+set scrolloff=10                    " limit of line to scroll
 set showtabline=2                   " always show tab number
 set incsearch                       " Show search result while typing
 set encoding=utf-8                  " encoding file
@@ -114,7 +114,7 @@ else
 	set ttyfast                        " more smoothness, removed ion neobim
 endif
 
-"  change mksession 
+"  change mksession
 set sessionoptions+=tabpages    " register tab
 set sessionoptions-=blank       " dont't register blank pages
 
@@ -123,9 +123,9 @@ set backspace=indent,eol,start    " remove space in indent and end of line
 " Show visual markers
 set listchars=tab:>-,trail:·,extends:❯,precedes:❮,nbsp:␣,eol:↲
 set list
-set showbreak=↪\ \ \ 
+set showbreak=↪\ \ \
 
-"  autoformat options 
+"  autoformat options
 set formatoptions-=o " dont inser comment leader when pressing <o> or <O>
 set formatoptions+=n " recognize number list form formating
 set formatoptions+=j " join comment when join lines
@@ -181,25 +181,25 @@ endif
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
-"                 _____  _   _  _____  _____  _____ ___  ___       
-"                /  __ \| | | |/  ___||_   _||  _  ||  \/  |     
-"                | /  \/| | | |\ `--.   | |  | | | || .  . |     
-"                | |    | | | | `--. \  | |  | | | || |\/| |     
-"                | \__/\| |_| |/\__/ /  | |  \ \_/ /| |  | |     
-"                 \____/ \___/ \____/   \_/   \___/ \_|  |_/     
-"          ______  _   _  _   _  _____  _____  _____  _____  _   _  _____         
+"                 _____  _   _  _____  _____  _____ ___  ___
+"                /  __ \| | | |/  ___||_   _||  _  ||  \/  |
+"                | /  \/| | | |\ `--.   | |  | | | || .  . |
+"                | |    | | | | `--. \  | |  | | | || |\/| |
+"                | \__/\| |_| |/\__/ /  | |  \ \_/ /| |  | |
+"                 \____/ \___/ \____/   \_/   \___/ \_|  |_/
+"          ______  _   _  _   _  _____  _____  _____  _____  _   _  _____
 "          |  ___|| | | || \ | |/  __ \|_   _||_   _||  _  || \ | |/  ___|
-"          | |_   | | | ||  \| || /  \/  | |    | |  | | | ||  \| |\ `--. 
+"          | |_   | | | ||  \| || /  \/  | |    | |  | | | ||  \| |\ `--.
 "          |  _|  | | | || . ` || |      | |    | |  | | | || . ` | `--. \
 "          | |    | |_| || |\  || \__/\  | |   _| |_ \ \_/ /| |\  |/\__/ /
-"          \_|     \___/ \_| \_/ \____/  \_/   \___/  \___/ \_| \_/\____/ 
-"                                                                
+"          \_|     \___/ \_| \_/ \____/  \_/   \___/  \___/ \_| \_/\____/
+"
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 
 "https://stackoverflow.com/questions/18319284/vim-sign-column-toggle
-function! ToggleSignColumn() 
+function! ToggleSignColumn()
     if !exists("b:signcolumn_on") || b:signcolumn_on
         set signcolumn=no
         let b:signcolumn_on=0
@@ -226,7 +226,7 @@ function! FillLine( str, str_end )
 endfunction
 
 " -------------------------------------------------------------------------- "
-"                         python template 
+"                         python template
 " -------------------------------------------------------------------------- "
 "  apply a template when creating a python file
 
@@ -244,7 +244,7 @@ function! CheckPyFile()
 				" let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
 				" call append(6, modif)
 				normal!GGo
-				normal!o> DESCRIPTION:    TODO    
+				normal!o> DESCRIPTION:    TODO
 				normal!o"""
 				normal!o
 				normal!o
@@ -278,25 +278,25 @@ autocmd BufWritePre * :%s/\s\+$//e
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
-"                  ______   ___   _____  _____  _____ 
+"                  ______   ___   _____  _____  _____
 "                  | ___ \ / _ \ /  ___||_   _|/  __ \
 "                  | |_/ // /_\ \\ `--.   | |  | /  \/
-"                  | ___ \|  _  | `--. \  | |  | |    
+"                  | ___ \|  _  | `--. \  | |  | |
 "                  | |_/ /| | | |/\__/ / _| |_ | \__/\
 "                  \____/ \_| |_/\____/  \___/  \____/
-"           ___  ___  ___  ______ ______  _____  _   _  _____  _____         
+"           ___  ___  ___  ______ ______  _____  _   _  _____  _____
 "           |  \/  | / _ \ | ___ \| ___ \|_   _|| \ | ||  __ \/  ___|
-"           | .  . |/ /_\ \| |_/ /| |_/ /  | |  |  \| || |  \/\ `--. 
+"           | .  . |/ /_\ \| |_/ /| |_/ /  | |  |  \| || |  \/\ `--.
 "           | |\/| ||  _  ||  __/ |  __/   | |  | . ` || | __  `--. \
 "           | |  | || | | || |    | |     _| |_ | |\  || |_\ \/\__/ /
-"           \_|  |_/\_| |_/\_|    \_|     \___/ \_| \_/ \____/\____/ 
-"                                      _                _                       
-"                                     | |              (_)       
-"                _ __    ___    _ __  | | _   _   __ _  _  _ __  
-"               | '_ \  / _ \  | '_ \ | || | | | / _` || || '_ \ 
+"           \_|  |_/\_| |_/\_|    \_|     \___/ \_| \_/ \____/\____/
+"                                      _                _
+"                                     | |              (_)
+"                _ __    ___    _ __  | | _   _   __ _  _  _ __
+"               | '_ \  / _ \  | '_ \ | || | | | / _` || || '_ \
 "               | | | || (_) | | |_) || || |_| || (_| || || | | |
 "               |_| |_| \___/  | .__/ |_| \__,_| \__, ||_||_| |_|
-"                              | |                __/ |          
+"                              | |                __/ |
 "                              |_|               |___/
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -322,7 +322,7 @@ noremap k gk
 noremap <space> y
 noremap tt :tabclose<CR>
 noremap gt :tabnew%<CR><C-o>
-noremap <C-f> :find 
+noremap <C-f> :find
 noremap " '
 noremap ' "
 
@@ -345,12 +345,12 @@ inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
 nnoremap <M-f> <Esc><Esc>:update<CR>
 
 " -------------------- quickfix list ----------------------------- #
-nnoremap <silent> <F5> :copen<cr>
-nnoremap ]c :cnext<CR>                             " go to next item in quickfix list
-nnoremap [c :cprev<CR>                             " go to previous item in quickfix list
+" nnoremap <silent> <F5> :copen<cr>
+" nnoremap ]c :cnext<CR>                             " go to next item in quickfix list
+" nnoremap [c :cprev<CR>                             " go to previous item in quickfix list
 
 " -------- autoformat files ------------------------------------------------- "
-nnoremap <silent> <F9> :r! python -m black -l 79 expand('%:p') 
+nnoremap <silent> <F9> :r! python -m black -l 79 expand('%:p')
 
 "" ---- e.g press 1 to go to buffer 1 -----------
 map <M-1> :tabn1<CR>
@@ -371,10 +371,10 @@ nnoremap qk <C-w>k:wq<CR>
 nnoremap qq :x<CR>
 
 " ------ replace inner word and search replace word to reapeat -------
-nnoremap c* *``cgn
-nnoremap c# #``cgN
+nnoremap cj *#cgn
+nnoremap ck #**cgN
 
-nnoremap <Leader>l :let &scrolloff=100-&scrolloff<CR>                " make edit line always centered
+" nnoremap <Leader>l :let &scrolloff=100-&scrolloff<CR>                " make edit line always centered
 
 " ---------------------- loclist --------------------------
 nnoremap <silent> <F3> :call LNext(0)<CR>
@@ -426,13 +426,13 @@ noremap <silent> <C-Down> :resize -3<CR>
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
-"                ______  _      _   _  _____  _____  _   _  _____                
+"                ______  _      _   _  _____  _____  _   _  _____
 "                | ___ \| |    | | | ||  __ \|_   _|| \ | |/  ___|
-"                | |_/ /| |    | | | || |  \/  | |  |  \| |\ `--. 
+"                | |_/ /| |    | | | || |  \/  | |  |  \| |\ `--.
 "                |  __/ | |    | | | || | __   | |  | . ` | `--. \
 "                | |    | |____| |_| || |_\ \ _| |_ | |\  |/\__/ /
-"                \_|    \_____/ \___/  \____/ \___/ \_| \_/\____/ 
-"                                                                 
+"                \_|    \_____/ \___/  \____/ \___/ \_| \_/\____/
+"
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -451,7 +451,7 @@ call plug#begin(g:plug_install_files)
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
-        Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp 
+        Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp
         " Plug 'weilbith/nvim-lsp-smag'                        " Smart tags with lsp
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
@@ -469,7 +469,11 @@ if has('nvim')
         Plug 'nvim-lua/popup.nvim'                             " to install telescope
         Plug 'nvim-telescope/telescope.nvim'                   " https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
         Plug 'lewis6991/gitsigns.nvim'
-        " Plug 'lewis6991/spellsitter.nvim'                       " spell checker
+        Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
+        " Plug 'mfussenegger/nvim-dap'
+        " Plug 'mfussenegger/nvim-dap-python'
+        " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
+        Plug 'sakhnik/nvim-gdb'                                " pdb into vim
 
         " Plug 'tiagovla/tokyodark.nvim'
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
@@ -487,13 +491,14 @@ else
         " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
         Plug 'vim-airline/vim-airline'                         " add visual line
         Plug 'vim-airline/vim-airline-themes'                  " theme for airline
+        Plug 'wellle/targets.vim'                              " Better objects
 endif
-
 
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
-" Plug 't9md/vim-textmanip'                            " move blocks of text easy
+Plug 'tpope/vim-scriptease'
+Plug 't9md/vim-textmanip'                            " move blocks of text easy
 " Plug 't9md/vim-choosewin'
 " Plug 'junegunn/vim-easy-align'                       " Helps alignment TODO: LEARN
 " Plug 'sjl/gundo.vim'                                 " add undo tree
@@ -515,15 +520,15 @@ Plug 'tpope/vim-commentary'                             " comment objects
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
-Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
+" Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
 Plug 'justinmk/vim-sneak'                               " jump using 2-chars
 Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'AndrewRadev/sideways.vim'                         " move func args
-Plug 'flwyd/vim-conjoin'                                " better join lines
+" Plug 'flwyd/vim-conjoin'                                " better join lines
 Plug 'qwertologe/nextval.vim'                           " better ctrl-a
 " Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
-" Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
+Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
@@ -545,7 +550,7 @@ Plug 'rbong/vim-flog'                                   " Commit viewer
 " Plug 'Shougo/vimproc.vim', {'do' : 'make'}           " async executions
 " Plug 'sillybun/vim-repl'                             " python terminal
 " Plug 'https://github.com/gotcha/vimpdb'
-" Plug 'https://github.com/thinca/vim-quickrun'          " Run python and others easely
+Plug 'https://github.com/thinca/vim-quickrun'          " Run python and others easely
 " Plug 'romainl/vim-qf'                                " help with the quickfix lists
 " Plug 'wincent/terminus'                              " send text to as windows
 "
@@ -557,13 +562,14 @@ Plug 'rbong/vim-flog'                                   " Commit viewer
 " --------------------------------------------------------------
 "- ---------------------- Python -------------------------------
 " --------------------------------------------------------------
+Plug 'pgzzdiab/vim-unstack'                            " parse python callback from clipbord/tmux buffer into quickfix list
 Plug 'mgedmin/python_open_module.vim'                  " Python standard library source code
 Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " Plug 'jmcantrell/vim-virtualenv'                       " Tool for python venv
 " Plug 'westurner/venv.vim'
 " Plug 'tell-k/vim-autopep8'                           " autoformat python
 " Plug 'wincent/terminus'                              " send text to as windows
-" Plug 'ivanov/vim-ipython' 
+" Plug 'ivanov/vim-ipython'
 "
 " --------------------------------------------------------------
 " ---------------------- Objects -------------------------------
@@ -572,7 +578,6 @@ Plug 'tpope/vim-unimpaired'                            " exchange lines relative
 Plug 'FooSoft/vim-argwrap'                             " wrap functions args
 Plug 'tpope/vim-surround'                              " surround oparator
 Plug 'jeetsukumaran/vim-indentwise'                    " Move to indent
-Plug 'wellle/targets.vim'                              " Better objects
 Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
 Plug 'kana/vim-textobj-user'                           " add new text objects
 Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
@@ -591,8 +596,9 @@ Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it 
 " ---------------------- Theming -------------------------------
 " --------------------------------------------------------------
 if has('nvim')
-		Plug 'hoob3rt/lualine.nvim'                            " statusbar
-		Plug 'romgrk/barbar.nvim'                              " bufferline 
+		" Plug 'hoob3rt/lualine.nvim'                            " statusbar
+        Plug 'famiu/feline.nvim'
+		Plug 'romgrk/barbar.nvim'                              " bufferline
 		" Plug 'lukas-reineke/indent-blankline.nvim'             " show indent on blankline
 		Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
 		Plug 'pierrzacharias/material.nvim'                " colorscheme
@@ -688,10 +694,11 @@ if has('nvim')
 	" Close buffer
 	nnoremap <silent> <A-c> :BufferClose<CR>
 	" Magic buffer-picking mode
-	nnoremap <silent> <C-s> :BufferPick<CR>
+	nnoremap <silent> <A-s> :BufferPick<CR>
 	" Sort automatically by...
 	nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
 	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
+
 endif
 
 " -------------------------------------------------------------
@@ -706,6 +713,38 @@ let g:grepper_side=1
 let g:grepper_tools=['ag']
 nmap gn  <plug>(GrepperOperator)
 xmap gn  <plug>(GrepperOperator)
+
+" --------------------------------------------------------------
+" unstack
+" --------------------------------------------------------------
+nnoremap <A-d> :UnstackFromClipboard<CR>
+nnoremap <space>j :copen<CR><C-w>JG<CR>
+
+" nnoremap <A-d> :UnstackFromClipboard \| copen<CR><C-w>JG<CR>
+let g:unstack_populate_quickfix=1
+let g:unstack_open_tab=0
+let g:unstack_showsigns=0
+" let g:unstack_extractors=0
+
+" --------------------------------------------------------------
+" qf_helper
+" --------------------------------------------------------------
+if has('nvim')
+  " use <C-N> and <C-P> for next/prev.
+  nnoremap <silent> <C-N> <cmd>QNext<CR>
+  nnoremap <silent> <C-P> <cmd>QPrev<CR>
+  " toggle the quickfix open/closed without jumping to it
+  nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
+  nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
+  " <C-t>	open in a new tab
+  " <C-s>	open in a horizontal split
+  " <C-v>	open in a vertical split
+  " <C-p>	open the entry but keep the cursor in the quickfix window
+  " <C-k>	scroll up and open entry while keeping the cursor in the quickfix window
+  " <C-j>	scroll down and open entry while keeping the cursor in the quickfix window
+  " {	scroll up to the previous file
+  " }	scroll down to the next file
+endif
 
 " --------------------------------------------------------------
 " echo doc
@@ -900,7 +939,7 @@ let g:subversivePreserveCursorPosition=1 "cursor will not move when substitution
 "	" airline
 "	" --------------------------------------------------------------
 "	let g:airline_theme = 'desertink'
-"	"  general options 
+"	"  general options
 "	let g:airline_inactive_collapse=1
 "	let g:airline_inactive_alt_sep=1
 "	let g:airline_powerline_fonts = 1
@@ -1078,11 +1117,11 @@ let g:startify_custom_header = [
             " \ 'runner': 'vimproc',
             " \ 'runner':'terminal',
             " \ 'runner/terminal/into':1,
-" let b:quickrun_config = {
-"             \ 'outputter':'error',
-"             \ 'outputter/error/success':'buffer',
-"             \ 'outputter/error/error':'loclist',
-"             \  }
+let b:quickrun_config = {
+            \ 'outputter':'error',
+            \ 'outputter/error/success':'buffer',
+            \ 'outputter/error/error':'loclist',
+            \  }
 
 "             \ 'outputter/loclist/errorformat':'&errorformat',
             " \ 'outputter/buffer/close_on_empty' : 1,
@@ -1117,6 +1156,7 @@ let g:startify_custom_header = [
 
 " let g:quickrun_config['R'] = {'command': 'R', 'exec': ['%c -s --no-save -f %s', ':%s/.\b//g']}
 " stop quickrun with <Ctrl-c>
+nnoremap <expr><silent> <C-h> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-h>"
 
 " --------------------------------------------------------------
 " fzf
@@ -1176,10 +1216,10 @@ else
   highlight! CocInfoSign  guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
   highlight! CocHintSign guifg=#F07178 guibg=NONE gui=NONE cterm=NONE
 
-  highlight! CocWarningHighlight guibg=NONE gui=NONE cterm=NONE 
-  highlight! CocErrorHighlight guibg=NONE gui=NONE cterm=NONE 
-  highlight! CocInfoHighlight  guibg=NONE gui=NONE cterm=NONE 
-  highlight! CocHintHighlight guibg=NONE gui=NONE cterm=NONE 
+  highlight! CocWarningHighlight guibg=NONE gui=NONE cterm=NONE
+  highlight! CocErrorHighlight guibg=NONE gui=NONE cterm=NONE
+  highlight! CocInfoHighlight  guibg=NONE gui=NONE cterm=NONE
+  highlight! CocHintHighlight guibg=NONE gui=NONE cterm=NONE
 
   " use location list
   let g:coc_global_extensions = [
@@ -1240,17 +1280,17 @@ endif
 " _____________________________________________________________________________ "
 "           ___  ___  ___  ______ ______  _____  _   _  _____  _____
 "           |  \/  | / _ \ | ___ \| ___ \|_   _|| \ | ||  __ \/  ___|
-"           | .  . |/ /_\ \| |_/ /| |_/ /  | |  |  \| || |  \/\ `--. 
+"           | .  . |/ /_\ \| |_/ /| |_/ /  | |  |  \| || |  \/\ `--.
 "           | |\/| ||  _  ||  __/ |  __/   | |  | . ` || | __  `--. \
 "           | |  | || | | || |    | |     _| |_ | |\  || |_\ \/\__/ /
-"           \_|  |_/\_| |_/\_|    \_|     \___/ \_| \_/ \____/\____/ 
+"           \_|  |_/\_| |_/\_|    \_|     \___/ \_| \_/ \____/\____/
 "                ______  _      _   _  _____  _____  _   _  _____
 "                | ___ \| |    | | | ||  __ \|_   _|| \ | |/  ___|
-"                | |_/ /| |    | | | || |  \/  | |  |  \| |\ `--. 
+"                | |_/ /| |    | | | || |  \/  | |  |  \| |\ `--.
 "                |  __/ | |    | | | || | __   | |  | . ` | `--. \
 "                | |    | |____| |_| || |_\ \ _| |_ | |\  |/\__/ /
-"                \_|    \_____/ \___/  \____/ \___/ \_| \_/\____/ 
-"                                                                 
+"                \_|    \_____/ \___/  \____/ \___/ \_| \_/\____/
+"
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -1262,6 +1302,11 @@ endif
 " nnoremap <Up> :lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>
 " nnoremap <A-s> :lua require"illuminate".toggle_pause()<cr>
 
+" --------------------------------------------------------------------------
+" -- fugitive
+" -- -----------------------------------------------------------------------
+nnoremap <leader>G :Git<space>
+"
 " --------------------------------------------------------------------------
 " -- lsp
 " -- -----------------------------------------------------------------------
@@ -1438,11 +1483,11 @@ endif
 " nnoremap <M-'> :WipeReg<cr>
 
 " ------------------- Doge -------------------------------------------------- #
-nnoremap <A-d> :DogeGenerate<cr>
+" nnoremap <A-d> :DogeGenerate<cr>
 
 " -------------------- buffergator ----------------------------------------- "
 " map <M-b> :BuffergatorToggle<CR>
- 
+
 " -------------------------------------------------------------------------- "
 " smoothie
 " -------------------------------------------------------------------------- "
@@ -1482,8 +1527,8 @@ map ]= <Plug>(IndentWiseNextEqualIndent)
 " -------------------------------------------------------------------------- "
 " to stay in container
 " https://github.com/jeetsukumaran/vim-argwrap/commit/30edd6ba0a654d22db62359e4bca9d174f1eead5
-nnoremap <Leader>h :SidewaysLeft<cr>
-nnoremap <Leader>l :SidewaysRight<cr>
+" nnoremap <Leader>h :SidewaysLeft<cr>
+" nnoremap <Leader>l :SidewaysRight<cr>
 " nmap <leader>si <Plug>SidewaysArgumentInsertBefore
 " nmap <leader>sa <Plug>SidewaysArgumentAppendAfter
 " nmap <leader>sI <Plug>SidewaysArgumentInsertFirst
@@ -1573,7 +1618,7 @@ nnoremap <leader>r :Rg<CR>
 nnoremap <leader>m :BLines<CR>
 " nnoremap <C-o> :FzfPreviewProjectFiles<CR>
 nmap <leader>f :Files<CR>
-nmap <leader>fi :find 
+nmap <leader>fi :find<space>
 nmap <leader>b :Buffers<CR>
 " nmap <Leader>: :History:<CR>
 " nmap <Leader>gm :Maps<CR>
@@ -1646,10 +1691,10 @@ autocmd BufReadPost * map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
 " _____________________________________________________________________________ "
 "                 _____  _____  _      _____ ______  _____
 "                /  __ \|  _  || |    |  _  || ___ \/  ___|
-"                | /  \/| | | || |    | | | || |_/ /\ `--. 
+"                | /  \/| | | || |    | | | || |_/ /\ `--.
 "                | |    | | | || |    | | | ||    /  `--. \
 "                | \__/\\ \_/ /| |____\ \_/ /| |\ \ /\__/ /
-"                 \____/ \___/ \_____/ \___/ \_| \_|\____/ 
+"                 \____/ \___/ \_____/ \___/ \_| \_|\____/
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 
@@ -1669,8 +1714,8 @@ endif
 set background=dark
 
 set cursorline                               " Highlight current line
-" hi CursorLine guibg=#0F1419
-hi CursorLine guibg=#1E272C
+" hi CursorLine guibg=#282828
+hi CursorLine guibg=#282828
 
 " -------------------------------------------------------------
 "  vim sneak
@@ -1692,7 +1737,7 @@ endif
 " ------------------------------------------------------------------------- "
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-" highlight ColorColumn guibg=#1E272C
+highlight ColorColumn guibg=#232d33
 set colorcolumn=80
 
 " ------------------------------------------------------------------------- "
@@ -1718,12 +1763,12 @@ hi! CursorLineNr guifg=#B0BEC5 guibg=#1E272C
 " ------------------------------------------------------------------------- "
 " ---------------------- VertSplit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-" hi VertSplit guibg=NONE guifg=#6c71c4 
+" hi VertSplit guibg=NONE guifg=#6c71c4
 " hi TjbLine guibg=#000000 guifg=#073642
 " hi! Pmenu guibg=#b58900 guibg=#000000
 
 " -------- indent color ----------------------------------------
-" hi IndentGuidesEven guibg=#002b36	
+" hi IndentGuidesEven guibg=#002b36
 " hi IndentGuidesOdd guibg=#00364a
 
 " --------- startify color ---------------------------------------

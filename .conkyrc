@@ -2,7 +2,7 @@ background no
 use_xft yes
 xftfont Fira Code:size=100
 xftalpha 0.5
-update_interval 1
+update_interval 30
 total_run_times 0
 border_width 1
 own_window yes
@@ -38,5 +38,5 @@ use_spacer right
 text_buffer_size 256
 
 TEXT
-${font Poiret One:weight=Light:size=50}${color #999999}${alignc}${offset 70}${time %B, %A %d}${voffset 10}
-${font Poiret One:weight=Light:size=290}${color #999999}${alignc}${offset 40}${time %H:}${time %M:}${time %S}${voffset 40}
+${font Poiret One:weight=Light:size=50}${color #999999}${alignc}${offset -15}${time %B, %A %d}${voffset 50}
+${font Poiret One:weight=Light:size=290}${color #999999}${alignc}${offset 40}${time %H:}${time %M}${voffset 80}

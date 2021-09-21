@@ -18,7 +18,7 @@ require'diffview'.setup {
     -- The `view` bindings are active in the diff buffers, only when the current
     -- tabpage is a Diffview.
     view = {
-      ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file 
+      ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
       ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
       ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
       ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
@@ -44,6 +44,248 @@ require'diffview'.setup {
 }
 
 -- -------------------------------------------------------------------------- #
+-- ----------------- \<qf_helper\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require'qf_helper'.setup({
+  -- prefer_loclist = true,       -- Used for QNext/QPrev (see Commands below)
+  -- sort_lsp_diagnostics = true, -- Sort LSP diagnostic results
+  -- quickfix = {
+  --   autoclose = true,          -- Autoclose qf if it's the only open window
+  --   default_bindings = true,   -- Set up recommended bindings in qf window
+  --   default_options = true,    -- Set recommended buffer and window options
+  --   max_height = 10,           -- Max qf height when using open() or toggle()
+  --   min_height = 1,            -- Min qf height when using open() or toggle()
+  --   track_location = 'cursor', -- Keep qf updated with your current location
+  --                              -- Use `true` to update position as well
+  -- },
+  -- loclist = {                  -- The same options, but for the loclist
+  --   autoclose = true,
+  --   default_bindings = true,
+  --   default_options = true,
+  --   max_height = 10,
+  --   min_height = 1,
+  --   track_location = 'cursor',
+  -- },
+})
+
+-- require'dap'.setup()
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- \<lualine\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- require('feline').setup({
+--     preset = 'nord'
+-- })
+-- require'feline'.setup({})
+local colors = {
+    bg = '#282c34',
+    fg = '#abb2bf',
+    yellow = '#e0af68',
+    cyan = '#56b6c2',
+    darkblue = '#081633',
+    green = '#98c379',
+    orange = '#d19a66',
+    violet = '#a9a1e1',
+    magenta = '#c678dd',
+    blue = '#61afef',
+    red = '#e86671'
+}
+-- │vertical_bar          │'┃'    │
+-- │vertical_bar_thin     │'│'    │
+-- │left                  │''    │
+-- │right                 │''    │
+-- │block                 │'█'    │
+-- │left_filled           │''    │
+-- │right_filled          │''    │
+-- │slant_left            │''    │
+-- │slant_left_thin       │''    │
+-- │slant_right           │''    │
+-- │slant_right_thin      │''    │
+-- │slant_left_2          │''    │
+-- │slant_left_2_thin     │''    │
+-- │slant_right_2         │''    │
+-- │slant_right_2_thin    │''    │
+-- │left_rounded          │''    │
+-- │left_rounded_thin     │''    │
+-- │right_rounded         │''    │
+-- │right_rounded_thin    │''    │
+-- │circle                │'●'    │
+local vi_mode_colors = {
+    NORMAL = colors.green,
+    INSERT = colors.red,
+    VISUAL = colors.magenta,
+    OP = colors.green,
+    BLOCK = colors.blue,
+    REPLACE = colors.violet,
+    ['V-REPLACE'] = colors.violet,
+    ENTER = colors.cyan,
+    MORE = colors.cyan,
+    SELECT = colors.orange,
+    COMMAND = colors.green,
+    SHELL = colors.green,
+    TERM = colors.green,
+    NONE = colors.yellow
+}
+
+local lsp = require 'feline.providers.lsp'
+local vi_mode_utils = require 'feline.providers.vi_mode'
+
+-- LuaFormatter off
+
+local comps = {
+    vi_mode = {
+        left = {
+            provider = function()
+              return ' ' .. vi_mode_utils.get_vim_mode()
+            end,
+            hl = function()
+                local val = {
+                    name = vi_mode_utils.get_mode_highlight_name(),
+                    fg = vi_mode_utils.get_mode_color(),
+                    style = 'bold'
+                }
+                return val
+            end,
+            left_sep = '',
+            right_sep = '  '
+        },
+        right = {
+            provider = '',
+            hl = function()
+                local val = {
+                    name = vi_mode_utils.get_mode_highlight_name(),
+                    fg = vi_mode_utils.get_mode_color()
+                }
+                return val
+            end,
+            -- left_sep = '',
+            -- right_sep = ''
+        }
+    },
+    file = {
+        info = {
+            provider = 'file_info',
+            file_modified_icon = '●',
+            hl = {
+                fg = colors.fg,
+                -- style = 'bold'
+            },
+        },
+        encoding = {
+            provider = 'file_encoding',
+            left_sep = ' ',
+            hl = {
+                fg = colors.blue,
+                -- style = 'bold'
+            }
+        },
+        type = {
+            provider = 'file_type'
+        },
+        position = {
+            provider = 'position',
+            left_sep = ' ',
+            hl = {
+                fg = colors.orange,
+                style = 'bold'
+            }
+        },
+    },
+    left_end = {
+        provider = function() return '' end,
+        hl = {
+            fg = colors.bg,
+            bg = colors.blue,
+        }
+    },
+    -- line_percentage = {
+    --     provider = 'line_percentage',
+    --     left_sep = ' ',
+    --     hl = {
+    --         style = 'bold'
+    --     }
+    -- },
+    scroll_bar = {
+        provider = 'scroll_bar',
+        left_sep = ' ',
+        hl = {
+            fg = colors.blue,
+            style = 'bold'
+        }
+    },
+    diagnos = {},
+    lsp = {},
+    git = {
+        branch = {
+            provider = 'git_branch',
+            icon = ' ',
+            left_sep = ' ',
+            hl = {
+                fg = colors.blue,
+            },
+        },
+        add = {
+            provider = 'git_diff_added',
+            hl = {
+                fg = colors.green
+            }
+        },
+        change = {
+            provider = 'git_diff_changed',
+            hl = {
+                fg = colors.orange
+            }
+        },
+        remove = {
+            provider = 'git_diff_removed',
+            hl = {
+                fg = colors.red
+            }
+        }
+    }
+}
+
+local components = {
+  active = {},
+  inactive = {},
+}
+
+table.insert(components.active, {})
+table.insert(components.active, {})
+table.insert(components.inactive, {})
+table.insert(components.inactive, {})
+
+table.insert(components.active[1], comps.vi_mode.left)
+table.insert(components.active[1], comps.file.info)
+table.insert(components.active[1], comps.git.branch)
+table.insert(components.active[1], comps.git.add)
+table.insert(components.active[1], comps.git.change)
+table.insert(components.active[1], comps.git.remove)
+table.insert(components.inactive[1], comps.vi_mode.left)
+table.insert(components.inactive[1], comps.file.info)
+table.insert(components.active[2], comps.lsp.name)
+table.insert(components.active[2], comps.file.position)
+table.insert(components.active[2], comps.vi_mode.right)
+
+-- LuaFormatter on
+
+require'feline'.setup {
+    colors = { bg = colors.bg, fg = colors.fg },
+    components = components,
+    vi_mode_colors = vi_mode_colors,
+    force_inactive = {
+        filetypes = {
+            'packer',
+            'NvimTree',
+            'fugitive',
+            'fugitiveblame'
+        },
+        buftypes = {'terminal'},
+        bufnames = {}
+    }
+}
+
+-- -------------------------------------------------------------------------- #
 -- ----------------- spellsitter -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 -- require('spellsitter').setup()
@@ -51,11 +293,12 @@ require'diffview'.setup {
 -- -------------------------------------------------------------------------- #
 -- ----------------- statusline --------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-local custom_gruvbox = require'lualine.themes.gruvbox'
+-- require('lualine').setup()
+-- local custom_gruvbox = require'lualine.themes.gruvbox'
 	-- Chnage the background of lualine_c section for normal mode
-custom_gruvbox.normal.c.bg = '#263238'
-custom_gruvbox.normal.b.bg = '#263238'
-custom_gruvbox.normal.c.bg = '#263238'
+-- custom_gruvbox.normal.c.bg = '#263238'
+-- custom_gruvbox.normal.b.bg = '#263238'
+-- custom_gruvbox.normal.c.bg = '#263238'
 
 
 ---------------------------------------------------------------------------------
@@ -66,28 +309,32 @@ require('telescope').setup{
     vimgrep_arguments = {
       'rg',
       '--color=never',
-      '--no-heading',
-      '--with-filename',
-      '--line-number',
-      '--column',
-      '--smart-case'
+      -- '--no-heading',
+      -- '--with-filename',
+      -- '--line-number',
+      -- '--column',
+      -- '--smart-case'
     },
-    -- prompt_position = "bottom",
     prompt_prefix = "> ",
     selection_caret = "> ",
+    theme = "dropdown",
     entry_prefix = "  ",
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "descending",
     layout_strategy = "horizontal",
     layout_config = {
-      horizontal = {mirror = true, },
+      horizontal = {mirror = false, },
       vertical = {mirror = false, }
     },
     file_sorter = require'telescope.sorters'.get_fuzzy_file,
-    file_ignore_patterns = {},
+    file_ignore_patterns = {
+      '.pyc',
+      '.pyi',
+      'venv/.*',
+      'site-packages/.*'
+    },
     generic_sorter = require'telescope.sorters'.get_generic_fuzzy_sorter,
-    -- shorten_path = true,
     winblend = 0,
     -- width = 0.75,
     -- preview_cutoff = 120,
@@ -97,7 +344,7 @@ require('telescope').setup{
     borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
     color_devicons = true,
     use_less = false,
-    set_env = { ['COLORTERM'] = 'truecolor' },
+    -- set_env = { ['COLORTERM'] = 'truecolor' },
     -- default = nil,
     file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
     grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
@@ -254,6 +501,75 @@ saga.init_lsp_saga(opts)
 -- require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
 
 -- -------------------------------------------------------------------------- #
+--  ----------------- barbar ----------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- Set barbar's options
+vim.g.bufferline = {
+  -- Enable/disable animations
+  animation = true,
+
+  -- Enable/disable auto-hiding the tab bar when there is a single buffer
+  auto_hide = false,
+
+  -- Enable/disable current/total tabpages indicator (top right corner)
+  tabpages = true,
+
+  -- Enable/disable close button
+  closable = true,
+
+  -- Enables/disable clickable tabs
+  --  - left-click: go to buffer
+  --  - middle-click: delete buffer
+  clickable = true,
+
+  -- Excludes buffers from the tabline
+  -- exclude_ft = ['javascript'],
+  -- exclude_name = ['package.json'],
+
+  -- Enable/disable icons
+  -- if set to 'numbers', will show buffer index in the tabline
+  -- if set to 'both', will show buffer index and icons in the tabline
+  icons = both,
+
+  -- If set, the icon color will follow its corresponding buffer
+  -- highlight group. By default, the Buffer*Icon group is linked to the
+  -- Buffer* group (see Highlighting below). Otherwise, it will take its
+  -- default value as defined by devicons.
+  icon_custom_colors = true,
+
+  -- Configure icons on the bufferline.
+  -- icon_separator_active = '▎',
+  -- icon_separator_inactive = '▎',
+  -- icon_close_tab = '',
+  -- icon_close_tab_modified = '●',
+  -- icon_pinned = '車',
+
+  -- If true, new buffers will be inserted at the end of the list.
+  -- Default is to insert after current buffer.
+  insert_at_end = true,
+
+  -- Sets the maximum padding width with which to surround each tab
+  maximum_padding = 1,
+
+  -- Sets the maximum buffer name length.
+  maximum_length = 60,
+
+  -- If set, the letters for each buffer in buffer-pick mode will be
+  -- assigned based on their name. Otherwise or in case all letters are
+  -- already assigned, the behavior is to assign letters in order of
+  -- usability (see order below)
+  -- semantic_letters = true,
+
+  -- New buffer letters are assigned in this order. This order is
+  -- optimal for the qwerty keyboard layout but might need adjustement
+  -- for other layouts.
+  -- letters = 'qwertyuiopasdfghjklxcvbnm;QWERTYUIOPASDFGHJKLLCVBNM',
+
+  -- Sets the name of unnamed buffers. By default format is "[Buffer X]"
+  -- where X is the buffer number. But only a static string is accepted here.
+  -- no_name_title = nil,
+}
+-- -------------------------------------------------------------------------- #
 --  ----------------- illuminate -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
 -- require'lspconfig'.pyright.setup{
@@ -277,7 +593,7 @@ saga.init_lsp_saga(opts)
 -- -------------------------------------------------------------------------- #
 require("trouble").setup {
 	-- position = 'right',
-	-- keymaps = { 
+	-- keymaps = {
 		-- position = "bottom", -- position of the list can be: bottom, top, left, right
 		-- height = 10, -- height of the trouble list when position is top or bottom
     -- width = 50, -- width of the list when position is left or right
@@ -582,10 +898,6 @@ vim.g.material_contras=true
 vim.g.material_borders=true
 vim.g.material_disable_background = true
 require('material').set()
--- vim.g.tokyodark_transparent_background = true
--- vim.g.tokyodark_enable_italic_comment = true
--- vim.g.tokyodark_enable_italic = true
--- vim.g.tokyodark_color_gamma = "0.9"
 
 -- ----------------- git-worktree ------------------------------------------- #
 -- require("git-worktree").setup({

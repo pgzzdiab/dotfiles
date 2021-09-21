@@ -85,7 +85,7 @@ source $ZSH/oh-my-zsh.sh
 source $HOME/.oh-my-zsh/custom/plugins/zsh-completions/zsh-completions.plugin.zsh
 
 
-# only aws command completion 
+# only aws command completion
 zstyle ':completion:*:*:aws' fzf-search-display true
 # or for everything
 zstyle ':completion:*' fzf-search-display true
@@ -139,6 +139,8 @@ alias re="	pkill -USR1 -x sxhkd"
 alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-36-211-140.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
 alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-36-211-140.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/dalla_man_optimization dev/results/simulation_framework/dalla_man_optimization"
 alias icat="kitty +kitten icat"
+alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
+alias v="nvim"
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # icat ~/Images/logo_diabeloop_bleu_rvb.png
