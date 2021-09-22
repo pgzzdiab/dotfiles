@@ -366,13 +366,12 @@ map <M-9> :tabn9<CR>
 " ---- close buffers on left, rigth, ..
 nnoremap ql <C-w>l:wq<CR>
 nnoremap qh <C-w>h:wq<CR>
-nnoremap qj <C-w>j:wq<CR>
-nnoremap qk <C-w>k:wq<CR>
+" nnoremap qj <C-w>j:wq<CR>
+" nnoremap qk <C-w>k:wq<CR>
 nnoremap qq :x<CR>
 
 " ------ replace inner word and search replace word to reapeat -------
-nnoremap cj *#cgn
-nnoremap ck #**cgN
+nnoremap cn #*cgn
 
 " nnoremap <Leader>l :let &scrolloff=100-&scrolloff<CR>                " make edit line always centered
 
@@ -470,10 +469,12 @@ if has('nvim')
         Plug 'nvim-telescope/telescope.nvim'                   " https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
         Plug 'lewis6991/gitsigns.nvim'
         Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
+        Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
+        Plug 'b3nj5m1n/kommentary'
         " Plug 'mfussenegger/nvim-dap'
         " Plug 'mfussenegger/nvim-dap-python'
         " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
-        Plug 'sakhnik/nvim-gdb'                                " pdb into vim
+        " Plug 'sakhnik/nvim-gdb'                                " pdb into vim
 
         " Plug 'tiagovla/tokyodark.nvim'
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
@@ -492,6 +493,9 @@ else
         Plug 'vim-airline/vim-airline'                         " add visual line
         Plug 'vim-airline/vim-airline-themes'                  " theme for airline
         Plug 'wellle/targets.vim'                              " Better objects
+        Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
+        Plug 'tpope/vim-surround'                              " surround oparator
+        Plug 'tpope/vim-commentary'                             " comment objects
 endif
 
 " --------------------------------------------------------------
@@ -513,10 +517,10 @@ Plug 't9md/vim-textmanip'                            " move blocks of text easy
 Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer with tmux
 
 " --------------------------------------------------------------------------- "
+"  0
 " ---------------------- IDE ------------------------------------- "
 " --------------------------------------------------------------------------- "
 Plug 'brooth/far.vim'                                   " search and replace
-Plug 'tpope/vim-commentary'                             " comment objects
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
@@ -576,11 +580,10 @@ Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " --------------------------------------------------------------
 Plug 'tpope/vim-unimpaired'                            " exchange lines relatively
 Plug 'FooSoft/vim-argwrap'                             " wrap functions args
-Plug 'tpope/vim-surround'                              " surround oparator
 Plug 'jeetsukumaran/vim-indentwise'                    " Move to indent
 Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
 Plug 'kana/vim-textobj-user'                           " add new text objects
-Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
+Plug 'glts/vim-textobj-comment'                        " comment text object
 " Plug 'christoomey/vim-system-copy'                   " mapping for clipoard
 "
 " --------------------------------------------------------------
@@ -699,6 +702,19 @@ if has('nvim')
 	nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
 	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
 
+endif
+
+" -------------------------------------------------------------
+"  Grepper
+"  ------------------------------------------------------------
+if has('nvim')
+  " vim.g.kommentary_create_default_mappings = true
+  " vim.api.nvim_set_keymap("n", "<leader>cic", "<Plug>kommentary_line_increase", {})
+  " vim.api.nvim_set_keymap("n", "<leader>ci", "<Plug>kommentary_motion_increase", {})
+  " vim.api.nvim_set_keymap("x", "<leader>ci", "<Plug>kommentary_visual_increase", {})
+  " vim.api.nvim_set_keymap("n", "<leader>cdc", "<Plug>kommentary_line_decrease", {})
+  " vim.api.nvim_set_keymap("n", "<leader>cd", "<Plug>kommentary_motion_decrease", {})
+  " vim.api.nvim_set_keymap("x", "<leader>cd", "<Plug>kommentary_visual_decrease", {})
 endif
 
 " -------------------------------------------------------------
@@ -1504,9 +1520,9 @@ nnoremap <leader>p :TagbarTogglePause<CR> "Freezes/Unfreezes the Tagbar Windowsf
 " -------------------------------------------------------------------------- "
 " workspace
 " -------------------------------------------------------------------------- "
-nnoremap <leader>w :ToggleWorkspace<CR>
-nnoremap <leader>bc :CloseHiddenBuffers<CR>
-nnoremap <leader>a :ToggleAutosave<CR>
+" nnoremap <leader>w :ToggleWorkspace<CR>
+" nnoremap <leader>bc :CloseHiddenBuffers<CR>
+" nnoremap <leader>a :ToggleAutosave<CR>
 
 " -------------------------------------------------------------------------- "
 " indentwise
@@ -1669,21 +1685,24 @@ endif
 " -------------------------------------------------------------------------- "
 " pythonsense
 " -------------------------------------------------------------------------- "
-"  keep default mapping listed below
-" map <buffer> ac <Plug>(PythonsenseOuterClassTextObject)
-" map <buffer> ic <Plug>(PythonsenseInnerClassTextObject)
-" map <buffer> af <Plug>(PythonsenseOuterFunctionTextObject)
-" map <buffer> if <Plug>(PythonsenseInnerFunctionTextObject)
-" map <buffer> ad <Plug>(PythonsenseOuterDocStringTextObject)
-" map <buffer> id <Plug>(PythonsenseInnerDocStringTextObject)
-" map <buffer> ]] <Plug>(PythonsenseStartOfNextPythonClass)
-" map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
-" map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
-" map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
-autocmd BufReadPost * map mj <Plug>(PythonsenseStartOfNextPythonFunction)
-autocmd BufReadPost * map Mj <Plug>(PythonsenseEndOfPythonFunction)
-autocmd BufReadPost * map mk <Plug>(PythonsenseStartOfPythonFunction)
-autocmd BufReadPost * map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
+if has('nvim')
+else
+  "  keep default mapping listed below
+  " map <buffer> ac <Plug>(PythonsenseOuterClassTextObject)
+  " map <buffer> ic <Plug>(PythonsenseInnerClassTextObject)
+  " map <buffer> af <Plug>(PythonsenseOuterFunctionTextObject)
+  " map <buffer> if <Plug>(PythonsenseInnerFunctionTextObject)
+  " map <buffer> ad <Plug>(PythonsenseOuterDocStringTextObject)
+  " map <buffer> id <Plug>(PythonsenseInnerDocStringTextObject)
+  " map <buffer> ]] <Plug>(PythonsenseStartOfNextPythonClass)
+  " map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
+  " map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
+  " map <buffer> [] <Plug>(PythonsenseEndOfPreviousPythonClass)
+  autocmd BufReadPost * map mj <Plug>(PythonsenseStartOfNextPythonFunction)
+  autocmd BufReadPost * map Mj <Plug>(PythonsenseEndOfPythonFunction)
+  autocmd BufReadPost * map mk <Plug>(PythonsenseStartOfPythonFunction)
+  autocmd BufReadPost * map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
+endif
 
 
 " _____________________________________________________________________________ "

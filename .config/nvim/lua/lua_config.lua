@@ -353,6 +353,76 @@ require('telescope').setup{
   }
 }
 
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- kommentary -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('kommentary.config')
+
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- treesitter-textobjects -------------------------------- #
+-- -------------------------------------------------------------------------- #
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        ["mj"] = "@function.outer",
+        ["]]"] = "@class.outer",
+        ["qj"] = "@conditional.outer",
+        ["'j"] = "@loop.outer",
+        -- ["cj"] = "@comment.outer",
+      },
+      goto_next_end = {
+        ["Mj"] = "@function.outer",
+        ["]["] = "@class.outer",
+        -- ["cJ"] = "@comment.outer",
+      },
+      goto_previous_start = {
+        ["mk"] = "@function.outer",
+        ["[["] = "@class.outer",
+        ["qk"] = "@conditional.outer",
+        ["'k"] = "@loop.outer",
+        -- ["ck"] = "@comment.outer",
+      },
+      goto_previous_end = {
+        ["Mk"] = "@function.outer",
+        -- ["[]"] = "@class.outer",
+        -- ["cK"] = "@comment.outer",
+      },
+    },
+    -- swap = {
+    --   enable = true,
+    --   swap_next = {
+    --     ["<leader>a"] = "@parameter.inner",
+    --   },
+    --   swap_previous = {
+    --     ["<leader>A"] = "@parameter.inner",
+    --   },
+    -- },
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        -- ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["qa"] = "@conditional.outer",
+        ["'a"] = "@loop.outer",
+        -- ["cc"] = "@comment.outer",
+
+
+      },
+    },
+  },
+}
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp --------------------------------------------------- "
 -- -------------------------------------------------------------------------- #

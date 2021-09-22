@@ -42,8 +42,8 @@ super + semicolon
 super + 0
 	nautilus
 # lock
-# super + x
-# 	~/.config/i3/scrlt.sh
+super + x
+	~/.config/bspwm/lock.sh
 # choose working screen
 super + s
 	~/.config/i3/display.sh
