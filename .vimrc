@@ -41,15 +41,14 @@ set completeopt=menuone,noselect  " completion menu
 " set shortmess+=c                                             " Remove messages from in-completion menus
 
 " ----------------- indent ---------------------------------------------------
-set softtabstop=0
-set shiftwidth=2
-set tabstop=4                       " 4 spaces to represent tab
-set expandtab
-set smarttab
-
-set autoindent                      " autoindent files
-set smartindent                   " auto indent while editing
-set ai                              " acitve indentation objects
+" set softtabstop=0
+" set shiftwidth=2
+" set tabstop=4                       " 4 spaces to represent tab
+" set expandtab
+" set smarttab
+" set autoindent                      " autoindent files
+" set smartindent                    " auto indent while editing
+" set ai                              " acitve indentation objects
 
 set scrolloff=10                    " limit of line to scroll
 set showtabline=2                   " always show tab number
@@ -69,7 +68,6 @@ set showcmd                         " activate show command area below statuslin
 " set cmdheight=2                   " Better display for messages
 set updatetime=100                  " Smaller updatetime for CursorHold & CursorHoldI
 set mouse=a                         " enbable mouse functionnalities
-set incsearch                       " Show search result while typing
 set hidden                          " buffer are hidden when abandonned
 set autoread                        " automatically reload files changed on disk
 set switchbuf=useopen               " quickfix reuses open windows
@@ -96,7 +94,10 @@ set virtualedit=onemore             " allow the cursor to go one char after end 
 set nu
 set rnu
 
-set fillchars=vert:\|,fold:>,diff:-
+if has("nvim")
+else
+  set fillchars=vert:\|,fold:>,diff:-
+endif
 set suffixes+=.pyc,.pyo           " ignore compiled Python files
 set suffixes+=.egg-info           " ignore compiled Python files
 set suffixes+=.png                " don't edit .png files please
@@ -111,7 +112,7 @@ set undolevels=10000                 " remember last 10000 changes
 
 if has('nvim')
 else
-	set ttyfast                        " more smoothness, removed ion neobim
+	set ttyfast                        " more smoothness, removed in neovim
 endif
 
 "  change mksession
@@ -371,7 +372,7 @@ nnoremap qh <C-w>h:wq<CR>
 nnoremap qq :x<CR>
 
 " ------ replace inner word and search replace word to reapeat -------
-nnoremap cn #*cgn
+nnoremap cj #*cgn
 
 " nnoremap <Leader>l :let &scrolloff=100-&scrolloff<CR>                " make edit line always centered
 
@@ -454,6 +455,7 @@ if has('nvim')
         " Plug 'weilbith/nvim-lsp-smag'                        " Smart tags with lsp
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
+        Plug 'nvim-lua/lsp-status.nvim'
         Plug 'hrsh7th/nvim-compe'                              " completion plugin
         Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
@@ -469,12 +471,13 @@ if has('nvim')
         Plug 'nvim-telescope/telescope.nvim'                   " https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
         Plug 'lewis6991/gitsigns.nvim'
         Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
+	Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
         Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
-        Plug 'b3nj5m1n/kommentary'
+        Plug 'b3nj5m1n/kommentary'                             " comments
         " Plug 'mfussenegger/nvim-dap'
         " Plug 'mfussenegger/nvim-dap-python'
         " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
-        " Plug 'sakhnik/nvim-gdb'                                " pdb into vim
+        " Plug 'sakhnik/nvim-gdb'                               " pdb into vim
 
         " Plug 'tiagovla/tokyodark.nvim'
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
@@ -488,27 +491,26 @@ if has('nvim')
         " Plug 'ibhagwan/fzf-lua'
 
 else
-        Plug 'preservim/nerdtree'                              " file explorer
         " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
+        Plug 'preservim/nerdtree'                              " file explorer
         Plug 'vim-airline/vim-airline'                         " add visual line
         Plug 'vim-airline/vim-airline-themes'                  " theme for airline
         Plug 'wellle/targets.vim'                              " Better objects
         Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
-        Plug 'tpope/vim-surround'                              " surround oparator
         Plug 'tpope/vim-commentary'                             " comment objects
 endif
 
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
-Plug 'tpope/vim-scriptease'
+" Plug 'tpope/vim-scriptease'
 Plug 't9md/vim-textmanip'                            " move blocks of text easy
 " Plug 't9md/vim-choosewin'
 " Plug 'junegunn/vim-easy-align'                       " Helps alignment TODO: LEARN
 " Plug 'sjl/gundo.vim'                                 " add undo tree
 " Plug 'chimay/wheel/'                                 " better join lines
 " Plug 'junegunn/loclisteasy-align'
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Plug 'junegunn/fzf.vim'
 
 " --------------------------------------------------------------------------- "
@@ -517,22 +519,23 @@ Plug 't9md/vim-textmanip'                            " move blocks of text easy
 Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer with tmux
 
 " --------------------------------------------------------------------------- "
-"  0
-" ---------------------- IDE ------------------------------------- "
+" ---------------------- IDE ------------------------------------------------ #
 " --------------------------------------------------------------------------- "
+Plug 'tpope/vim-sleuth'                                 " automatic indentation config
 Plug 'brooth/far.vim'                                   " search and replace
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
-" Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
 Plug 'justinmk/vim-sneak'                               " jump using 2-chars
 Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'AndrewRadev/sideways.vim'                         " move func args
-" Plug 'flwyd/vim-conjoin'                                " better join lines
 Plug 'qwertologe/nextval.vim'                           " better ctrl-a
-" Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
 Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
+Plug 'tpope/vim-surround'                              " surround oparator
+" Plug 'flwyd/vim-conjoin'                                " better join lines
+" Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
+" Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
@@ -554,7 +557,7 @@ Plug 'rbong/vim-flog'                                   " Commit viewer
 " Plug 'Shougo/vimproc.vim', {'do' : 'make'}           " async executions
 " Plug 'sillybun/vim-repl'                             " python terminal
 " Plug 'https://github.com/gotcha/vimpdb'
-Plug 'https://github.com/thinca/vim-quickrun'          " Run python and others easely
+" Plug 'https://github.com/thinca/vim-quickrun'          " Run python and others easely
 " Plug 'romainl/vim-qf'                                " help with the quickfix lists
 " Plug 'wincent/terminus'                              " send text to as windows
 "
@@ -573,7 +576,6 @@ Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " Plug 'westurner/venv.vim'
 " Plug 'tell-k/vim-autopep8'                           " autoformat python
 " Plug 'wincent/terminus'                              " send text to as windows
-" Plug 'ivanov/vim-ipython'
 "
 " --------------------------------------------------------------
 " ---------------------- Objects -------------------------------
@@ -598,17 +600,21 @@ Plug 'glts/vim-textobj-comment'                        " comment text object
 " --------------------------------------------------------------
 " ---------------------- Theming -------------------------------
 " --------------------------------------------------------------
+
 if has('nvim')
-		" Plug 'hoob3rt/lualine.nvim'                            " statusbar
-        Plug 'famiu/feline.nvim'
-		Plug 'romgrk/barbar.nvim'                              " bufferline
-		" Plug 'lukas-reineke/indent-blankline.nvim'             " show indent on blankline
-		Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
-		Plug 'pierrzacharias/material.nvim'                " colorscheme
+  " Plug 'hoob3rt/lualine.nvim'                          " statusbar
+  Plug 'famiu/feline.nvim'                               " statusbar
+  Plug 'romgrk/barbar.nvim'                              " bufferline
+  Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
+  " Plug 'Yggdroot/indentLine'                             " indent guide
+  Plug 'pierrzacharias/material.nvim'                    " colorscheme
+  Plug 'rktjmp/lush.nvim'
+  Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
+  Plug 'Shatur/neovim-ayu'
 else
-		Plug 'kaicataldo/material.vim', { 'branch': 'main' }
-		Plug 'ayu-theme/ayu-vim'                           " colorscheme
+  " Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 endif
+
 " Plug 'RRethy/vim-illuminate'
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
 Plug 'ryanoasis/vim-devicons'                          " add icon
@@ -616,7 +622,7 @@ Plug 'camspiers/animate.vim'                           " windows move animation
 Plug 'luochen1990/rainbow'                             " rainbow parenthesis
 Plug 'psliwka/vim-smoothie'                            " Better scroll
 Plug 'mhinz/vim-startify'                              " add start page to vim
-Plug 'kshenoy/vim-signature'                           " show marks in signcolumn
+" Plug 'kshenoy/vim-signature'                           " show marks in signcolumn
 
 " Plug 'vim/killersheep'                               " absolutely essential
 " old themes:
@@ -689,10 +695,11 @@ if has('nvim')
 	nnoremap <silent> <A-e> :BufferGoto 3<CR>
 	nnoremap <silent> <A-r> :BufferGoto 4<CR>
 	nnoremap <silent> <A-t> :BufferGoto 5<CR>
-	nnoremap <silent> <A-u> :BufferGoto 6<CR>
-	nnoremap <silent> <A-i> :BufferGoto 7<CR>
-	nnoremap <silent> <A-o> :BufferGoto 8<CR>
-	nnoremap <silent> <A-0> :BufferLast<CR>
+	nnoremap <silent> <A-y> :BufferGoto 6<CR>
+	nnoremap <silent> <A-u> :BufferGoto 7<CR>
+	nnoremap <silent> <A-i> :BufferGoto 8<CR>
+	nnoremap <silent> <A-o> :BufferGoto 9<CR>
+	nnoremap <silent> <A-p> :BufferLast<CR>
 
 	" Close buffer
 	nnoremap <silent> <A-c> :BufferClose<CR>
@@ -703,6 +710,16 @@ if has('nvim')
 	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
 
 endif
+
+" -------------------------------------------------------------
+"  moonfly
+"  ------------------------------------------------------------
+" Vimscript initialization file
+let g:moonflyWithNerdIcon = 1
+" Vimscript initialization file
+let g:moonflyWithNvimLspIndicator = 1
+let g:moonflyWithGitBranch = 1
+let g:moonflyWithGitBranchCharacter = 1
 
 " -------------------------------------------------------------
 "  Grepper
@@ -869,10 +886,10 @@ if has('nvim')
 		let g:indent_blankline_extra_indent_level = -1
 		let g:indentLine_char = "▎"
 	" let g:indent_blankline_char = "▏"
-	" let g:indentLine_setColors = 1
+	let g:indentLine_setColors = 1
 	" " let g:indentLine_color_term = 15
-	" let g:indentLine_color_gui = '#F29718'
-	" " let g:indentLine_bgcolor_gui = '#B8CC52'
+	let g:indentLine_color_gui = '#F29718'
+	" let g:indentLine_bgcolor_gui = '#B8CC52'
 	" " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 	" " let g:indentLine_leadingSpaceEnabled=1
 	" let g:indentLine_showFirstIndentLevel=0
@@ -1628,14 +1645,14 @@ nnoremap <silent> <Right> :call animate#window_delta_width(-10)<CR>
 " 	\ 'C-t': 'tab split',
 " 	\ 'C-s': 'split',
 " 	\ 'C-v': 'vsplit' }
-nnoremap <leader>r :Rg<CR>
+" nnoremap <leader>r :Rg<CR>
 " nnoremap <leader>t :Tags<CR>
 " nnoremap mm :Marks<CR>
-nnoremap <leader>m :BLines<CR>
+" nnoremap <leader>m :BLines<CR>
 " nnoremap <C-o> :FzfPreviewProjectFiles<CR>
-nmap <leader>f :Files<CR>
-nmap <leader>fi :find<space>
-nmap <leader>b :Buffers<CR>
+" nmap <leader>f :Files<CR>
+" nmap <leader>fi :find<space>
+" nmap <leader>b :Buffers<CR>
 " nmap <Leader>: :History:<CR>
 " nmap <Leader>gm :Maps<CR>
 
@@ -1720,21 +1737,25 @@ endif
 " ------------------------------------------------------------------------- "
 " ------------------- colorscheme ------------------------------------------- #
 " ------------------------------------------------------------------------- "
-colorscheme material
-let $BAT_THEME='material'
 
 if has('nvim')
+    colorscheme material
+    " colorscheme ayu
 else
-		let g:material_theme_style = 'default'
+    colorscheme material
+    let $BAT_THEME='material'
+    let g:material_theme_style = 'default'
+
+    " colorscheme ayu
+    " let ayucolor="mirage"   " for dark version of theme
 endif
 
-" colorscheme tokyodark
 
 set background=dark
 
-set cursorline                               " Highlight current line
+" set cursorline                               " Highlight current line
 " hi CursorLine guibg=#282828
-hi CursorLine guibg=#282828
+" hi CursorLine guibg=#1D2214
 
 " -------------------------------------------------------------
 "  vim sneak
@@ -1756,7 +1777,7 @@ endif
 " ------------------------------------------------------------------------- "
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-highlight ColorColumn guibg=#232d33
+" highlight ColorColumn guibg=#232d33
 set colorcolumn=80
 
 " ------------------------------------------------------------------------- "
@@ -1769,26 +1790,22 @@ set colorcolumn=80
 " ---------------- search color ------------------------------------------- "
 " ------------------------------------------------------------------------- "
 " autocmd VimEnter * hi Normal guibg=NONE ctermbg=NONE " transparent bg
-" hi! Search gui=NONE guibg=#E6B673 guifg=#000000
-" hi! IncSearch gui=NONE guibg=#98971a guifg=#000000
+hi! Search gui=NONE guibg=#82AAFF guifg=#000000
+hi! IncSearch gui=NONE guibg=#98971a guifg=#000000
 
 " ------------------------------------------------------------------------- "
 " ----------------- current line number color ----------------------------- "
 " ------------------------------------------------------------------------- "
-hi! CursorLineNr guifg=#B0BEC5 guibg=#1E272C
-" hi! LineNr guifg=#95E6CB guibg=#272D38
-" hi SignColumn guibg=NONE
+" hi! CursorLineNr guifg=#59C2FF guibg=#14191F
+" hi! LineNr guifg=59C2FF guibg=#14191F
+" hi! SignColumn guifg=#59C2FF guibg=NONE
 
 " ------------------------------------------------------------------------- "
 " ---------------------- VertSplit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-" hi VertSplit guibg=NONE guifg=#6c71c4
+" hi VertSplit guibg=NONE guifg=#000000
 " hi TjbLine guibg=#000000 guifg=#073642
 " hi! Pmenu guibg=#b58900 guibg=#000000
-
-" -------- indent color ----------------------------------------
-" hi IndentGuidesEven guibg=#002b36
-" hi IndentGuidesOdd guibg=#00364a
 
 " --------- startify color ---------------------------------------
 " highlight! StartifyHeader guifg=#2aa198

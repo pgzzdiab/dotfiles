@@ -73,12 +73,8 @@ require'qf_helper'.setup({
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<lualine\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require('feline').setup({
---     preset = 'nord'
--- })
--- require'feline'.setup({})
 local colors = {
-    bg = '#282c34',
+    bg = '#263238',
     fg = '#abb2bf',
     yellow = '#e0af68',
     cyan = '#56b6c2',
@@ -90,26 +86,6 @@ local colors = {
     blue = '#61afef',
     red = '#e86671'
 }
--- │vertical_bar          │'┃'    │
--- │vertical_bar_thin     │'│'    │
--- │left                  │''    │
--- │right                 │''    │
--- │block                 │'█'    │
--- │left_filled           │''    │
--- │right_filled          │''    │
--- │slant_left            │''    │
--- │slant_left_thin       │''    │
--- │slant_right           │''    │
--- │slant_right_thin      │''    │
--- │slant_left_2          │''    │
--- │slant_left_2_thin     │''    │
--- │slant_right_2         │''    │
--- │slant_right_2_thin    │''    │
--- │left_rounded          │''    │
--- │left_rounded_thin     │''    │
--- │right_rounded         │''    │
--- │right_rounded_thin    │''    │
--- │circle                │'●'    │
 local vi_mode_colors = {
     NORMAL = colors.green,
     INSERT = colors.red,
@@ -126,12 +102,8 @@ local vi_mode_colors = {
     TERM = colors.green,
     NONE = colors.yellow
 }
-
 local lsp = require 'feline.providers.lsp'
 local vi_mode_utils = require 'feline.providers.vi_mode'
-
--- LuaFormatter off
-
 local comps = {
     vi_mode = {
         left = {
@@ -142,7 +114,7 @@ local comps = {
                 local val = {
                     name = vi_mode_utils.get_mode_highlight_name(),
                     fg = vi_mode_utils.get_mode_color(),
-                    style = 'bold'
+                    -- style = 'bold'
                 }
                 return val
             end,
@@ -187,7 +159,7 @@ local comps = {
             left_sep = ' ',
             hl = {
                 fg = colors.orange,
-                style = 'bold'
+                -- style = 'bold'
             }
         },
     },
@@ -198,23 +170,16 @@ local comps = {
             bg = colors.blue,
         }
     },
-    -- line_percentage = {
-    --     provider = 'line_percentage',
-    --     left_sep = ' ',
-    --     hl = {
-    --         style = 'bold'
-    --     }
-    -- },
     scroll_bar = {
         provider = 'scroll_bar',
         left_sep = ' ',
         hl = {
             fg = colors.blue,
-            style = 'bold'
+            -- style = 'bold'
         }
     },
-    diagnos = {},
     lsp = {},
+    diagnos = {},
     git = {
         branch = {
             provider = 'git_branch',
@@ -224,24 +189,6 @@ local comps = {
                 fg = colors.blue,
             },
         },
-        add = {
-            provider = 'git_diff_added',
-            hl = {
-                fg = colors.green
-            }
-        },
-        change = {
-            provider = 'git_diff_changed',
-            hl = {
-                fg = colors.orange
-            }
-        },
-        remove = {
-            provider = 'git_diff_removed',
-            hl = {
-                fg = colors.red
-            }
-        }
     }
 }
 
@@ -263,11 +210,8 @@ table.insert(components.active[1], comps.git.change)
 table.insert(components.active[1], comps.git.remove)
 table.insert(components.inactive[1], comps.vi_mode.left)
 table.insert(components.inactive[1], comps.file.info)
-table.insert(components.active[2], comps.lsp.name)
 table.insert(components.active[2], comps.file.position)
 table.insert(components.active[2], comps.vi_mode.right)
-
--- LuaFormatter on
 
 require'feline'.setup {
     colors = { bg = colors.bg, fg = colors.fg },
@@ -957,8 +901,25 @@ local tree_cb = require'nvim-tree.config'.nvim_tree_callback
   -- }
 
 -- require'nvim-tree.view'.View.width = 50
+-- require'nvim-tree'.setup()
 
--- ----------------- theme -------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- ----------------- gruvbox ---------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- vim.o.background = "dark" -- or "light" for light mode
+-- vim.cmd([[colorscheme gruvbox]])
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- ayu ---------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+--[[ vim.g.ayu_overrides = {
+  Comment = {fg = '#707A8C'},
+  String = {fg = '#E6BA7E'},
+  bg = '#18130F'
+}
+vim.g.ayu_mirage = true ]]
+
+-- -- ----------------- theme -------------------------------------------------- #
 vim.g.material_style = 'oceanic'
 vim.g.material_italic_comments=true
 vim.g.material_italic_keywords=true
@@ -968,6 +929,7 @@ vim.g.material_contras=true
 vim.g.material_borders=true
 vim.g.material_disable_background = true
 require('material').set()
+
 
 -- ----------------- git-worktree ------------------------------------------- #
 -- require("git-worktree").setup({
