@@ -744,6 +744,7 @@ let g:grepper_side=1                " Open a new window and show matches with su
 let g:grepper_dir="repo"
 let g:grepper_side=1
 let g:grepper_tools=['ag']
+let g:grepper_highlight=1
 nmap gn  <plug>(GrepperOperator)
 xmap gn  <plug>(GrepperOperator)
 
