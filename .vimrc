@@ -60,7 +60,10 @@ set ignorecase                      " ingorecase when searching
 set path+=**                        " add previous directory for gf, :find, ..
 
 " set diffopt+=indent-heuristica      " option for diffmmode
+if has("nvim")
+else
 set wildmenu                        " activate completion menu
+endif
 set laststatus=2                    " activate always status bar
 
 
@@ -132,6 +135,12 @@ set formatoptions+=n " recognize number list form formating
 set formatoptions+=j " join comment when join lines
 set formatoptions+=t " allow auto-wrap text
 set formatoptions+=c " allow auto-wrap comment
+
+if has('nvim')
+  " builtin tool to filter quickfix entries
+  " autocmd VimEnter packadd cfilter
+  packadd cfilter
+endif
 
 if has('unix')
     " ---------------------------------------------------------------------- "
@@ -315,6 +324,7 @@ else
 	execute "set <M-'>=\e'"
 endif
 nnoremap <silent> vv <C-w>v
+nnoremap <silent> 'c "_
 noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
 noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
 map Q <Nop>                                        " disable entring in ex mode
@@ -323,8 +333,8 @@ noremap k gk
 noremap <space> y
 noremap tt :tabclose<CR>
 noremap gt :tabnew%<CR><C-o>
-noremap <C-f> :find
-noremap " '
+noremap <C-f> :find<space>
+noremap <CR> '
 noremap ' "
 
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
@@ -365,8 +375,8 @@ map <M-8> :tabn8<CR>
 map <M-9> :tabn9<CR>
 
 " ---- close buffers on left, rigth, ..
-nnoremap ql <C-w>l:wq<CR>
-nnoremap qh <C-w>h:wq<CR>
+nnoremap ql <C-w>lZZ<CR>
+nnoremap qh <C-w>hZZ<CR>
 " nnoremap qj <C-w>j:wq<CR>
 " nnoremap qk <C-w>k:wq<CR>
 nnoremap qq :x<CR>
@@ -456,7 +466,10 @@ if has('nvim')
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
         Plug 'nvim-lua/lsp-status.nvim'
+        " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
         Plug 'hrsh7th/nvim-compe'                              " completion plugin
+        " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
+        " Plug 'nvim-lua/completion-nvim'                        " completion plugin
         Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
@@ -474,6 +487,8 @@ if has('nvim')
 	Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
         Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
         Plug 'b3nj5m1n/kommentary'                             " comments
+        Plug 'TimUntersberger/neogit'                          " git helper
+        Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
         " Plug 'mfussenegger/nvim-dap'
         " Plug 'mfussenegger/nvim-dap-python'
         " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
@@ -481,9 +496,6 @@ if has('nvim')
 
         " Plug 'tiagovla/tokyodark.nvim'
         " Plug 'glepnir/indent-guides.nvim'                      " indent line
-        " Plug 'nvim-lua/completion-nvim'                        " completion plugin
-        " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
-        " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
         " Plug 'Shougo/denite.nvim'                              " file , buffers manager
         " Plug 'ncm2/float-preview.nvim/'
 
@@ -493,8 +505,6 @@ if has('nvim')
 else
         " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
         Plug 'preservim/nerdtree'                              " file explorer
-        Plug 'vim-airline/vim-airline'                         " add visual line
-        Plug 'vim-airline/vim-airline-themes'                  " theme for airline
         Plug 'wellle/targets.vim'                              " Better objects
         Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
         Plug 'tpope/vim-commentary'                             " comment objects
@@ -536,6 +546,7 @@ Plug 'tpope/vim-surround'                              " surround oparator
 " Plug 'flwyd/vim-conjoin'                                " better join lines
 " Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
 " Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
+Plug 'chrisbra/csv.vim'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
@@ -601,16 +612,21 @@ Plug 'glts/vim-textobj-comment'                        " comment text object
 " ---------------------- Theming -------------------------------
 " --------------------------------------------------------------
 
+Plug 'vim-airline/vim-airline'                         " tabline
+Plug 'vim-airline/vim-airline-themes'
 if has('nvim')
-  " Plug 'hoob3rt/lualine.nvim'                          " statusbar
-  Plug 'famiu/feline.nvim'                               " statusbar
-  Plug 'romgrk/barbar.nvim'                              " bufferline
+  Plug 'windwp/windline.nvim'                               " statusbar
+  Plug 'windwp/floatline.nvim'
   Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
-  " Plug 'Yggdroot/indentLine'                             " indent guide
-  Plug 'pierrzacharias/material.nvim'                    " colorscheme
+  Plug 'marko-cerovac/material.nvim'
   Plug 'rktjmp/lush.nvim'
   Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
   Plug 'Shatur/neovim-ayu'
+  " Plug 'pierrzacharias/material.nvim'                    " colorscheme
+  " Plug 'Yggdroot/indentLine'                             " indent guide
+  " Plug 'hoob3rt/lualine.nvim'                          " statusbar
+  " Plug 'famiu/feline.nvim'                               " statusbar
+  " Plug 'romgrk/barbar.nvim'                              " bufferline
 else
   " Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 endif
@@ -678,38 +694,37 @@ endif
 " <<<<<<<<<<<<<<<<<<<< Plugin Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
-if has('nvim')
+" if has('nvim')
 
-	" -------------------------------------------------------------
-	"  barbar
-	"  ------------------------------------------------------------
-	" Move to previous/next
-	nnoremap <silent> <A-[> :BufferPrevious<CR>
-	nnoremap <silent> <A-]> :BufferNext<CR>
-	" Re-order to previous/next
-	nnoremap <silent> <A-{> :BufferMovePrevious<CR>
-	nnoremap <silent> <A-}> :BufferMoveNext<CR>
-	" Goto buffer in position...
-	nnoremap <silent> <A-q> :BufferGoto 1<CR>
-	nnoremap <silent> <A-w> :BufferGoto 2<CR>
-	nnoremap <silent> <A-e> :BufferGoto 3<CR>
-	nnoremap <silent> <A-r> :BufferGoto 4<CR>
-	nnoremap <silent> <A-t> :BufferGoto 5<CR>
-	nnoremap <silent> <A-y> :BufferGoto 6<CR>
-	nnoremap <silent> <A-u> :BufferGoto 7<CR>
-	nnoremap <silent> <A-i> :BufferGoto 8<CR>
-	nnoremap <silent> <A-o> :BufferGoto 9<CR>
-	nnoremap <silent> <A-p> :BufferLast<CR>
+" 	" -------------------------------------------------------------
+" 	"  barbar
+" 	"  ------------------------------------------------------------
+" 	" Move to previous/next
+" 	nnoremap <silent> <A-[> :BufferPrevious<CR>
+" 	nnoremap <silent> <A-]> :BufferNext<CR>
+" 	" Re-order to previous/next
+" 	nnoremap <silent> <A-{> :BufferMovePrevious<CR>
+" 	nnoremap <silent> <A-}> :BufferMoveNext<CR>
+" 	" Goto buffer in position...
+" 	nnoremap <silent> <A-q> :BufferGoto 1<CR>
+" 	nnoremap <silent> <A-w> :BufferGoto 2<CR>
+" 	nnoremap <silent> <A-e> :BufferGoto 3<CR>
+" 	nnoremap <silent> <A-r> :BufferGoto 4<CR>
+" 	nnoremap <silent> <A-t> :BufferGoto 5<CR>
+" 	nnoremap <silent> <A-y> :BufferGoto 6<CR>
+" 	nnoremap <silent> <A-u> :BufferGoto 7<CR>
+" 	nnoremap <silent> <A-i> :BufferGoto 8<CR>
+" 	nnoremap <silent> <A-o> :BufferGoto 9<CR>
+" 	nnoremap <silent> <A-p> :BufferLast<CR>
 
-	" Close buffer
-	nnoremap <silent> <A-c> :BufferClose<CR>
-	" Magic buffer-picking mode
-	nnoremap <silent> <A-s> :BufferPick<CR>
-	" Sort automatically by...
-	nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
-	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
-
-endif
+" 	" Close buffer
+" 	nnoremap <silent> <A-c> :BufferClose<CR>
+" 	" Magic buffer-picking mode
+" 	nnoremap <silent> <A-s> :BufferPick<CR>
+" 	" Sort automatically by...
+" 	nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
+" 	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
+" endif
 
 " -------------------------------------------------------------
 "  moonfly
@@ -966,91 +981,85 @@ let g:subversivePromptWithCurrent=1
 let g:subversivePreserveCursorPosition=1 "cursor will not move when substitutions are applied
 
 " -------------------- theme ------------------------------------------------ "
-"if has('nvim')
-"	" we use lualine
-"else
-"	" --------------------------------------------------------------
-"	" airline
-"	" --------------------------------------------------------------
-"	let g:airline_theme = 'desertink'
-"	"  general options
-"	let g:airline_inactive_collapse=1
-"	let g:airline_inactive_alt_sep=1
-"	let g:airline_powerline_fonts = 1
-"	let g:airline#extensions#tabline#enabled = 1
-"	let g:airline#extensions#tabline#show_buffers = 0
-"	let g:airline#extensions#tabline#show_tabs = 1
-"	" enable/disable displaying tab type (e.g. [buffers]/[tabs]) >
-"	let g:airline#extensions#tabline#close_symbol = ''
-"	let g:airline#extensions#tabline#show_close_button = 0
-"	" let g:airline#extensions#tabline#buffer_min_count = 0   " show tabline only if there is more than 1 buffer
+" if has('nvim')
+" " we use lualine
+" else
+" --------------------------------------------------------------
+" airline
+" --------------------------------------------------------------
+let g:airline_theme = 'base16_material'
+" let g:airline_theme = 'base16_material'
+" let g:airline_theme_patch_func = 'AirlineThemePatch'
+" function! AirlineThemePatch(palette)
+"   if g:airline_theme == 'base16_material'
+"     for colors in values(a:palette.inactive)
+"       let colors[3] = 245
+"     endfor
+"   endif
+" endfunction
+let g:airline_inactive_collapse=1
+let g:airline_inactive_alt_sep=1
+let g:airline_powerline_fonts = 1
+let g:airline_disable_statusline = 1
 
-"	let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-"	let g:airline#extensions#tabline#fnamemod = ':t' " show only file name on tabs
+  " let g:airline_left_sep = '⮀'
+  " let g:airline_left_alt_sep = '⮁'
+  " let g:airline_right_sep = '⮂'
+  " let g:airline_right_alt_sep = '⮃'
+  " let g:airline_symbols.branch = '⭠'
+  " let g:airline_symbols.readonly = '⭤'
+  " let g:airline_symbols.linenr = '⭡'
 
-"	let g:airline#extensions#tabline#show_tab_type = 1
-"	"  enable/disable displaying tab number in tabs mode. >
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#show_tabs = 0
+" enable/disable displaying tab type (e.g. [buffers]/[tabs]) >
+let g:airline#extensions#tabline#close_symbol = ''
+let g:airline#extensions#tabline#show_close_button = 0
+" let g:airline#extensions#tabline#buffer_min_count = 0   " show tabline only if there is more than 1 buffer
 
-"	let g:airline#extensions#tabline#show_splits = 0
-"	let g:airline#extensions#tabline#buffer_idx_mode=0
-"	let g:airline#extensions#tabline#show_tab_nr=1
-"	let g:airline#extensions#tabline#tab_nr_type=0
-"	let g:airline#extensions#tabline#buffer_nr_show=0
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tabline#fnamemod = ':t' " show only file name on tabs
 
-"	" let g:airline#extensions#tabline#buffer_nr_format = '%s:'
+let g:airline#extensions#tabline#show_tab_type = 3
+"  enable/disable displaying tab number in tabs mode. >
+nmap <silent> <A-q> <Plug>AirlineSelectTab1
+nmap <silent> <A-w> <Plug>AirlineSelectTab2
+nmap <silent> <A-e> <Plug>AirlineSelectTab3
+nmap <silent> <A-r> <Plug>AirlineSelectTab4
+nmap <silent> <A-t> <Plug>AirlineSelectTab5
+nmap <silent> <A-y> <Plug>AirlineSelectTab6
+nmap <silent> <A-u> <Plug>AirlineSelectTab7
+nmap <silent> <A-i> <Plug>AirlineSelectTab8
+nmap <silent> <A-o> <Plug>AirlineSelectTab9
+nmap <silent> <A-o> <Plug>AirlineSelectTab9
+nmap <silent> <A-p> <Plug>AirlineSelectTab0
+" nmap <silent> <leader>0 <Plug>AirlineSelectTab0
+nmap <silent>  <A-[> <Plug>AirlineSelectPrevTab
+nmap <silent> <A-]> <Plug>AirlineSelectNextTab
 
-"	" Show superindex numbers in tabline
+" let g:airline#extensions#tabline#show_splits = 1
+let g:airline#extensions#tabline#buffer_idx_mode=1
+" let g:airline#extensions#tabline#show_tab_nr=1
+" let g:airline#extensions#tabline#tab_nr_type=0
+" let g:airline#extensions#tabline#buffer_nr_show=1
 
-"	" let g:airline#themes#clean#palette = 1
-"	" let g:airline_stl_path_style = 'short'
-"	" let g:airline_detect_paste=1
-"	" let g:airline_inactive_alt_sep=0
-"	let g:airline#extensions#whitespace#checks = ['']
-"	let g:airline_skip_empty_sections = 1
-"	"
-"	" --------------- extensions ------------------------------------------------
-"	let g:airline#extensions#tagbar#enabled = 0
-"	let g:airline#extensions#tagbar#flags = 'f'
-"	let g:airline#extensions#gutentags#enabled = 1
-"	let g:airline#extensions#grepper#enabled = 1
-"	" let g:airline#extensions#virtualenv#enabled = 1         " Enable virtualenv plugin
-"	let g:airline#extensions#coc#enabled = 0
+" let g:airline#extensions#tabline#buffer_nr_format = '%s:'
 
-"	" --------------------- sections -------------------------------------------- "
-"	let g:airline#parts#ffenc#skip_expected_string=''   "   'utf-8[unix]'
-"	let g:airline_section_c = airline#section#create([
-"				\ 'file',
-"				\ 'readonly'
-"				\ ])
-"	let g:filetype=''
-"	let g:airline_section_z = airline#section#create([
-"				\ '%l',
-"				\ '%{(" ")}' . "│" . " ",
-"				\ '%p',
-"				\ '%{(" ")}' . "│" . " ",
-"				\ '%c'
-"				\ ])
-"	let g:airline_section_y = airline#section#create([
-"				\ '%{("")}' . "│" . "",
-"				\ ])
-"	let g:airline_section_warning = ''
-"	" let g:airline_section_error = ''
-"	let g:airline#extensions#default#layout = [['a', 'c'], ['warning', 'error', 'z']]
-
-"	" ---------------- mapping tab ---------------------------------------------- "
-"	let g:airline#extensions#tabline#buffer_idx_format = {
-"					\ '0': 'Q',
-"					\ '1': 'W',
-"					\ '2': 'E',
-"					\ '3': 'R',
-"					\ '4': 'T',
-"					\ '5': 'Y',
-"					\ '6': 'U',
-"					\ '7': 'I',
-"					\ '8': 'O',
-"					\ '9': 'P'
-"					\}
-"endif
+" ---------------- mapping tab ---------------------------------------------- "
+let g:airline#extensions#tabline#buffer_idx_format = {
+				\ '0': 'p:',
+				\ '1': 'q:',
+				\ '2': 'w:',
+				\ '3': 'e:',
+				\ '4': 'r:',
+				\ '5': 't:',
+				\ '6': 'y:',
+				\ '7': 'u:',
+				\ '8': 'i:',
+				\ '9': 'o:'
+				\}
+" endif
 
 " --------------------------------------------------------------
 " vimtex
@@ -1411,11 +1420,11 @@ endif
 " -- Compe
 " -- -----------------------------------------------------------------------
  if has('nvim')
-	" inoremap <silent><expr> <C-Space> compe#complete()
-	" inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+	inoremap <silent><expr> <C-Space> compe#complete()
+	inoremap <silent><expr> <CR>      compe#confirm('<CR>')
 	inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-	" inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-	" inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+	inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+	inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 endif
 
 " --------------------------------------------------------------------------
@@ -1742,10 +1751,12 @@ endif
 if has('nvim')
     colorscheme material
     " colorscheme ayu
+    " let g:material_theme_style = 'deep ocean'
+    " let g:material_theme_style = 'palenight'
+    let g:material_theme_style = 'oceanic'
 else
     colorscheme material
     let $BAT_THEME='material'
-    let g:material_theme_style = 'default'
 
     " colorscheme ayu
     " let ayucolor="mirage"   " for dark version of theme
@@ -1757,12 +1768,12 @@ set background=dark
 " set cursorline                               " Highlight current line
 " hi CursorLine guibg=#282828
 " hi CursorLine guibg=#1D2214
-
+-
 " -------------------------------------------------------------
 "  vim sneak
 "  ------------------------------------------------------------
-highlight Sneak guifg=#14191F guibg=#F29718
-highlight SneakScope guifg=#14191F guibg=#F29718
+" highlight Sneak guifg=#14191F guibg=#F29718
+" highlight SneakScope guifg=#14191F guibg=#F29718
 
 " ------------------------------------------------------------------------- "
 " ------------------- LSP --------------------------------------------------- #
@@ -1773,12 +1784,16 @@ highlight SneakScope guifg=#14191F guibg=#F29718
 	" hi link LspSagaSignatureHelpBorder guifg='#F29718' guibg='#14191F'
 	" hi link LspSagaDefPreviewBorder guifg='#F29718' guibg='#14191F'
 	" hi link LspLinesDiagBorder guifg='#F29718' guibg='#14191F'
+	let g:LspDiagnosticsSignError = ""
+	let g:LspDiagnosticsSignWarning = ""
+	let g:LspDiagnosticsSignInformation = ""
+	let g:LspDiagnosticsSignHint = ""
 endif
 
 " ------------------------------------------------------------------------- "
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-" highlight ColorColumn guibg=#232d33
+highlight ColorColumn guibg= #213B47
 set colorcolumn=80
 
 " ------------------------------------------------------------------------- "
@@ -1791,14 +1806,15 @@ set colorcolumn=80
 " ---------------- search color ------------------------------------------- "
 " ------------------------------------------------------------------------- "
 " autocmd VimEnter * hi Normal guibg=NONE ctermbg=NONE " transparent bg
-hi! Search gui=NONE guibg=#82AAFF guifg=#000000
-hi! IncSearch gui=NONE guibg=#98971a guifg=#000000
+hi! Search gui=NONE guibg=#F29718 guifg=#000000
+" hi! Search gui=NONE guibg=#424242 guifg=#B0C9FF
+hi! IncSearch gui=NONE guibg=#00BCD4 guifg=#B20602
 
 " ------------------------------------------------------------------------- "
 " ----------------- current line number color ----------------------------- "
 " ------------------------------------------------------------------------- "
-" hi! CursorLineNr guifg=#59C2FF guibg=#14191F
-" hi! LineNr guifg=59C2FF guibg=#14191F
+hi! CursorLineNr guifg=#F29718
+hi! LineNr guifg=#009688
 " hi! SignColumn guifg=#59C2FF guibg=NONE
 
 " ------------------------------------------------------------------------- "

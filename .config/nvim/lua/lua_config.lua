@@ -44,6 +44,42 @@ require'diffview'.setup {
 }
 
 -- -------------------------------------------------------------------------- #
+-- ----------------- \<windline\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- require('windline')
+require('wlsample.mybubble')
+--[[ local windline = require('windline')
+windline.setup({
+  -- this function will run on ColorScheme autocmd
+  colors_name = function(colors)
+      --- add new colors
+      -- colors.FilenameFg = colors.white_light
+      -- colors.FilenameBg = colors.black
+
+      -- this color will not update if you change a colorscheme
+      colors.NormalFg = "#B0BEC5"
+      colors.NormalBg = "#263238"
+      colors.InactiveFg = "#B0BEC5"
+      colors.InactiveBg = "#263238"
+
+      -- dynamically get color from colorscheme hightlight group
+      local searchFg, searchBg = require('windline.themes').get_hl_color('Search')
+      colors.SearchFg = searchFg or colors.white
+      colors.SearchBg = searchBg or colors.yellow
+
+      return colors
+  end,
+
+}) ]]
+-- local windline = require('windline')
+--[[ windline.setup({
+  statuslines = {
+    --- you need to define your status lines here
+  }
+}) ]]
+-- require('floatline').setup()
+
+-- -------------------------------------------------------------------------- #
 -- ----------------- \<qf_helper\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require'qf_helper'.setup({
@@ -73,7 +109,8 @@ require'qf_helper'.setup({
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<lualine\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-local colors = {
+
+--[[ local colors = {
     bg = '#263238',
     fg = '#abb2bf',
     yellow = '#e0af68',
@@ -212,8 +249,8 @@ table.insert(components.inactive[1], comps.vi_mode.left)
 table.insert(components.inactive[1], comps.file.info)
 table.insert(components.active[2], comps.file.position)
 table.insert(components.active[2], comps.vi_mode.right)
-
-require'feline'.setup {
+ ]]
+--[[ require'feline'.setup {
     colors = { bg = colors.bg, fg = colors.fg },
     components = components,
     vi_mode_colors = vi_mode_colors,
@@ -228,7 +265,7 @@ require'feline'.setup {
         bufnames = {}
     }
 }
-
+ ]]
 -- -------------------------------------------------------------------------- #
 -- ----------------- spellsitter -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
@@ -367,6 +404,7 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 }
+
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp --------------------------------------------------- "
 -- -------------------------------------------------------------------------- #
@@ -434,13 +472,23 @@ require'compe'.setup {
   debug = false;
   min_length = 1;
   preselect = 'enable';
-  -- throttle_time = 80;
-  -- source_timeout = 200;
-  -- incomplete_delay = 400;
-  -- max_abbr_width = 100;
-  -- max_kind_width = 100;
-  -- max_menu_width = 100;
-  documentation = true;
+  throttle_time = 10;
+  source_timeout = 300;
+  resolve_timeout = 10;
+  incomplete_delay = 100;
+  max_abbr_width = 200;
+  max_kind_width = 200;
+  max_menu_width = 200;
+  documentation = {
+    -- border = { '╭', '─', '╮', '─', '╭', '╮', '╰', '╯' }, -- the border option is the same as `|help nvim_open_win|`
+    border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }, -- the border option is the same as `|help nvim_open_win|`
+    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
+    max_width = 150,
+    min_width = 60,
+    max_height = math.floor(vim.o.lines * 0.3),
+    min_height = 1,
+  };
+
   source = {
     path = true;
     buffer = true;
@@ -449,8 +497,51 @@ require'compe'.setup {
     nvim_lua = true;
     vsnip = true;
     ultisnips = true;
+    luasnip = true;
   };
 }
+
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col('.') - 1
+    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+end
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif vim.fn['vsnip#available'](1) == 1 then
+    return t "<Plug>(vsnip-expand-or-jump)"
+  elseif check_back_space() then
+    return t "<Tab>"
+  else
+    return vim.fn['compe#complete']()
+  end
+end
+_G.s_tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  elseif vim.fn['vsnip#jumpable'](-1) == 1 then
+    return t "<Plug>(vsnip-jump-prev)"
+  else
+    -- If <S-Tab> is not working in your terminal, change it to <C-h>
+    return t "<S-Tab>"
+  end
+end
+
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+
+vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
+
 
 -- highlight link CompeDocumentation NormalFloat
 
@@ -583,6 +674,14 @@ vim.g.bufferline = {
   -- where X is the buffer number. But only a static string is accepted here.
   -- no_name_title = nil,
 }
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- neogit -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+local neogit = require('neogit')
+neogit.setup {}
+
+
 -- -------------------------------------------------------------------------- #
 --  ----------------- illuminate -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
@@ -901,7 +1000,7 @@ local tree_cb = require'nvim-tree.config'.nvim_tree_callback
   -- }
 
 -- require'nvim-tree.view'.View.width = 50
--- require'nvim-tree'.setup()
+require'nvim-tree'.setup()
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- gruvbox ---------------------------------------------------- #
@@ -920,16 +1019,37 @@ local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 vim.g.ayu_mirage = true ]]
 
 -- -- ----------------- theme -------------------------------------------------- #
-vim.g.material_style = 'oceanic'
-vim.g.material_italic_comments=true
-vim.g.material_italic_keywords=true
-vim.g.material_italic_functions=true
-vim.g.material_italic_variables=true
-vim.g.material_contras=true
-vim.g.material_borders=true
-vim.g.material_disable_background = true
-require('material').set()
-
+require('material').setup({
+        contrast = true, -- Enable contrast for sidebars, floating windows and popup menus like Nvim-Tree
+        borders = true, -- Enable borders between verticaly split windows
+        popup_menu = "dark", -- Popup menu style ( can be: 'dark', 'light', 'colorful' or 'stealth' )
+        italics = {
+                comments = false, -- Enable italic comments
+                keywords = true, -- Enable italic keywords
+                functions = false, -- Enable italic functions
+                strings = false, -- Enable italic strings
+                variables = false -- Enable italic variables
+        },
+        contrast_windows = { -- Specify which windows get the contrasted (darker) background
+                -- "terminal", -- Darker terminal background
+                -- "packer", -- Darker packer background
+                -- "qf" -- Darker qf list background ]]
+        },
+        text_contrast = {
+                lighter = true, -- Enable higher contrast text for lighter style
+                darker = true -- Enable higher contrast text for darker style
+        },
+        disable = {
+                background = true, -- Prevent the theme from setting the background (NeoVim then uses your teminal background)
+                term_colors = false, -- Prevent the theme from setting terminal colors
+                eob_lines = false -- Hide the end-of-buffer lines
+        },
+        custom_highlights = {
+                -- CursorLine = '#0000FF',
+                -- LineNr = '#0000FF'
+            line_numbers = '#0000FF'
+        }
+})
 
 -- ----------------- git-worktree ------------------------------------------- #
 -- require("git-worktree").setup({

@@ -123,6 +123,7 @@ source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias pic="picom -b --experimental-backends"
+alias red="redshift -x"
 alias red2="redshift -O 2000K"
 alias red3="redshift -O 3000K"
 alias red4="redshift -O 4000K"
@@ -134,13 +135,14 @@ alias vpn="sudo openfortivpn"
 # alias back="feh --bg-scale ~/Pictures/xUjtUYC.png"
 alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
-alias re="	pkill -USR1 -x sxhkd"
+alias re="pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten sshk"
-alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-36-211-140.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
-alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-36-211-140.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/dalla_man_optimization dev/results/simulation_framework/dalla_man_optimization"
+alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-15-236-207-82.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
+alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-15-236-207-82.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
 alias icat="kitty +kitten icat"
 alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
 alias v="nvim"
+
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # icat ~/Images/logo_diabeloop_bleu_rvb.png
