@@ -248,7 +248,7 @@ function! CheckPyFile()
 				normal!ggO# -*- coding: utf-8 -*
 				normal!o"""
 				call append(2, s:file)
-				normal!o> AUTEUR:         P. GAUTHIER ( SIMS TEAM )
+				normal!o> AUTEUR:         P. GAUTHIER
 				let created = "> CREATED         " . expand(strftime('%y/%m/%d %T'))
 				call append(5, created)
 				" let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
@@ -334,8 +334,12 @@ noremap <space> y
 noremap tt :tabclose<CR>
 noremap gt :tabnew%<CR><C-o>
 noremap <C-f> :find<space>
-noremap <CR> '
+noremap " '
 noremap ' "
+
+" Add newlines from normal mode
+" nnoremap <CR> o<Esc>
+" nnoremap <S-cr> O<Esc>
 
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
 nnoremap <silent> "<space> "+yy                    " copy line into clipboard
@@ -460,35 +464,42 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
-        Plug 'neovim/nvim-lspconfig'                           " lsp configuration
-        Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp
-        " Plug 'weilbith/nvim-lsp-smag'                        " Smart tags with lsp
+        Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
+        Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
         Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
-        Plug 'nvim-lua/lsp-status.nvim'
-        " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
-        Plug 'hrsh7th/nvim-compe'                              " completion plugin
-        " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
-        " Plug 'nvim-lua/completion-nvim'                        " completion plugin
-        Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
+        Plug 'neovim/nvim-lspconfig'                           " lsp configuration
+	Plug 'hrsh7th/cmp-nvim-lsp'
+	Plug 'hrsh7th/cmp-buffer'
+        Plug 'hrsh7th/nvim-cmp'                              " completion plugin
         Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
+        Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
-        Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
+        Plug 'lewis6991/gitsigns.nvim'
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
         Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
-        Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
         Plug 'sindrets/diffview.nvim'                          " diffview
         Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
+
         Plug 'nvim-lua/popup.nvim'                             " to install telescope
         Plug 'nvim-telescope/telescope.nvim'                   " https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
-        Plug 'lewis6991/gitsigns.nvim'
         Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
 	Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
-        Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
+        Plug 'nvim-treesitter/nvim-treesitter-textobjects'
         Plug 'b3nj5m1n/kommentary'                             " comments
         Plug 'TimUntersberger/neogit'                          " git helper
         Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
+	Plug 'projekt0n/github-nvim-theme'
+	Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
+	Plug 'ggandor/lightspeed.nvim'                          " jump using 2-chars
+
+        " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
+        " Plug 'nvim-lua/lsp-status.nvim'
+        " Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp
+        " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
+        " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
+
         " Plug 'mfussenegger/nvim-dap'
         " Plug 'mfussenegger/nvim-dap-python'
         " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
@@ -508,6 +519,8 @@ else
         Plug 'wellle/targets.vim'                              " Better objects
         Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
         Plug 'tpope/vim-commentary'                             " comment objects
+	Plug 'luochen1990/rainbow'                             " rainbow parenthesis
+	Plug 'justinmk/vim-sneak'                               " jump using 2-chars
 endif
 
 " --------------------------------------------------------------
@@ -536,7 +549,6 @@ Plug 'brooth/far.vim'                                   " search and replace
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
-Plug 'justinmk/vim-sneak'                               " jump using 2-chars
 Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'AndrewRadev/sideways.vim'                         " move func args
@@ -635,7 +647,6 @@ endif
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
 Plug 'ryanoasis/vim-devicons'                          " add icon
 Plug 'camspiers/animate.vim'                           " windows move animation
-Plug 'luochen1990/rainbow'                             " rainbow parenthesis
 Plug 'psliwka/vim-smoothie'                            " Better scroll
 Plug 'mhinz/vim-startify'                              " add start page to vim
 " Plug 'kshenoy/vim-signature'                           " show marks in signcolumn
@@ -828,10 +839,13 @@ let g:doge_mapping = '<Leader>do'
 " --------------------------------------------------------------
 " rainbow
 " --------------------------------------------------------------
+if has("nvim")
+else
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 let g:rainbow_conf = {
 		\ 'guifgs': ['#FFCC00', '#82AAFF', '#fe8019']
 \}
+endif
 
 " --------------------------------------------------------------
 " tags
@@ -899,16 +913,16 @@ let g:rainbow_conf = {
 " blankline inddent
 " --------------------------------------------------------------
 if has('nvim')
-		let g:indent_blankline_extra_indent_level = -1
-		let g:indentLine_char = "▎"
-	" let g:indent_blankline_char = "▏"
-	let g:indentLine_setColors = 1
-	" " let g:indentLine_color_term = 15
-	let g:indentLine_color_gui = '#F29718'
-	" let g:indentLine_bgcolor_gui = '#B8CC52'
-	" " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-	" " let g:indentLine_leadingSpaceEnabled=1
-	" let g:indentLine_showFirstIndentLevel=0
+  let g:indent_blankline_extra_indent_level = -1
+  let g:indentLine_char = "▎"
+  " let g:indent_blankline_char = "▏"
+  " let g:indentLine_setColors = 1
+  " " let g:indentLine_color_term = 15
+  " let g:indentLine_color_gui = '#F29718'
+  " let g:indentLine_bgcolor_gui = '#B8CC52'
+  " " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+  " " let g:indentLine_leadingSpaceEnabled=1
+  " let g:indentLine_showFirstIndentLevel=0
 endif
 
 " --------------------------------------------------------------
@@ -921,27 +935,10 @@ if has('nvim')
 	" --------------------------------------------------------------
 	" LUA TREE
 	" --------------------------------------------------------------
-	" let g:nvim_tree_side = 'right' "left by default
 	let g:nvim_tree_width = 50 "30 by default
 	let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache'] "empty by default
-	" let g:nvim_tree_gitignore = 1 "0 by default
-	let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
-	let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
 	let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
-	" let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
-	" let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
-	" let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-	" let g:nvim_tree_hide_dotfiles = 1 "0 by default, this option hides files and folders starting with a dot `.`
-	" let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-	" let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
-	" let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
 	let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
-	" let g:nvim_tree_disable_netrw = 0 "1 by default, disables netrw
-	" let g:nvim_tree_hijack_netrw = 0 "1 by default, prevents netrw from automatically opening when opening directories (but lets you keep its other utilities)
-	" let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
-	" let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
-	let g:nvim_tree_lsp_diagnostics = 1 "0 by default, will show lsp diagnostics in the signcolumn. See :help nvim_tree_lsp_diagnostics
-	let g:nvim_tree_special_files = [ 'README.md', 'Makefile', 'MAKEFILE' ] " List of filenames that gets highlighted with NvimTreeSpecialFile
 	let g:nvim_tree_show_icons = {
 		\ 'git': 0,
 		\ 'folders': 1,
@@ -987,28 +984,12 @@ let g:subversivePreserveCursorPosition=1 "cursor will not move when substitution
 " --------------------------------------------------------------
 " airline
 " --------------------------------------------------------------
+" let g:airline_theme = 'uwu'
 let g:airline_theme = 'base16_material'
-" let g:airline_theme = 'base16_material'
-" let g:airline_theme_patch_func = 'AirlineThemePatch'
-" function! AirlineThemePatch(palette)
-"   if g:airline_theme == 'base16_material'
-"     for colors in values(a:palette.inactive)
-"       let colors[3] = 245
-"     endfor
-"   endif
-" endfunction
 let g:airline_inactive_collapse=1
 let g:airline_inactive_alt_sep=1
 let g:airline_powerline_fonts = 1
 let g:airline_disable_statusline = 1
-
-  " let g:airline_left_sep = '⮀'
-  " let g:airline_left_alt_sep = '⮁'
-  " let g:airline_right_sep = '⮂'
-  " let g:airline_right_alt_sep = '⮃'
-  " let g:airline_symbols.branch = '⭠'
-  " let g:airline_symbols.readonly = '⭤'
-  " let g:airline_symbols.linenr = '⭡'
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 1
@@ -1392,7 +1373,8 @@ nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 
 	" -- show diagnostic
 	" nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
-	autocmd BufReadPost * map ga :Lspsaga show_line_diagnostics<CR>
+	" autocmd BufReadPost * map ga :Lspsaga show_line_diagnostics<CR>
+	nnoremap <silent> ga <Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
 	" -- jump diagnostic
 	nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
@@ -1487,6 +1469,8 @@ endif
 " -------------------------------------------------------------
 "  vim sneak
 "  ------------------------------------------------------------
+if has("nvim")
+else
 nmap f <Plug>Sneak_s
 nmap F <Plug>Sneak_S
 " visual-mode
@@ -1501,6 +1485,8 @@ map x <Plug>Sneak_f
 map X <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
+endif
+
 " -------------------------------------------------------------
 "  ALt key activation
 "  -----------------------------------------------------------
@@ -1749,11 +1735,10 @@ endif
 " ------------------------------------------------------------------------- "
 
 if has('nvim')
-    colorscheme material
-    " colorscheme ayu
-    " let g:material_theme_style = 'deep ocean'
-    " let g:material_theme_style = 'palenight'
-    let g:material_theme_style = 'oceanic'
+    " colorscheme material
+    " colorscheme github_dimmed
+    colorscheme ayu
+    " let g:material_theme_style = 'oceanic'
 else
     colorscheme material
     let $BAT_THEME='material'
@@ -1765,7 +1750,7 @@ endif
 
 set background=dark
 
-" set cursorline                               " Highlight current line
+set cursorline                               " Highlight current line
 " hi CursorLine guibg=#282828
 " hi CursorLine guibg=#1D2214
 -
@@ -1784,17 +1769,17 @@ set background=dark
 	" hi link LspSagaSignatureHelpBorder guifg='#F29718' guibg='#14191F'
 	" hi link LspSagaDefPreviewBorder guifg='#F29718' guibg='#14191F'
 	" hi link LspLinesDiagBorder guifg='#F29718' guibg='#14191F'
-	let g:LspDiagnosticsSignError = ""
-	let g:LspDiagnosticsSignWarning = ""
-	let g:LspDiagnosticsSignInformation = ""
-	let g:LspDiagnosticsSignHint = ""
+" 	let g:LspDiagnosticsSignError = ""
+" 	let g:LspDiagnosticsSignWarning = ""
+" 	let g:LspDiagnosticsSignInformation = ""
+" 	let g:LspDiagnosticsSignHint = ""
 endif
 
 " ------------------------------------------------------------------------- "
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
-highlight ColorColumn guibg= #213B47
-set colorcolumn=80
+" highlight ColorColumn guibg= #213B47
+" set colorcolumn=80
 
 " ------------------------------------------------------------------------- "
 " ------------------- folding --------------------------------------------- "
@@ -1802,20 +1787,17 @@ set colorcolumn=80
 " highlight! Folded guibg=NONE guifg=#6c71c4 gui=underline
 " highlight! FoldColumn guibg=darkgrey guifg=#000000
 
-" ------------------------------------------------------------------------- "
-" ---------------- search color ------------------------------------------- "
-" ------------------------------------------------------------------------- "
-" autocmd VimEnter * hi Normal guibg=NONE ctermbg=NONE " transparent bg
-hi! Search gui=NONE guibg=#F29718 guifg=#000000
-" hi! Search gui=NONE guibg=#424242 guifg=#B0C9FF
-hi! IncSearch gui=NONE guibg=#00BCD4 guifg=#B20602
+" " ------------------------------------------------------------------------- "
+" " ---------------- search color ------------------------------------------- "
+" " ------------------------------------------------------------------------- "
+" hi! Search gui=NONE guibg=#B0BEC5 guifg=#000000
+" hi! IncSearch gui=NONE guibg=#00BCD4 guifg=#B20602
 
 " ------------------------------------------------------------------------- "
 " ----------------- current line number color ----------------------------- "
 " ------------------------------------------------------------------------- "
-hi! CursorLineNr guifg=#F29718
-hi! LineNr guifg=#009688
-" hi! SignColumn guifg=#59C2FF guibg=NONE
+" hi! CursorLineNr guifg=#F29718 guibg=#000000
+" hi! LineNr guifg=#009688 guibg=NONE
 
 " ------------------------------------------------------------------------- "
 " ---------------------- VertSplit ---------------------------------------- "

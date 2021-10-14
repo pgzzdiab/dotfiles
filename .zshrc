@@ -139,9 +139,12 @@ alias re="pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten sshk"
 alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-15-236-207-82.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
 alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-15-236-207-82.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
+
+
 alias icat="kitty +kitten icat"
 alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
 alias v="nvim"
+alias radio="pyradio --stations .config/pyradio/stations.csv"
 
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

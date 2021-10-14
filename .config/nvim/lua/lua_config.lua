@@ -46,38 +46,7 @@ require'diffview'.setup {
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require('windline')
 require('wlsample.mybubble')
---[[ local windline = require('windline')
-windline.setup({
-  -- this function will run on ColorScheme autocmd
-  colors_name = function(colors)
-      --- add new colors
-      -- colors.FilenameFg = colors.white_light
-      -- colors.FilenameBg = colors.black
-
-      -- this color will not update if you change a colorscheme
-      colors.NormalFg = "#B0BEC5"
-      colors.NormalBg = "#263238"
-      colors.InactiveFg = "#B0BEC5"
-      colors.InactiveBg = "#263238"
-
-      -- dynamically get color from colorscheme hightlight group
-      local searchFg, searchBg = require('windline.themes').get_hl_color('Search')
-      colors.SearchFg = searchFg or colors.white
-      colors.SearchBg = searchBg or colors.yellow
-
-      return colors
-  end,
-
-}) ]]
--- local windline = require('windline')
---[[ windline.setup({
-  statuslines = {
-    --- you need to define your status lines here
-  }
-}) ]]
--- require('floatline').setup()
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<qf_helper\> -------------------------------------------- #
@@ -104,183 +73,11 @@ require'qf_helper'.setup({
   -- },
 })
 
--- require'dap'.setup()
 
--- -------------------------------------------------------------------------- #
--- ----------------- \<lualine\> -------------------------------------------- #
--- -------------------------------------------------------------------------- #
-
---[[ local colors = {
-    bg = '#263238',
-    fg = '#abb2bf',
-    yellow = '#e0af68',
-    cyan = '#56b6c2',
-    darkblue = '#081633',
-    green = '#98c379',
-    orange = '#d19a66',
-    violet = '#a9a1e1',
-    magenta = '#c678dd',
-    blue = '#61afef',
-    red = '#e86671'
-}
-local vi_mode_colors = {
-    NORMAL = colors.green,
-    INSERT = colors.red,
-    VISUAL = colors.magenta,
-    OP = colors.green,
-    BLOCK = colors.blue,
-    REPLACE = colors.violet,
-    ['V-REPLACE'] = colors.violet,
-    ENTER = colors.cyan,
-    MORE = colors.cyan,
-    SELECT = colors.orange,
-    COMMAND = colors.green,
-    SHELL = colors.green,
-    TERM = colors.green,
-    NONE = colors.yellow
-}
-local lsp = require 'feline.providers.lsp'
-local vi_mode_utils = require 'feline.providers.vi_mode'
-local comps = {
-    vi_mode = {
-        left = {
-            provider = function()
-              return ' ' .. vi_mode_utils.get_vim_mode()
-            end,
-            hl = function()
-                local val = {
-                    name = vi_mode_utils.get_mode_highlight_name(),
-                    fg = vi_mode_utils.get_mode_color(),
-                    -- style = 'bold'
-                }
-                return val
-            end,
-            left_sep = '',
-            right_sep = '  '
-        },
-        right = {
-            provider = '',
-            hl = function()
-                local val = {
-                    name = vi_mode_utils.get_mode_highlight_name(),
-                    fg = vi_mode_utils.get_mode_color()
-                }
-                return val
-            end,
-            -- left_sep = '',
-            -- right_sep = ''
-        }
-    },
-    file = {
-        info = {
-            provider = 'file_info',
-            file_modified_icon = '●',
-            hl = {
-                fg = colors.fg,
-                -- style = 'bold'
-            },
-        },
-        encoding = {
-            provider = 'file_encoding',
-            left_sep = ' ',
-            hl = {
-                fg = colors.blue,
-                -- style = 'bold'
-            }
-        },
-        type = {
-            provider = 'file_type'
-        },
-        position = {
-            provider = 'position',
-            left_sep = ' ',
-            hl = {
-                fg = colors.orange,
-                -- style = 'bold'
-            }
-        },
-    },
-    left_end = {
-        provider = function() return '' end,
-        hl = {
-            fg = colors.bg,
-            bg = colors.blue,
-        }
-    },
-    scroll_bar = {
-        provider = 'scroll_bar',
-        left_sep = ' ',
-        hl = {
-            fg = colors.blue,
-            -- style = 'bold'
-        }
-    },
-    lsp = {},
-    diagnos = {},
-    git = {
-        branch = {
-            provider = 'git_branch',
-            icon = ' ',
-            left_sep = ' ',
-            hl = {
-                fg = colors.blue,
-            },
-        },
-    }
-}
-
-local components = {
-  active = {},
-  inactive = {},
-}
-
-table.insert(components.active, {})
-table.insert(components.active, {})
-table.insert(components.inactive, {})
-table.insert(components.inactive, {})
-
-table.insert(components.active[1], comps.vi_mode.left)
-table.insert(components.active[1], comps.file.info)
-table.insert(components.active[1], comps.git.branch)
-table.insert(components.active[1], comps.git.add)
-table.insert(components.active[1], comps.git.change)
-table.insert(components.active[1], comps.git.remove)
-table.insert(components.inactive[1], comps.vi_mode.left)
-table.insert(components.inactive[1], comps.file.info)
-table.insert(components.active[2], comps.file.position)
-table.insert(components.active[2], comps.vi_mode.right)
- ]]
---[[ require'feline'.setup {
-    colors = { bg = colors.bg, fg = colors.fg },
-    components = components,
-    vi_mode_colors = vi_mode_colors,
-    force_inactive = {
-        filetypes = {
-            'packer',
-            'NvimTree',
-            'fugitive',
-            'fugitiveblame'
-        },
-        buftypes = {'terminal'},
-        bufnames = {}
-    }
-}
- ]]
 -- -------------------------------------------------------------------------- #
 -- ----------------- spellsitter -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 -- require('spellsitter').setup()
-
--- -------------------------------------------------------------------------- #
--- ----------------- statusline --------------------------------------------- #
--- -------------------------------------------------------------------------- #
--- require('lualine').setup()
--- local custom_gruvbox = require'lualine.themes.gruvbox'
-	-- Chnage the background of lualine_c section for normal mode
--- custom_gruvbox.normal.c.bg = '#263238'
--- custom_gruvbox.normal.b.bg = '#263238'
--- custom_gruvbox.normal.c.bg = '#263238'
-
 
 ---------------------------------------------------------------------------------
 ---- TELESCOPE
@@ -339,7 +136,6 @@ require('telescope').setup{
 --  ----------------- kommentary -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require('kommentary.config')
-
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-textobjects -------------------------------- #
@@ -406,6 +202,75 @@ require'nvim-treesitter.configs'.setup {
 }
 
 -- -------------------------------------------------------------------------- #
+--  ----------------- nvim-cmp ---------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+local cmp = require'cmp'
+local lsp_symbols = {
+    Text = "   (Text) ",
+    Method = "   (Method)",
+    Function = "   (Function)",
+    Constructor = "   (Constructor)",
+    Field = " ﴲ  (Field)",
+    Variable = "[] (Variable)",
+    Class = "   (Class)",
+    Interface = " ﰮ  (Interface)",
+    Module = "   (Module)",
+    Property = " 襁 (Property)",
+    Unit = "   (Unit)",
+    Value = "   (Value)",
+    Enum = " 練 (Enum)",
+    Keyword = "   (Keyword)",
+    Snippet = "   (Snippet)",
+    Color = "   (Color)",
+    File = "   (File)",
+    Reference = "   (Reference)",
+    Folder = "   (Folder)",
+    EnumMember = "   (EnumMember)",
+    Constant = " ﲀ  (Constant)",
+    Struct = " ﳤ  (Struct)",
+    Event = "   (Event)",
+    Operator = "   (Operator)",
+    TypeParameter = "   (TypeParameter)",
+}
+cmp.setup({
+  mapping = {
+    ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+    ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    })
+  },
+  formatting = {
+        format = function(entry, item)
+            item.kind = lsp_symbols[item.kind]
+            item.menu = ({
+                buffer = "[Buffer]",
+                nvim_lsp = "[LSP]",
+                luasnip = "[Snippet]",
+                neorg = "[Neorg]",
+            })[entry.source.name]
+
+            return item
+        end,
+    },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+  }
+})
+-- Setup lspconfig.
+-- require('lspconfig')[%YOUR_LSP_SERVER%].setup {
+  -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+-- }
+
+-- -------------------------------------------------------------------------- #
 --  ----------------- lsp --------------------------------------------------- "
 -- -------------------------------------------------------------------------- #
 local nvim_lsp=require('lspconfig')
@@ -435,8 +300,6 @@ local nvim_lsp=require('lspconfig')
 -- 	-- buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 -- end
 
-nvim_lsp.pyright.setup{}
-
 -- replace the default lsp diagnostic letters with prettier symbols
 vim.fn.sign_define("LspDiagnosticsSignError", {text = "", numhl = "LspDiagnosticsDefaultError"})
 vim.fn.sign_define("LspDiagnosticsSignWarning", {text = "", numhl = "LspDiagnosticsDefaultWarning"})
@@ -444,17 +307,17 @@ vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspD
 vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
 
 
+nvim_lsp.pyright.setup{
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+}
+
 -- remove underlying on diagnostic
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 	vim.lsp.diagnostic.on_publish_diagnostics,
 	{
 		underline = false,
 		update_in_insert = true,
-		virtual_text = {
-			underline=false,
-			spacing = 2,
-			severity_limit = "Error"
-		}
+		virtual_text = false
 	}
 )
 
@@ -462,96 +325,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 --  ----------------- lspkind ----------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require('lspkind').init()
-
--- -------------------------------------------------------------------------- #
------- nvim compe
--- -------------------------------------------------------------------------- #
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 10;
-  source_timeout = 300;
-  resolve_timeout = 10;
-  incomplete_delay = 100;
-  max_abbr_width = 200;
-  max_kind_width = 200;
-  max_menu_width = 200;
-  documentation = {
-    -- border = { '╭', '─', '╮', '─', '╭', '╮', '╰', '╯' }, -- the border option is the same as `|help nvim_open_win|`
-    border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }, -- the border option is the same as `|help nvim_open_win|`
-    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-    max_width = 150,
-    min_width = 60,
-    max_height = math.floor(vim.o.lines * 0.3),
-    min_height = 1,
-  };
-
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    luasnip = true;
-  };
-}
-
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
-end
-
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  elseif vim.fn['vsnip#available'](1) == 1 then
-    return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    -- If <S-Tab> is not working in your terminal, change it to <C-h>
-    return t "<S-Tab>"
-  end
-end
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-
-vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm({ 'keys': '<CR>', 'select': v:true })", { expr = true })
-
-
--- highlight link CompeDocumentation NormalFloat
-
--- show diagnostic virtual test on hover
--- vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()]]
--- vim.cmd [[autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()]]
-
--- show virtual text on hover
--- vim.api.nvim_set_keymap("n", "gn", "vim.lsp.diagnostic.goto_next()<CR>", {noremap = true, silent = true})
--- vim.api.nvim_set_keymap("n", "gb", "vim.lsp.diagnostic.goto_prev()<CR>", {noremap = true, silent = true})
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp signature ----------------------------------------- #
@@ -565,7 +338,7 @@ cfg = {
                  -- mode
 
   hint_enable = true, -- virtual hint enable
-  hint_prefix = "🐼 ",  -- Panda for parameter
+  hint_prefix = "",  -- Panda for parameter
   hint_scheme = "String",
   use_lspsaga = true,  -- set to true if you want to use lspsaga popup
   handler_opts = {
@@ -578,109 +351,34 @@ cfg = {
 }
 require'lsp_signature'.on_attach(cfg)
 
--- -------------------------------------------------------------------------- #
---  ----------------- lspsaga ----------------------------------------------- #
--- -------------------------------------------------------------------------- #
-local saga = require "lspsaga"
-
-local opts = {
-		border_style = "single", -- "single" "double" "round" "plus"
-		max_preview_lines = 20, -- preview lines of lsp_finder and definition preview
-		finder_reference_icon = '  ',
-		definition_preview_icon = '  ',
-		error_sign=' ',
-		warn_sign=' ',
-		hint_sign=' ',
-		infor_sign='',
-		finder_action_keys = {
-			open = 'o',
-			vsplit = 's',
-			split = 'i',
-			quit = 'q',
-			-- scroll_down = '<Down>',
-			-- scroll_up = '<Up>'
-		},
-}
-saga.init_lsp_saga(opts)
-
--- require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
-
--- -------------------------------------------------------------------------- #
---  ----------------- barbar ----------------------------------------------- #
--- -------------------------------------------------------------------------- #
--- Set barbar's options
-vim.g.bufferline = {
-  -- Enable/disable animations
-  animation = true,
-
-  -- Enable/disable auto-hiding the tab bar when there is a single buffer
-  auto_hide = false,
-
-  -- Enable/disable current/total tabpages indicator (top right corner)
-  tabpages = true,
-
-  -- Enable/disable close button
-  closable = true,
-
-  -- Enables/disable clickable tabs
-  --  - left-click: go to buffer
-  --  - middle-click: delete buffer
-  clickable = true,
-
-  -- Excludes buffers from the tabline
-  -- exclude_ft = ['javascript'],
-  -- exclude_name = ['package.json'],
-
-  -- Enable/disable icons
-  -- if set to 'numbers', will show buffer index in the tabline
-  -- if set to 'both', will show buffer index and icons in the tabline
-  icons = both,
-
-  -- If set, the icon color will follow its corresponding buffer
-  -- highlight group. By default, the Buffer*Icon group is linked to the
-  -- Buffer* group (see Highlighting below). Otherwise, it will take its
-  -- default value as defined by devicons.
-  icon_custom_colors = true,
-
-  -- Configure icons on the bufferline.
-  -- icon_separator_active = '▎',
-  -- icon_separator_inactive = '▎',
-  -- icon_close_tab = '',
-  -- icon_close_tab_modified = '●',
-  -- icon_pinned = '車',
-
-  -- If true, new buffers will be inserted at the end of the list.
-  -- Default is to insert after current buffer.
-  insert_at_end = true,
-
-  -- Sets the maximum padding width with which to surround each tab
-  maximum_padding = 1,
-
-  -- Sets the maximum buffer name length.
-  maximum_length = 60,
-
-  -- If set, the letters for each buffer in buffer-pick mode will be
-  -- assigned based on their name. Otherwise or in case all letters are
-  -- already assigned, the behavior is to assign letters in order of
-  -- usability (see order below)
-  -- semantic_letters = true,
-
-  -- New buffer letters are assigned in this order. This order is
-  -- optimal for the qwerty keyboard layout but might need adjustement
-  -- for other layouts.
-  -- letters = 'qwertyuiopasdfghjklxcvbnm;QWERTYUIOPASDFGHJKLLCVBNM',
-
-  -- Sets the name of unnamed buffers. By default format is "[Buffer X]"
-  -- where X is the buffer number. But only a static string is accepted here.
-  -- no_name_title = nil,
-}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- neogit -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
-local neogit = require('neogit')
-neogit.setup {}
+require('neogit').setup {}
 
+-- -------------------------------------------------------------------------- #
+--  ----------------- lightspeed -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+require'lightspeed'.setup {
+  jump_to_first_match = true,
+  jump_on_partial_input_safety_timeout = 400,
+  -- This can get _really_ slow if the window has a lot of content,
+  -- turn it on only if your machine can always cope with it.
+  highlight_unique_chars = false,
+  grey_out_search_area = true,
+  match_only_the_start_of_same_char_seqs = true,
+  limit_ft_matches = 5,
+  x_mode_prefix_key = '<c-x>',
+  substitute_chars = { ['\r'] = '¬' },
+  instant_repeat_fwd_key = nil,
+  instant_repeat_bwd_key = nil,
+  -- If no values are given, these will be set at runtime,
+  -- based on `jump_to_first_match`.
+  labels = nil,
+  cycle_group_fwd_key = nil,
+  cycle_group_bwd_key = nil,
+}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- illuminate -------------------------------------------- "
@@ -737,74 +435,18 @@ require("trouble").setup {
     -- auto_open = false, -- automatically open the list when you have diagnostics
     -- auto_close = false, -- automatically close the list when you have no diagnostics
     auto_preview = false, -- automatyically preview the location of the diagnostic. <esc> to close preview and go back to last window
-    -- auto_fold = false, -- automatically fold a file trouble list at creation
-    use_lsp_diagnostic_signs = true -- enabling this will use the signs defined in your lsp client
+    auto_fold = true, -- automatically fold a file trouble list at creation
+    -- use_lsp_diagnostic_signs = true -- enabling this will use the signs defined in your lsp client
 	-- },
-	-- lsp_blacklist = {}
+    -- lsp_blacklist = {}
 }
 
 
--- blacklines
--- vim.cmd "hi IndentBlanklineChar guifg=#383c44"
-
--- misc --
--- vim.cmd "hi LineNr guifg=#42464e"
--- vim.cmd "hi Comment guifg=#42464e"
--- vim.cmd "hi NvimInternalError guifg=#f9929b"
--- vim.cmd "hi VertSplit guifg=#2a2e36"
--- vim.cmd "hi EndOfBuffer guifg=#1e222a"
-
--- Pmenu
--- vim.cmd "hi PmenuSel guibg=#98c379"
--- vim.cmd "hi Pmenu  guibg=#282c34"
--- vim.cmd "hi PmenuSbar guibg =#353b45"
--- vim.cmd "hi PmenuThumb guibg =#81A1C1"
-
--- inactive statuslines as thin splitlines
--- vim.cmd("highlight! StatusLineNC gui=underline guifg=#383c44")
-
--- line n.o
--- vim.cmd "hi clear CursorLine"
--- vim.cmd "hi cursorlinenr guifg=#abb2bf"
-
--- git signs ---
--- vim.cmd "hi DiffAdd guifg=#81A1C1 guibg = none"
--- vim.cmd "hi DiffChange guifg =#3A3E44 guibg = none"
--- vim.cmd "hi DiffModified guifg = #81A1C1 guibg = none"
-
--- NvimTree
--- vim.cmd "hi NvimTreeFolderIcon guifg = #61afef"
--- vim.cmd "hi NvimTreeFolderName guifg = #61afef"
--- vim.cmd "hi NvimTreeIndentMarker guifg=#383c44"
--- vim.cmd "hi NvimTreeNormal guibg=#1b1f27"
--- vim.cmd "hi NvimTreeVertSplit guifg=#1e222a"
--- vim.cmd "hi NvimTreeRootFolder guifg=#f9929b"
-
--- telescope
--- vim.cmd "hi TelescopeBorder   guifg=#2a2e36"
--- vim.cmd "hi TelescopePromptBorder   guifg=#2a2e36"
--- vim.cmd "hi TelescopeResultsBorder  guifg=#2a2e36"
--- vim.cmd "hi TelescopePreviewBorder  guifg=#525865"
-
--- LspDiagnostics ---
-
--- error / warnings
--- vim.cmd "hi LspDiagnosticsSignError guifg=#f9929b"
--- vim.cmd "hi LspDiagnosticsVirtualTextError guifg=#BF616A"
--- vim.cmd "hi LspDiagnosticsSignWarning guifg=#EBCB8B"
--- vim.cmd "hi LspDiagnosticsVirtualTextWarning guifg=#EBCB8B"
-
--- info
--- vim.cmd "hi LspDiagnosticsSignInformation guifg=#A3BE8C"
--- vim.cmd "hi LspDiagnosticsVirtualTextInformation guifg=#A3BE8C"
-
--- hint
--- vim.cmd "hi LspDiagnosticsSignHint guifg=#b6bdca"
--- vim.cmd "hi LspDiagnosticsVirtualTextHint guifg=#b6bdca"
 
 
-
--- start colorizer
+-- -------------------------------------------------------------------------- #
+-- ---------------- colorizer ----------------------------------------------- #
+-- -------------------------------------------------------------------------- #
 require('colorizer').setup()
 
 
@@ -840,216 +482,175 @@ require('colorizer').setup()
 -- }
 
 
--- blacklines
--- vim.cmd "hi IndentBlanklineChar guifg=#383c44"
-
--- misc --
--- vim.cmd "hi LineNr guifg=#42464e"
--- vim.cmd "hi Comment guifg=#42464e"
--- vim.cmd "hi NvimInternalError guifg=#f9929b"
--- vim.cmd "hi VertSplit guifg=#2a2e36"
--- vim.cmd "hi EndOfBuffer guifg=#1e222a"
-
--- Pmenu
--- vim.cmd "hi PmenuSel guibg=#98c379"
--- vim.cmd "hi Pmenu  guibg=#282c34"
--- vim.cmd "hi PmenuSbar guibg =#353b45"
--- vim.cmd "hi PmenuThumb guibg =#81A1C1"
-
--- inactive statuslines as thin splitlines
--- vim.cmd("highlight! StatusLineNC gui=underline guifg=#383c44")
-
--- line n.o
--- vim.cmd "hi clear CursorLine"
--- vim.cmd "hi cursorlinenr guifg=#abb2bf"
-
--- git signs ---
--- vim.cmd "hi DiffAdd guifg=#81A1C1 guibg = none"
--- vim.cmd "hi DiffChange guifg =#3A3E44 guibg = none"
--- vim.cmd "hi DiffModified guifg = #81A1C1 guibg = none"
-
--- NvimTree
--- vim.cmd "hi NvimTreeFolderIcon guifg = #61afef"
--- vim.cmd "hi NvimTreeFolderName guifg = #61afef"
--- vim.cmd "hi NvimTreeIndentMarker guifg=#383c44"
--- vim.cmd "hi NvimTreeNormal guibg=#1b1f27"
--- vim.cmd "hi NvimTreeVertSplit guifg=#1e222a"
--- vim.cmd "hi NvimTreeRootFolder guifg=#f9929b"
-
--- telescope
--- vim.cmd "hi TelescopeBorder   guifg=#2a2e36"
--- vim.cmd "hi TelescopePromptBorder   guifg=#2a2e36"
--- vim.cmd "hi TelescopeResultsBorder  guifg=#2a2e36"
--- vim.cmd "hi TelescopePreviewBorder  guifg=#525865"
-
--- LspDiagnostics ---
-
--- error / warnings
--- vim.cmd "hi LspDiagnosticsSignError guifg=#f9929b"
--- vim.cmd "hi LspDiagnosticsVirtualTextError guifg=#BF616A"
--- vim.cmd "hi LspDiagnosticsSignWarning guifg=#EBCB8B"
--- vim.cmd "hi LspDiagnosticsVirtualTextWarning guifg=#EBCB8B"
-
--- info
--- vim.cmd "hi LspDiagnosticsSignInformation guifg=#A3BE8C"
--- vim.cmd "hi LspDiagnosticsVirtualTextInformation guifg=#A3BE8C"
-
--- hint
--- vim.cmd "hi LspDiagnosticsSignHint guifg=#b6bdca"
--- vim.cmd "hi LspDiagnosticsVirtualTextHint guifg=#b6bdca"
-
-
-
--- start colorizer
-require('colorizer').setup()
-
-
----------------------------------------------------------------------------------
----- nvim-bufferline
----- ----------------------------------------------------------------------------
---require"bufferline".setup{
---	options = {
---			view = "multiwindow",
---			numbers = "buffer_id",
---			-- number_style = "superscript" | "" | { "none", "subscript" }, -- buffer_id at index 1, ordinal at index 2
---			mappings = true,
---			buffer_close_icon= "",
---			modified_icon = "●",
---			close_icon = "",
---			left_trunc_marker = "",
---			right_trunc_marker = "",
---			max_name_length = 18,
---			max_prefix_length = 15, -- prefix used when a buffer is deduplicated
---			tab_size = 18,
---			diagnostics = "nvim_lsp",
---			diagnostics_indicator = function(count, level)
---				return "("..count..")"
---			end,
---			show_buffer_icons = true,
---			show_buffer_close_icons = true,
---			show_close_icon = false,
---			show_tab_indicators = true,
---			persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
---			-- can also be a table containing 2 custom separators
---			-- [focused and unfocused]. eg: { "|", "|" }
---			separator_style = "thin",
---			enforce_regular_tabs = true,
---			always_show_bufferline = true,
---			offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "left"}},
---	}
---}
-
 -------------------------------------------------------------------------------
 -- LUA TREE
 -- ----------------------------------------------------------------------------
-local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-  -- default mappings
-  vim.g.nvim_tree_bindings = {
-    { key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("edit") },
-    { key = {"<2-RightMouse>", "<C-]>"},    cb = tree_cb("cd") },
-    { key = "v",                        cb = tree_cb("vsplit") },
-    { key = "s",                        cb = tree_cb("split") },
-    { key = "t",                        cb = tree_cb("tabnew") },
-    { key = "<",                            cb = tree_cb("prev_sibling") },
-    { key = ">",                            cb = tree_cb("next_sibling") },
-    { key = "P",                            cb = tree_cb("parent_node") },
-    { key = "C",                         cb = tree_cb("close_node") },
-    { key = "<S-CR>",                       cb = tree_cb("close_node") },
-    { key = "<Tab>",                        cb = tree_cb("preview") },
-    { key = "K",                            cb = tree_cb("first_sibling") },
-    { key = "J",                            cb = tree_cb("last_sibling") },
-    { key = "I",                            cb = tree_cb("toggle_ignored") },
-    { key = "H",                            cb = tree_cb("toggle_dotfiles") },
-    { key = "R",                            cb = tree_cb("refresh") },
-    { key = "a",                            cb = tree_cb("create") },
-    { key = "d",                            cb = tree_cb("remove") },
-    { key = "r",                            cb = tree_cb("rename") },
-    { key = "<C-r>",                        cb = tree_cb("full_rename") },
-    { key = "x",                            cb = tree_cb("cut") },
-    { key = "c",                            cb = tree_cb("copy") },
-    { key = "p",                            cb = tree_cb("paste") },
-    { key = "y",                            cb = tree_cb("copy_name") },
-    { key = "Y",                            cb = tree_cb("copy_path") },
-    { key = "gy",                           cb = tree_cb("copy_absolute_path") },
-    { key = "[c",                           cb = tree_cb("prev_git_item") },
-    { key = "]c",                           cb = tree_cb("next_git_item") },
-    { key = "-",                            cb = tree_cb("dir_up") },
-    { key = "q",                            cb = tree_cb("close") },
-    { key = "g?",                           cb = tree_cb("toggle_help") },
+require'nvim-tree'.setup {
+  -- disables netrw completely
+  disable_netrw       = true,
+  -- hijack netrw window on startup
+  hijack_netrw        = true,
+  -- open the tree when running this setup function
+  open_on_setup       = false,
+  -- will not open on setup if the filetype is in this list
+  ignore_ft_on_setup  = {},
+  -- closes neovim automatically when the tree is the last **WINDOW** in the view
+  auto_close          = false,
+  -- opens the tree when changing/opening a new tab if the tree wasn't previously opened
+  open_on_tab         = false,
+  -- hijacks new directory buffers when they are opened.
+  update_to_buf_dir   = {
+    -- enable the feature
+    enable = true,
+    -- allow to open the tree if it was previously closed
+    auto_open = true,
+  },
+  -- hijack the cursor in the tree to put it at the start of the filename
+  hijack_cursor       = false,
+  -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
+  update_cwd          = false,
+  -- show lsp diagnostics in the signcolumn
+  diagnostics = {
+    enable = false,
+    icons = {
+      hint = "",
+      info = "",
+      warning = "",
+      error = "",
+    }
+  },
+  -- update the focused file on `BufEnter`, un-collapses the folders recursively until it finds the file
+  update_focused_file = {
+    -- enables the feature
+    enable      = false,
+    -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
+    -- only relevant when `update_focused_file.enable` is true
+    update_cwd  = false,
+    -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
+    -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
+    ignore_list = {}
+  },
+  -- configuration options for the system open command (`s` in the tree by default)
+  system_open = {
+    -- the command to run this, leaving nil should work in most cases
+    cmd  = nil,
+    -- the command arguments as a list
+    args = {}
+  },
+
+  view = {
+    -- width of the window, can be either a number (columns) or a string in `%`, for left or right side placement
+    width = 30,
+    -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
+    height = 30,
+    -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
+    side = 'left',
+    -- if true the tree will resize itself after opening a file
+    auto_resize = false,
+    mappings = {
+      -- custom only false will merge the list with the default mappings
+      -- if true, it will only use your list to set the mappings
+      custom_only = false,
+      -- list of mappings to set on the tree manually
+      list = {}
+    }
   }
-  local circle = "○"
+}
 
-  -- -- DevIcons
-  -- local devIcons = require("nvim-web-devicons")
-  -- local override_icons = devIcons.get_icons()
-  -- for _, icon in pairs(override_icons) do icon.icon = circle end
-  -- devIcons.setup({override = override_icons, default = true})
-
-  -- -- NvimTree
-  -- vim.g.nvim_tree_icons = {
-  --   default = circle,
-  --   symlink = circle,
-  --   folder = {
-  --     default = circle,
-  --     open = circle,
-  --     empty = circle,
-  --     empty_open = circle,
-  --     symlink = circle,
-  --     symlink_open = circle
-  --   }
-  -- }
-
--- require'nvim-tree.view'.View.width = 50
-require'nvim-tree'.setup()
-
--- -------------------------------------------------------------------------- #
--- ----------------- gruvbox ---------------------------------------------------- #
--- -------------------------------------------------------------------------- #
--- vim.o.background = "dark" -- or "light" for light mode
--- vim.cmd([[colorscheme gruvbox]])
+local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+local list = {
+  { key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("edit") },
+  { key = {"<2-RightMouse>", "<C-]>"},    cb = tree_cb("cd") },
+  { key = "v",                        cb = tree_cb("vsplit") },
+  { key = "i",                        cb = tree_cb("split") },
+  { key = "t",                        cb = tree_cb("tabnew") },
+  { key = "<",                            cb = tree_cb("prev_sibling") },
+  { key = ">",                            cb = tree_cb("next_sibling") },
+  { key = "P",                            cb = tree_cb("parent_node") },
+  { key = "<BS>",                         cb = tree_cb("close_node") },
+  { key = "<S-CR>",                       cb = tree_cb("close_node") },
+  { key = "<Tab>",                        cb = tree_cb("preview") },
+  { key = "K",                            cb = tree_cb("first_sibling") },
+  { key = "J",                            cb = tree_cb("last_sibling") },
+  { key = "I",                            cb = tree_cb("toggle_ignored") },
+  { key = "H",                            cb = tree_cb("toggle_dotfiles") },
+  { key = "R",                            cb = tree_cb("refresh") },
+  { key = "a",                            cb = tree_cb("create") },
+  { key = "d",                            cb = tree_cb("remove") },
+  { key = "r",                            cb = tree_cb("rename") },
+  { key = "<C-r>",                        cb = tree_cb("full_rename") },
+  { key = "x",                            cb = tree_cb("cut") },
+  { key = "c",                            cb = tree_cb("copy") },
+  { key = "p",                            cb = tree_cb("paste") },
+  { key = "y",                            cb = tree_cb("copy_name") },
+  { key = "Y",                            cb = tree_cb("copy_path") },
+  { key = "gy",                           cb = tree_cb("copy_absolute_path") },
+  { key = "[c",                           cb = tree_cb("prev_git_item") },
+  { key = "]c",                           cb = tree_cb("next_git_item") },
+  { key = "-",                            cb = tree_cb("dir_up") },
+  { key = "s",                            cb = tree_cb("system_open") },
+  { key = "q",                            cb = tree_cb("close") },
+  { key = "g?",                           cb = tree_cb("toggle_help") },
+}
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- ayu ---------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
---[[ vim.g.ayu_overrides = {
+require('ayu').setup({
+  mirage=true,
+  overrides = {
   Comment = {fg = '#707A8C'},
   String = {fg = '#E6BA7E'},
-  bg = '#18130F'
+  -- CursorLine = '#0000FF',
+  -- LineNr = '#0000FF'
+  -- bg = '#18130F'
+  }
+})
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- nvim-treesitter ---------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require'nvim-treesitter.configs'.setup {
+  rainbow = {
+    enable = true,
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    -- max_file_lines = nil, -- Do not enable for files with more than n lines, int
+    colors = {'#FFCC00', '#82AAFF', '#fe8019'}, -- table of hex strings
+    -- termcolors = {} -- table of colour name strings
+  }
 }
-vim.g.ayu_mirage = true ]]
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- material ----------------------------------------------- #
+-- -------------------------------------------------------------------------- #
 
 -- -- ----------------- theme -------------------------------------------------- #
-require('material').setup({
-        contrast = true, -- Enable contrast for sidebars, floating windows and popup menus like Nvim-Tree
-        borders = true, -- Enable borders between verticaly split windows
-        popup_menu = "dark", -- Popup menu style ( can be: 'dark', 'light', 'colorful' or 'stealth' )
-        italics = {
-                comments = false, -- Enable italic comments
-                keywords = true, -- Enable italic keywords
-                functions = false, -- Enable italic functions
-                strings = false, -- Enable italic strings
-                variables = false -- Enable italic variables
-        },
-        contrast_windows = { -- Specify which windows get the contrasted (darker) background
-                -- "terminal", -- Darker terminal background
-                -- "packer", -- Darker packer background
-                -- "qf" -- Darker qf list background ]]
-        },
-        text_contrast = {
-                lighter = true, -- Enable higher contrast text for lighter style
-                darker = true -- Enable higher contrast text for darker style
-        },
-        disable = {
-                background = true, -- Prevent the theme from setting the background (NeoVim then uses your teminal background)
-                term_colors = false, -- Prevent the theme from setting terminal colors
-                eob_lines = false -- Hide the end-of-buffer lines
-        },
-        custom_highlights = {
+-- require('material').setup({
+        -- contrast = true, -- Enable contrast for sidebars, floating windows and popup menus like Nvim-Tree
+        -- borders = true, -- Enable borders between verticaly split windows
+        -- popup_menu = "dark", -- Popup menu style ( can be: 'dark', 'light', 'colorful' or 'stealth' )
+        -- italics = {
+                -- comments = false, -- Enable italic comments
+                -- keywords = true, -- Enable italic keywords
+                -- functions = false, -- Enable italic functions
+                -- strings = false, -- Enable italic strings
+                -- variables = false -- Enable italic variables
+        -- },
+        -- text_contrast = {
+                -- lighter = true, -- Enable higher contrast text for lighter style
+                -- darker = true -- Enable higher contrast text for darker style
+        -- },
+        -- disable = {
+                -- background = true, -- Prevent the theme from setting the background (NeoVim then uses your teminal background)
+                -- term_colors = false, -- Prevent the theme from setting terminal colors
+                -- eob_lines = false -- Hide the end-of-buffer lines
+        -- },
+        -- custom_highlights = {
                 -- CursorLine = '#0000FF',
                 -- LineNr = '#0000FF'
-            line_numbers = '#0000FF'
-        }
-})
+            -- line_numbers = '#0000FF'
+        -- }
+-- })
 
 -- ----------------- git-worktree ------------------------------------------- #
 -- require("git-worktree").setup({

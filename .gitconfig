@@ -8,3 +8,5 @@
 [mergetool "fugitive"]
     cmd = nvim -f -c "Gvdiffsplit!" "$MERGED"
 
+[init]
+	templatedir = ~/.git-templates
