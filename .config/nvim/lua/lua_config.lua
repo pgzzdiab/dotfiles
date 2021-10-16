@@ -6,42 +6,42 @@
 -- --------------------- Diffview ------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 -- Lua
-local cb = require'diffview.config'.diffview_callback
-require'diffview'.setup {
-  diff_binaries = false,    -- Show diffs for binaries
-  file_panel = {
-    width = 35,
-    -- use_icons = true        -- Requires nvim-web-devicons
-  },
-  key_bindings = {
-    disable_defaults = false,                   -- Disable the default key bindings
-    -- The `view` bindings are active in the diff buffers, only when the current
-    -- tabpage is a Diffview.
-    view = {
-      ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
-      ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
-      ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
-      ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
-    },
-    file_panel = {
-      -- ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
-      -- ["<down>"]        = cb("next_entry"),
-      -- ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
+-- local cb = require'diffview.config'.diffview_callback
+-- require'diffview'.setup {
+  -- diff_binaries = false,    -- Show diffs for binaries
+  -- file_panel = {
+    -- width = 35,
+    -- -- use_icons = true        -- Requires nvim-web-devicons
+  -- },
+  -- key_bindings = {
+    -- disable_defaults = false,                   -- Disable the default key bindings
+    -- -- The `view` bindings are active in the diff buffers, only when the current
+    -- -- tabpage is a Diffview.
+    -- view = {
+      -- ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
+      -- ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
+      -- ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
+      -- ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
+    -- },
+    -- file_panel = {
+      -- -- ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
+      -- -- ["<down>"]        = cb("next_entry"),
+      --  ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
       -- ["<up>"]          = cb("prev_entry"),
       -- ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
-      ["o"]             = cb("select_entry"),
-      ["<2-LeftMouse>"] = cb("select_entry"),
-      ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
-      ["S"]             = cb("stage_all"),          -- Stage all entries.
-      ["U"]             = cb("unstage_all"),        -- Unstage all entries.
-      ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
-      ["<tab>"]         = cb("select_next_entry"),
-      ["<s-tab>"]       = cb("select_prev_entry"),
-      ["<leader>e"]     = cb("focus_files"),
-      ["<leader>b"]     = cb("toggle_files"),
-    }
-  }
-}
+      -- ["o"]             = cb("select_entry"),
+      -- ["<2-LeftMouse>"] = cb("select_entry"),
+      -- ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
+      -- ["S"]             = cb("stage_all"),          -- Stage all entries.
+      -- ["U"]             = cb("unstage_all"),        -- Unstage all entries.
+      -- ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
+      -- ["<tab>"]         = cb("select_next_entry"),
+      -- ["<s-tab>"]       = cb("select_prev_entry"),
+      -- ["<leader>e"]     = cb("focus_files"),
+      -- ["<leader>b"]     = cb("toggle_files"),
+    -- }
+  -- }
+-- }
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
@@ -265,15 +265,13 @@ cmp.setup({
     { name = 'buffer' },
   }
 })
--- Setup lspconfig.
--- require('lspconfig')[%YOUR_LSP_SERVER%].setup {
-  -- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
--- }
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp --------------------------------------------------- "
 -- -------------------------------------------------------------------------- #
 local nvim_lsp=require('lspconfig')
+
+
 
 -- local on_attach=function(client, bufnr)
 -- 	-- Enable completion triggered by <c-x><c-o>
@@ -307,9 +305,13 @@ vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspD
 vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
 
 
+-- local coq = require("coq")
+-- nvim_lsp.pyright.setup(coq.lsp_ensure_capabilities())
+
 nvim_lsp.pyright.setup{
     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
+
 
 -- remove underlying on diagnostic
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
@@ -322,9 +324,21 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 
 -- -------------------------------------------------------------------------- #
+--  ----------------- hop ----------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- lua require('hop').setup{
+  -- keys = 'aqwsderfvgtnhuipjmnklo',
+  -- term_seq_bias = 0.5
+-- }
+vim.api.nvim_set_keymap('n', 'fj', "<cmd>lua require'hop'.hint_words()<cr>", {})
+vim.api.nvim_set_keymap('n', 'fk', "<cmd>lua require'hop'.hint_char2()<cr>", {})
+vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1()<cr>", {})
+
+
+-- -------------------------------------------------------------------------- #
 --  ----------------- lspkind ----------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('lspkind').init()
+-- require('lspkind').init()
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp signature ----------------------------------------- #
@@ -360,25 +374,25 @@ require('neogit').setup {}
 -- -------------------------------------------------------------------------- #
 --  ----------------- lightspeed -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
-require'lightspeed'.setup {
-  jump_to_first_match = true,
-  jump_on_partial_input_safety_timeout = 400,
-  -- This can get _really_ slow if the window has a lot of content,
-  -- turn it on only if your machine can always cope with it.
-  highlight_unique_chars = false,
-  grey_out_search_area = true,
-  match_only_the_start_of_same_char_seqs = true,
-  limit_ft_matches = 5,
-  x_mode_prefix_key = '<c-x>',
-  substitute_chars = { ['\r'] = '¬' },
-  instant_repeat_fwd_key = nil,
-  instant_repeat_bwd_key = nil,
-  -- If no values are given, these will be set at runtime,
-  -- based on `jump_to_first_match`.
-  labels = nil,
-  cycle_group_fwd_key = nil,
-  cycle_group_bwd_key = nil,
-}
+-- require'lightspeed'.setup {
+  -- jump_to_first_match = true,
+  -- jump_on_partial_input_safety_timeout = 400,
+  -- -- This can get _really_ slow if the window has a lot of content,
+  -- -- turn it on only if your machine can always cope with it.
+  -- highlight_unique_chars = false,
+  -- grey_out_search_area = true,
+  -- match_only_the_start_of_same_char_seqs = true,
+  -- limit_ft_matches = 5,
+  -- x_mode_prefix_key = '<c-x>',
+  -- substitute_chars = { ['\r'] = '¬' },
+  -- instant_repeat_fwd_key = nil,
+  -- instant_repeat_bwd_key = nil,
+  -- -- If no values are given, these will be set at runtime,
+  -- -- based on `jump_to_first_match`.
+  -- labels = nil,
+  -- cycle_group_fwd_key = nil,
+  -- cycle_group_bwd_key = nil,
+-- }
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- illuminate -------------------------------------------- "

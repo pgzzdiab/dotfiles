@@ -37,6 +37,13 @@ set nostartofline                 " going below move the cursor tp the firrst no
 
 set hls                           " highlight search
 
+if has("nvim")
+  " Pmenu transparancy
+  " set pumblend=40
+  hi PmenuSel blend=0
+  set pumheight=3
+endif
+
 set completeopt=menuone,noselect  " completion menu
 " set shortmess+=c                                             " Remove messages from in-completion menus
 
@@ -350,7 +357,7 @@ map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # 
 map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---")
 
 " nnoremap <expr> fs ':%s/'.expand('<cword>').'//gn<CR>``' " search current word under cursor
-nnoremap fj *N
+nnoremap fh *N
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
 nnoremap K i<cr><esc>                              " cut line
@@ -466,33 +473,43 @@ call plug#begin(g:plug_install_files)
 if has('nvim')
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
         Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
-        Plug 'onsails/lspkind-nvim'                            " add vs code icons to lsp completion
+        Plug 'kyazdani42/nvim-tree.lua'                        " file tree
+
+        Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
+	Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
+
+	" -------------------------------------------------------------------------- #
+	" ------------------ LSP --------------------------------------------------- #
+	" -------------------------------------------------------------------------- #
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
+	" Plug 'ms-jpq/coq_nvim'                                " Faster LSP ?
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
 	Plug 'hrsh7th/cmp-nvim-lsp'
 	Plug 'hrsh7th/cmp-buffer'
-        Plug 'hrsh7th/nvim-cmp'                              " completion plugin
+        Plug 'hrsh7th/nvim-cmp'                                " completion plugin
         Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
         Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
+	Plug 'phaazon/hop.nvim'
+	" Plug 'justinmk/vim-sneak'                               " jump using 2-chars
+
+        Plug 'TimUntersberger/neogit'                          " git helper
+        Plug 'b3nj5m1n/kommentary'                             " comments
+        Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+
+	" -------------------------------------------------------------------------- #
+	" ------------------ theming ----------------------------------------------- #
+	" -------------------------------------------------------------------------- #
         Plug 'lewis6991/gitsigns.nvim'
-        Plug 'kyazdani42/nvim-tree.lua'                        " file tree
         Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
         Plug 'sindrets/diffview.nvim'                          " diffview
-        Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
-
-        Plug 'nvim-lua/popup.nvim'                             " to install telescope
-        Plug 'nvim-telescope/telescope.nvim'                   " https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
-        Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
-	Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
-        Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-        Plug 'b3nj5m1n/kommentary'                             " comments
-        Plug 'TimUntersberger/neogit'                          " git helper
         Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
-	Plug 'projekt0n/github-nvim-theme'
+
+        Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
+        Plug 'nvim-lua/popup.nvim'                             " to install telescope
+        Plug 'nvim-telescope/telescope.nvim'
 	Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
-	Plug 'ggandor/lightspeed.nvim'                          " jump using 2-chars
 
         " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
         " Plug 'nvim-lua/lsp-status.nvim'
@@ -520,7 +537,6 @@ else
         Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
         Plug 'tpope/vim-commentary'                             " comment objects
 	Plug 'luochen1990/rainbow'                             " rainbow parenthesis
-	Plug 'justinmk/vim-sneak'                               " jump using 2-chars
 endif
 
 " --------------------------------------------------------------
@@ -691,7 +707,7 @@ Plug 'mhinz/vim-startify'                              " add start page to vim
 call plug#end()
 
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
-" <<<<<<<<<<<<<<<<<<<< Load lua configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
+" <<<<<<<<<<<<<<<<<<<< Plugin Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
 if has('nvim')
@@ -700,10 +716,6 @@ if has('nvim')
 	lua require('lua_config')
 
 endif
-
-" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
-" <<<<<<<<<<<<<<<<<<<< Plugin Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
-" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
 " if has('nvim')
 
@@ -1471,20 +1483,20 @@ endif
 "  ------------------------------------------------------------
 if has("nvim")
 else
-nmap f <Plug>Sneak_s
-nmap F <Plug>Sneak_S
-" visual-mode
-xmap f <Plug>Sneak_s
-xmap F <Plug>Sneak_S
-" operator-pending-mode
-omap f <Plug>Sneak_s
-omap F <Plug>Sneak_S
-let g:sneak#label = 1
+  nmap f <Plug>Sneak_s
+  nmap F <Plug>Sneak_S
+  " visual-mode
+  xmap f <Plug>Sneak_s
+  xmap F <Plug>Sneak_S
+  " operator-pending-mode
+  omap f <Plug>Sneak_s
+  omap F <Plug>Sneak_S
+  let g:sneak#label = 1
 
-map x <Plug>Sneak_f
-map X <Plug>Sneak_F
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
+  map x <Plug>Sneak_f
+  map X <Plug>Sneak_F
+  map t <Plug>Sneak_t
+  map T <Plug>Sneak_T
 endif
 
 " -------------------------------------------------------------
@@ -1695,6 +1707,11 @@ else
 	" nmap <leader>f  <Plug>(coc-format-selected)
 endif
 
+" -------------------------------------------------------------
+"  hop
+"  ------------------------------------------------------------
+" nnoremap <silent><nowait> f <cmd>lua require'hop'.hint_words()
+
 " -------------------------------------------------------------------------- "
 " pythonsense
 " -------------------------------------------------------------------------- "
@@ -1736,7 +1753,6 @@ endif
 
 if has('nvim')
     " colorscheme material
-    " colorscheme github_dimmed
     colorscheme ayu
     " let g:material_theme_style = 'oceanic'
 else
