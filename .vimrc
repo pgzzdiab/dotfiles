@@ -491,11 +491,11 @@ if has('nvim')
         Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
 
-	Plug 'phaazon/hop.nvim'
-	" Plug 'justinmk/vim-sneak'                               " jump using 2-chars
+	Plug 'phaazon/hop.nvim'                                " better than sneack
 
         Plug 'TimUntersberger/neogit'                          " git helper
-        Plug 'b3nj5m1n/kommentary'                             " comments
+        " Plug 'b3nj5m1n/kommentary'                             " comments
+	Plug 'numToStr/Comment.nvim'
         Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 	" -------------------------------------------------------------------------- #
@@ -532,6 +532,7 @@ if has('nvim')
 
 else
         " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
+	" Plug 'justinmk/vim-sneak'                               " jump using 2-chars
         Plug 'preservim/nerdtree'                              " file explorer
         Plug 'wellle/targets.vim'                              " Better objects
         Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
