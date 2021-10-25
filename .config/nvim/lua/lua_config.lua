@@ -43,10 +43,6 @@
   -- }
 -- }
 
--- -------------------------------------------------------------------------- #
--- ----------------- \<windline\> -------------------------------------------- #
--- -------------------------------------------------------------------------- #
-require('wlsample.mybubble')
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<qf_helper\> -------------------------------------------- #
@@ -141,6 +137,7 @@ require('Comment').setup()
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-textobjects -------------------------------- #
 -- -------------------------------------------------------------------------- #
+require "nvim-treesitter"
 require'nvim-treesitter.configs'.setup {
   textobjects = {
     move = {
@@ -200,6 +197,15 @@ require'nvim-treesitter.configs'.setup {
       },
     },
   },
+  -- indent = {
+    -- enable = true
+  -- },
+  rainbow = {
+    enable = true,
+    extended_mode = true,
+    colors = {'#FFCC00', '#82AAFF', '#fe8019'},
+  },
+
 }
 
 -- -------------------------------------------------------------------------- #
@@ -243,10 +249,10 @@ cmp.setup({
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    })
+    -- ['<CR>'] = cmp.mapping.confirm({
+    --   behavior = cmp.ConfirmBehavior.Replace,
+    --   select = true,
+    -- })
   },
   formatting = {
         format = function(entry, item)
@@ -266,6 +272,40 @@ cmp.setup({
     { name = 'buffer' },
   }
 })
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- gps --------------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+require("nvim-gps").setup()
+-- require("nvim-gps").setup({
+-- 	icons = {
+-- 		["class-name"] = ' ',      -- Classes and class-like objects
+-- 		["function-name"] = ' ',   -- Functions
+-- 		["method-name"] = ' ',     -- Methods (functions inside class-like objects)
+-- 		["container-name"] = '⛶ ',  -- Containers (example: lua tables)
+-- 		["tag-name"] = '炙'         -- Tags (example: html tags)
+-- 	},
+-- 	-- Add custom configuration per language or
+-- 	-- Disable the plugin for a language
+-- 	-- Any language not disabled here is enabled by default
+-- 	languages = {
+-- 		-- ["bash"] = false, -- disables nvim-gps for bash
+-- 		-- ["go"] = false,   -- disables nvim-gps for golang
+-- 		-- ["ruby"] = {
+-- 		--	separator = '|', -- Overrides default separator with '|'
+-- 		--	icons = {
+-- 		--		-- Default icons not specified in the lang config
+-- 		--		-- will fallback to the default value
+-- 		--		-- "container-name" will fallback to default because it's not set
+-- 		--		["function-name"] = '',    -- to ensure empty values, set an empty string
+-- 		--		["tag-name"] = ''
+-- 		--		["class-name"] = '::',
+-- 		--		["method-name"] = '#',
+-- 		--	}
+-- 		--}
+-- 	},
+-- 	separator = ' > ',
+-- })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp --------------------------------------------------- "
@@ -622,18 +662,6 @@ require('ayu').setup({
   }
 })
 
--- -------------------------------------------------------------------------- #
--- ----------------- nvim-treesitter ---------------------------------------- #
--- -------------------------------------------------------------------------- #
-require'nvim-treesitter.configs'.setup {
-  rainbow = {
-    enable = true,
-    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-    -- max_file_lines = nil, -- Do not enable for files with more than n lines, int
-    colors = {'#FFCC00', '#82AAFF', '#fe8019'}, -- table of hex strings
-    -- termcolors = {} -- table of colour name strings
-  }
-}
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- material ----------------------------------------------- #
@@ -721,3 +749,8 @@ require('gitsigns').setup()
   -- use_decoration_api = true,
   -- use_internal_diff = true,  -- If luajit is present
 -- }
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- \<windline\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('wlsample.mybubble')

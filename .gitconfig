@@ -10,3 +10,5 @@
 
 [init]
 	templatedir = ~/.git-templates
+[core]
+	editor = nvim

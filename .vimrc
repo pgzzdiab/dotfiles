@@ -60,6 +60,7 @@ set completeopt=menuone,noselect  " completion menu
 set scrolloff=10                    " limit of line to scroll
 set showtabline=2                   " always show tab number
 set incsearch                       " Show search result while typing
+"set inccommand=
 set encoding=utf-8                  " encoding file
 filetype plugin indent on           " Enable filetype detection for plugins and indentation options
 set nocompatible
@@ -472,7 +473,8 @@ call plug#begin(g:plug_install_files)
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
-        Plug 'nvim-treesitter/nvim-treesitter'                 " nvim treesitter tool
+	Plug 'nvim-treesitter/nvim-treesitter'
+	Plug 'nvim-treesitter/nvim-treesitter-textobjects'
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
 
         Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
@@ -490,13 +492,13 @@ if has('nvim')
         Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
         Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
+	Plug 'SmiteshP/nvim-gps'
 
 	Plug 'phaazon/hop.nvim'                                " better than sneack
 
         Plug 'TimUntersberger/neogit'                          " git helper
         " Plug 'b3nj5m1n/kommentary'                             " comments
 	Plug 'numToStr/Comment.nvim'
-        Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 	" -------------------------------------------------------------------------- #
 	" ------------------ theming ----------------------------------------------- #
@@ -1769,7 +1771,7 @@ set background=dark
 
 set cursorline                               " Highlight current line
 " hi CursorLine guibg=#282828
-" hi CursorLine guibg=#1D2214
+ hi CursorLine guibg=#000000
 -
 " -------------------------------------------------------------
 "  vim sneak
@@ -1796,7 +1798,7 @@ endif
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
 " highlight ColorColumn guibg= #213B47
-" set colorcolumn=80
+ set colorcolumn=80"
 
 " ------------------------------------------------------------------------- "
 " ------------------- folding --------------------------------------------- "

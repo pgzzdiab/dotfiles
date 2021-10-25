@@ -26,8 +26,8 @@ super + ctrl + shift + r
 	bspc wm -r
 
 # take a screenshot using flameshot
-# super + z
-# 	flameshot screen --clipboard
+super + z
+	flameshot screen --clipboard
 # flameshot gui
 super + a
 	flameshot gui
