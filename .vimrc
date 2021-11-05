@@ -37,6 +37,10 @@ set nostartofline                 " going below move the cursor tp the firrst no
 
 set hls                           " highlight search
 
+filetype plugin on
+set path-=.
+
+
 if has("nvim")
   " Pmenu transparancy
   " set pumblend=40
@@ -192,6 +196,27 @@ if has('win32')
     \ ]
 endif
 
+" ---------------------------------------------------------------------------
+" ----------------- C++ -----------------------------------------------------
+" ---------------------------------------------------------------------------
+function! s:JbzCppMan()
+    let old_isk = &iskeyword
+    setl iskeyword+=:
+    let str = expand("<cword>")
+    let &l:iskeyword = old_isk
+    execute 'Man ' . str
+endfunction
+command! JbzCppMan :call s:JbzCppMan()
+au FileType cpp nnoremap <buffer>K :JbzCppMan<CR>
+
+
+function! s:JbzRemoveDebugPrints()
+  let save_cursor = getcurpos()
+  :g/\/\/\ prdbg$/d
+  call setpos('.', save_cursor)
+endfunction
+command! JbzRemoveDebugPrints call s:JbzRemoveDebugPrints()
+au FileType c,cpp nnoremap <buffer><leader>rd :JbzRemoveDebugPrints<CR>
 
 
 " _____________________________________________________________________________ "
@@ -349,7 +374,7 @@ noremap ' "
 " nnoremap <CR> o<Esc>
 " nnoremap <S-cr> O<Esc>
 
-nnoremap <silent> "" "+yiw                         " copy word into clipboard
+nnoremap <silent> '' "+yiw                         " copy word into clipboard
 nnoremap <silent> "<space> "+yy                    " copy line into clipboard
 " for comment line
 map co :call FillLine('-', '#')<CR>                " for commenting fill rest of line with --- until char 79
@@ -361,7 +386,7 @@ map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---"
 nnoremap fh *N
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
-nnoremap K i<cr><esc>                              " cut line
+" nnoremap P i<cr><esc>                              " cut line
 :map H ^
 :map L g_
 inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
@@ -473,7 +498,7 @@ call plug#begin(g:plug_install_files)
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
         Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
-	Plug 'nvim-treesitter/nvim-treesitter'
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 	Plug 'nvim-treesitter/nvim-treesitter-textobjects'
         Plug 'kyazdani42/nvim-tree.lua'                        " file tree
 
@@ -486,9 +511,11 @@ if has('nvim')
         Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
 	" Plug 'ms-jpq/coq_nvim'                                " Faster LSP ?
         Plug 'neovim/nvim-lspconfig'                           " lsp configuration
+        Plug 'hrsh7th/nvim-cmp'                                " completion plugin
 	Plug 'hrsh7th/cmp-nvim-lsp'
 	Plug 'hrsh7th/cmp-buffer'
-        Plug 'hrsh7th/nvim-cmp'                                " completion plugin
+	Plug 'hrsh7th/cmp-cmdline'
+	Plug 'quangnguyen30192/cmp-nvim-ultisnips'
         Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
         Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
         Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
@@ -540,13 +567,16 @@ else
         Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
         Plug 'tpope/vim-commentary'                             " comment objects
 	Plug 'luochen1990/rainbow'                             " rainbow parenthesis
+	Plug 'nathom/filetype.nvim'                            " better startup ?
 endif
 
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
+Plug 'vim-scripts/restore_view.vim'
 " Plug 'tpope/vim-scriptease'
 Plug 't9md/vim-textmanip'                            " move blocks of text easy
+Plug 'tyru/open-browser.vim'
 " Plug 't9md/vim-choosewin'
 " Plug 'junegunn/vim-easy-align'                       " Helps alignment TODO: LEARN
 " Plug 'sjl/gundo.vim'                                 " add undo tree
@@ -554,6 +584,13 @@ Plug 't9md/vim-textmanip'                            " move blocks of text easy
 " Plug 'junegunn/loclisteasy-align'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Plug 'junegunn/fzf.vim'
+
+" --------------------------------------------------------------
+" ---------------------- C++ ------------------------------------
+" --------------------------------------------------------------
+Plug 'derekwyatt/vim-fswitch'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- tmux ----------------------------------------------- "
@@ -751,6 +788,52 @@ endif
 " 	nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
 " 	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
 " endif
+
+" -------------------------------------------------------------
+"  open-browser
+"  ------------------------------------------------------------
+"  open c++ doc
+let g:openbrowser_search_engines = extend(
+\ get(g:, 'openbrowser_search_engines', {}),
+\ {
+\   'cppreference': 'https://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search={query}',
+\   'qt': 'https://doc.qt.io/qt-5/search-results.html?q={query}',
+\   'python': 'https://docs.python.org/dev/search.html?q={query}&check_keywords=yes&area=default',
+\   'numpy': 'https://numpy.org/doc/stable/search.html?q={query}',
+\   'scipy': 'https://docs.scipy.org/doc/scipy/search.html?q={query}',
+\   'pandas': 'https://pandas.pydata.org/pandas-docs/stable/search.html?q={query}',
+\   'web': 'https://duckduckgo.com/?q=python+doc+{query}&t=h_&ia=web',
+\ },
+\ 'keep'
+\)
+nnoremap <silent> <leader>osx :call openbrowser#smart_search(expand('<cword>'), "cppreference")<CR>
+nnoremap <silent> <leader>osq :call openbrowser#smart_search(expand('<cword>'), "qt")<CR>
+nnoremap <silent> <leader>dd :call openbrowser#smart_search(expand('<cword>'), "python")<CR>
+nnoremap <silent> <leader>dn :call openbrowser#smart_search(expand('<cword>'), "numpy")<CR>
+nnoremap <silent> <leader>dp :call openbrowser#smart_search(expand('<cword>'), "pandas")<CR>
+nnoremap <silent> <leader>dw :call openbrowser#smart_search(expand('<cword>'), "web")<CR>
+
+" -------------------------------------------------------------
+"  fswitch
+"  ------------------------------------------------------------
+au BufEnter *.h  let b:fswitchdst = "c,cpp,cc,m"
+au BufEnter *.cc let b:fswitchdst = "h,hpp"
+au BufEnter *.h let b:fswitchdst = 'c,cpp,m,cc' | let b:fswitchlocs = 'reg:|include.*|src/**|'
+nnoremap <silent> <leader>F :FSHere<cr>
+" Extra hotkeys to open header/source in the split
+nnoremap <silent> <localleader>oh :FSSplitLeft<cr>
+nnoremap <silent> <localleader>oj :FSSplitBelow<cr>
+nnoremap <silent> <localleader>ok :FSSplitAbove<cr>
+nnoremap <silent> <localleader>ol :FSSplitRight<cr>
+
+" -------------------------------------------------------------
+"  ultisnips
+"  ------------------------------------------------------------
+" let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsJumpForwardTrigger="<c-b>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" " If you want :UltiSnipsEdit to split your window.
+" let g:UltiSnipsEditSplit="vertical"
 
 " -------------------------------------------------------------
 "  moonfly
@@ -951,7 +1034,7 @@ if has('nvim')
 	" LUA TREE
 	" --------------------------------------------------------------
 	let g:nvim_tree_width = 50 "30 by default
-	let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache'] "empty by default
+	" let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache'] "empty by default
 	let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
 	let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
 	let g:nvim_tree_show_icons = {
@@ -1005,7 +1088,7 @@ let g:airline_inactive_collapse=1
 let g:airline_inactive_alt_sep=1
 let g:airline_powerline_fonts = 1
 let g:airline_disable_statusline = 1
-
+let airline#extensions#tabline#disable_refresh = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#tabline#show_tabs = 0
@@ -1030,7 +1113,6 @@ nmap <silent> <A-i> <Plug>AirlineSelectTab8
 nmap <silent> <A-o> <Plug>AirlineSelectTab9
 nmap <silent> <A-o> <Plug>AirlineSelectTab9
 nmap <silent> <A-p> <Plug>AirlineSelectTab0
-" nmap <silent> <leader>0 <Plug>AirlineSelectTab0
 nmap <silent>  <A-[> <Plug>AirlineSelectPrevTab
 nmap <silent> <A-]> <Plug>AirlineSelectNextTab
 
@@ -1413,16 +1495,16 @@ nnoremap <A-g> :Grepper<CR>
 	nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 endif
 
-" --------------------------------------------------------------------------
-" -- Compe
-" -- -----------------------------------------------------------------------
- if has('nvim')
-	inoremap <silent><expr> <C-Space> compe#complete()
-	inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-	inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-	inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-	inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-endif
+" " --------------------------------------------------------------------------
+" " -- Compe
+" " -- -----------------------------------------------------------------------
+"  if has('nvim')
+" 	inoremap <silent><expr> <C-Space> compe#complete()
+" 	inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+" 	inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+" 	inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+" 	inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+" endif
 
 " --------------------------------------------------------------------------
 " -- QFEnter

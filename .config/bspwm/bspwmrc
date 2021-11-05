@@ -3,8 +3,8 @@
 # xset fp+ /usr/share/fonts/bitmap &
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-# bspc monitor -d 1 2 3 4 5 6 7 8 9 0
-bspc monitor -d Q W E R T Y U I O P
+ bspc monitor -d 1 2 3 4 5 6 7 8 9 0
+# bspc monitor -d I II III IV V VI VII VIII IX X
 
 # bspc config pointer_modifier         mod4
 bspc config focus_follows_pointer    true
@@ -16,11 +16,11 @@ bspc config pointer_follows_focus    true
 # ~/.config/bspwm/scripts/bspfullscreen &
 
 # border/gaps
-bspc config border_width     2
-bspc config top_padding      5
+bspc config border_width     1
+bspc config top_padding      0
 bspc config right_padding    5
 bspc config left_padding     5
-bspc config bottom_padding   5
+bspc config bottom_padding   -10
 # bspc config top_padding      -10
 # bspc config right_padding    -10
 # bspc config left_padding     -10
@@ -79,8 +79,9 @@ xset r rate 120 150
 
 # background
 # feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg
-hsetroot -solid "#263238" &
+# hsetroot -solid "#263238" &
 # hsetroot -solid "#000000" &
+hsetroot -solid "#1F2430" &
 
 # poolybaaaaaar
 ~/.config/polybar/launch.sh &

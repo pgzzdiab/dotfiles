@@ -240,6 +240,11 @@ local lsp_symbols = {
     TypeParameter = "   (TypeParameter)",
 }
 cmp.setup({
+  snippet = {
+      expand = function(args)
+        vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
   mapping = {
     ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
     ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
@@ -270,8 +275,23 @@ cmp.setup({
   sources = {
     { name = 'nvim_lsp' },
     { name = 'buffer' },
+    { name = 'ultisnips' },
   }
 })
+
+-- cmp.setup.cmdline('/', {
+--     sources = {
+--       { name = 'buffer' }
+--     }
+-- })
+-- -- Use cmdline & path source for ':'.
+--   cmp.setup.cmdline(':', {
+--     sources = cmp.config.sources({
+--       { name = 'path' }
+--     }, {
+--       { name = 'cmdline' }
+--     })
+--  })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- gps --------------------------------------------------- "
@@ -349,10 +369,13 @@ vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnost
 -- local coq = require("coq")
 -- nvim_lsp.pyright.setup(coq.lsp_ensure_capabilities())
 
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 nvim_lsp.pyright.setup{
-    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = capabilities
 }
-
+nvim_lsp.cmake.setup{
+    capabilities = capabilities
+}
 
 -- remove underlying on diagnostic
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(

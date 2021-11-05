@@ -1,4 +1,4 @@
-set font "Fira Code 8"
+set font "Fira Code 10"
 # ------- mapping --------- #
 
 set statusbar-h-padding 0
@@ -15,27 +15,27 @@ map i recolor
 map p print
 
 
-set notification-error-bg       "#263238" # bg
+set notification-error-bg       "#1F2430" # bg
 set notification-error-fg       "#fb4934" # bright:red
-set notification-warning-bg     "#263238" # bg
+set notification-warning-bg     "#1F2430" # bg
 set notification-warning-fg     "#fabd2f" # bright:yellow
-set notification-bg             "#263238" # bg
+set notification-bg             "#1F2430" # bg
 set notification-fg             "#b8bb26" # bright:green
 
-set completion-bg               "#263238" # bg2
+set completion-bg               "#1F2430" # bg2
 set completion-fg               "#ebdbb2" # fg
-set completion-group-bg         "#263238" # bg1
+set completion-group-bg         "#1F2430" # bg1
 set completion-group-fg         "#928374" # gray
-set completion-highlight-bg     "#263238" # bright:blue
+set completion-highlight-bg     "#1F2430" # bright:blue
 set completion-highlight-fg     "#504945" # bg2
 
 # Define the color in index mode
 set index-bg                    "#263238" # bg2
 set index-fg                    "#f5ac78" # fg
-set index-active-bg             "#263238" # bright:blue
+set index-active-bg             "#1F2430" # bright:blue
 set index-active-fg             "#f5ac78" # bg2
 
-set inputbar-bg                 "#263238" # bg
+set inputbar-bg                 "#1F2430" # bg
 set inputbar-fg                 "#B0BEC5" # fg
 
 set statusbar-bg                "#263238" # bg2
@@ -44,14 +44,14 @@ set statusbar-fg                "#B0BEC5" # fg
 set highlight-color             "#fabd2f" # bright:yellow
 set highlight-active-color      "#fe8019" # bright:orange
 
-set default-bg                  "#263238" # bg
+set default-bg                  "#1F2430" # bg
 set default-fg                  "#f5ac78" # fg
 set render-loading              true
-set render-loading-bg           "#263238" # bg
+set render-loading-bg           "#1F2430" # bg
 set render-loading-fg           "#f5ac78" # fg
 
 # Recolor book content's color
-set recolor-lightcolor          "#263238" # bg
+set recolor-lightcolor          "#1F2430" # bg
 set recolor-darkcolor           "#B0BEC5" # fg
 set recolor                     "true"
 # set recolor                     "false"
