@@ -245,6 +245,15 @@ cmp.setup({
         vim.fn["UltiSnips#Anon"](args.body)
       end,
     },
+  experimental = {
+    ghost_text = true,
+  },
+  documentation = {
+    -- border = "rounded",
+    winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
+    -- maxwidth = require('core.utils').fix_width(0, 0.9),
+    -- maxheight = require('core.utils').fix_height(0, 0.9)
+  },
   mapping = {
     ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
     ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
@@ -276,6 +285,7 @@ cmp.setup({
     { name = 'nvim_lsp' },
     { name = 'buffer' },
     { name = 'ultisnips' },
+    { name = 'path' },
   }
 })
 
@@ -335,28 +345,27 @@ local nvim_lsp=require('lspconfig')
 
 
 -- local on_attach=function(client, bufnr)
--- 	-- Enable completion triggered by <c-x><c-o>
--- 	-- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
--- 	-- Mappings.
--- 	local opts={noremap=true, silent=true }
--- 	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
--- 	buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
--- 	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
--- 	buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
--- 	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
--- 	buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+	-- Enable completion triggered by <c-x><c-o>
+	-- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+	-- Mappings.
+	-- local opts={noremap=true, silent=true }
+	-- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+	-- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+	-- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+	-- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+	-- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+	-- buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
 -- 	buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
 -- 	buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
--- 	-- buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
--- 	-- buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
--- 	-- buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
--- 	-- buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
--- 	-- buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
--- 	-- buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
--- 	-- buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
--- 	-- buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
--- 	-- buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+-- 	buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+-- 	buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+-- 	buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+-- 	buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+-- 	buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+-- 	buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+-- 	buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+-- 	buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+-- 	buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 -- end
 
 -- replace the default lsp diagnostic letters with prettier symbols
@@ -390,14 +399,12 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 -- -------------------------------------------------------------------------- #
 --  ----------------- hop ----------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- lua require('hop').setup{
+require'hop'.setup()
   -- keys = 'aqwsderfvgtnhuipjmnklo',
-  -- term_seq_bias = 0.5
--- }
 vim.api.nvim_set_keymap('n', 'fj', "<cmd>lua require'hop'.hint_words()<cr>", {})
 vim.api.nvim_set_keymap('n', 'fk', "<cmd>lua require'hop'.hint_char2()<cr>", {})
-vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1()<cr>", {})
-
+vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true })<cr>", {})
+vim.api.nvim_set_keymap('n', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>", {})
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lspkind ----------------------------------------------- #
@@ -428,6 +435,7 @@ cfg = {
 
 }
 require'lsp_signature'.on_attach(cfg)
+
 
 
 -- -------------------------------------------------------------------------- #
@@ -679,9 +687,10 @@ require('ayu').setup({
   overrides = {
   Comment = {fg = '#707A8C'},
   String = {fg = '#E6BA7E'},
-  -- CursorLine = '#0000FF',
-  -- LineNr = '#0000FF'
-  -- bg = '#18130F'
+  LineNr = {fg = '#465742'},
+  CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
+  Search = {fg = '#7CB0E6', bg = '#33415E'},
+  -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
   }
 })
 
@@ -777,3 +786,174 @@ require('gitsigns').setup()
 -- ----------------- \<windline\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require('wlsample.mybubble')
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- cokeline -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+local get_hex = require('cokeline/utils').get_hex
+
+require('cokeline').setup({
+  default_hl = {
+    focused = {
+      fg = get_hex('Normal', 'fg'),
+      bg = "none",
+    },
+    unfocused = {
+      fg = get_hex('Comment', 'fg'),
+      bg = "none",
+    },
+  },
+
+  components = {
+    {
+      text = '',
+      -- let g:airline_left_alt_sep = ''
+      -- let g:airline_right_alt_sep = ''
+      --content = "%{T3}%{T-}"
+      --content = "%{T3}%{T-}"
+      hl = {
+          bg = function(buffer)
+              if buffer.is_focused then
+                  return "#CBCCC6"
+              else
+                  return "#1F2430"
+              end
+          end,
+          fg = function(buffer)
+              if buffer.is_focused then
+                  return "#1F2430"
+              else
+                  return "#1F2430"
+              end
+              if buffer.is_modified then
+                  return "#BAE67E"
+              end
+          end,
+      },
+    },
+    {
+      text = function(buffer)
+        if (buffer.index == 1) then return     ' ' .. "q" .. ':'
+        elseif (buffer.index == 2) then return ' ' .. "w" .. ':'
+        elseif (buffer.index == 3) then return ' ' .. "e" .. ':'
+        elseif (buffer.index == 4) then return ' ' .. "r" .. ':'
+        elseif (buffer.index == 5) then return ' ' .. "t" .. ':'
+        elseif (buffer.index == 6) then return ' ' .. "y" .. ':'
+        elseif (buffer.index == 7) then return ' ' .. "u" .. ':'
+        elseif (buffer.index == 8) then return ' ' .. "i" .. ':'
+        elseif (buffer.index == 9) then return ' ' .. "o" .. ':'
+        else return ' ' .. buffer.index .. ': '
+        end
+      end,
+
+      hl = {
+          bg = function(buffer)
+              if buffer.is_focused then
+                  return "#CBCCC6"
+              else
+                  return "#1F2430"
+              end
+          end,
+          fg = function(buffer)
+              if buffer.is_focused then
+                  return "#1F2430"
+              else
+                  return "#707A8C"
+              end
+              if buffer.is_modified then
+                  return "#BAE67E"
+              end
+          end,
+      },
+    },
+    {
+      text = function(buffer) return buffer.unique_prefix end,
+      hl = {
+          bg = function(buffer)
+              if buffer.is_focused then
+                  return "#CBCCC6"
+              else
+                  return "#1F2430"
+              end
+          end,
+          fg = function(buffer)
+              if buffer.is_focused then
+                  return "#1F2430"
+              else
+                  return "#707A8C"
+              end
+              if buffer.is_modified then
+                  return "#BAE67E"
+              end
+          end,
+      },
+    },
+    -- {
+    --   text = function(buffer) return buffer.filename .. '' end,
+    --   hl = {
+    --     style = function(buffer) return buffer.is_focused and 'bold' or nil end,
+    --   },
+    -- },
+    {
+      text = function(buffer)
+          return buffer.filename .. ' '
+      end,
+      hl = {
+          bg = function(buffer)
+              if buffer.is_focused then
+                  return "#CBCCC6"
+              else
+                  return "#1F2430"
+              end
+          end,
+          fg = function(buffer)
+              if buffer.is_focused then
+                  return "#1F2430"
+              else
+                  return "#707A8C"
+              end
+              if buffer.is_modified then
+                  return "#BAE67E"
+              end
+          end,
+      }
+    },
+    {
+      text = function(buffer)
+        if buffer.is_readonly then
+          return " 🔒"
+        end
+        if buffer.is_modified then
+          return " + "
+        end
+          return ""
+        end
+    },
+    {
+      text = '',
+      -- content = "%{T3}%{T-}"
+      hl = {
+          bg = function(buffer)
+              if buffer.is_focused then
+                  return "#CBCCC6"
+              else
+                  return "#1F2430"
+              end
+          end,
+          fg = function(buffer)
+              if buffer.is_focused then
+                  return "#1F2430"
+              else
+                  return "#1F2430"
+              end
+              if buffer.is_modified then
+                  return "#BAE67E"
+              end
+          end,
+      },
+    },
+  },
+})
+
+
+

@@ -96,11 +96,7 @@ autocmd BufReadPost *
 set nobackup                        " don't make a backup before overwritting a file
 set nowritebackup                   " don't make a backup before overwritting a file
 set noswapfile                      " No swap files for unmodified buffers
-augroup Swap
-    autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
-                \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
-augroup END
-
+set dir=/tmp                        " swap files to /tmp/
 syntax on                           " activate syntax higlight
 
 set virtualedit=onemore             " allow the cursor to go one char after end of line
@@ -414,8 +410,8 @@ map <M-9> :tabn9<CR>
 " ---- close buffers on left, rigth, ..
 nnoremap ql <C-w>lZZ<CR>
 nnoremap qh <C-w>hZZ<CR>
-" nnoremap qj <C-w>j:wq<CR>
-" nnoremap qk <C-w>k:wq<CR>
+nnoremap qj <C-w>jZZ<CR>
+nnoremap qk <C-w>kZZ<CR>
 nnoremap qq :x<CR>
 
 " ------ replace inner word and search replace word to reapeat -------
@@ -497,92 +493,93 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
-        Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
-	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-	Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-        Plug 'kyazdani42/nvim-tree.lua'                        " file tree
+    Plug 'ojroques/nvim-bufdel'
+    Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+    Plug 'kyazdani42/nvim-tree.lua'                        " file tree
+    Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
+    Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
 
-        Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
-	Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
+    " -------------------------------------------------------------------------- #
+    " ------------------ LSP --------------------------------------------------- #
+    " -------------------------------------------------------------------------- #
+    Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
+    Plug 'neovim/nvim-lspconfig'                           " lsp configuration
+    Plug 'hrsh7th/nvim-cmp'                                " completion plugin
+    Plug 'hrsh7th/cmp-nvim-lsp'
 
-	" -------------------------------------------------------------------------- #
-	" ------------------ LSP --------------------------------------------------- #
-	" -------------------------------------------------------------------------- #
-        Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
-	" Plug 'ms-jpq/coq_nvim'                                " Faster LSP ?
-        Plug 'neovim/nvim-lspconfig'                           " lsp configuration
-        Plug 'hrsh7th/nvim-cmp'                                " completion plugin
-	Plug 'hrsh7th/cmp-nvim-lsp'
-	Plug 'hrsh7th/cmp-buffer'
-	Plug 'hrsh7th/cmp-cmdline'
-	Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-        Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
-        Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
-        Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
-	Plug 'SmiteshP/nvim-gps'
+    " Plug 'hrsh7th/cmp-buffer'
+    " Plug 'hrsh7th/cmp-cmdline'
+    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    " Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
+    " Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
 
-	Plug 'phaazon/hop.nvim'                                " better than sneack
+    Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
+    Plug 'SmiteshP/nvim-gps'
+    Plug 'phaazon/hop.nvim'                                " better than sneack
+    Plug 'TimUntersberger/neogit'                          " git helper
+    " Plug 'b3nj5m1n/kommentary'                             " comments
+    Plug 'numToStr/Comment.nvim'
 
-        Plug 'TimUntersberger/neogit'                          " git helper
-        " Plug 'b3nj5m1n/kommentary'                             " comments
-	Plug 'numToStr/Comment.nvim'
+    " -------------------------------------------------------------------------- #
+    " ------------------ theming ----------------------------------------------- #
+    " -------------------------------------------------------------------------- #
+    Plug 'lewis6991/gitsigns.nvim'
+    Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
+    Plug 'sindrets/diffview.nvim'                          " diffview
+    Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
 
-	" -------------------------------------------------------------------------- #
-	" ------------------ theming ----------------------------------------------- #
-	" -------------------------------------------------------------------------- #
-        Plug 'lewis6991/gitsigns.nvim'
-        Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
-        Plug 'sindrets/diffview.nvim'                          " diffview
-        Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
+    Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
+    Plug 'nvim-lua/popup.nvim'                             " to install telescope
+    Plug 'nvim-telescope/telescope.nvim'
+    Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
 
-        Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
-        Plug 'nvim-lua/popup.nvim'                             " to install telescope
-        Plug 'nvim-telescope/telescope.nvim'
-	Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
+    " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
+    " Plug 'nvim-lua/lsp-status.nvim'
+    " Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp
+    " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
+    " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
 
-        " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
-        " Plug 'nvim-lua/lsp-status.nvim'
-        " Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp
-        " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
-        " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
+    " Plug 'mfussenegger/nvim-dap'
+    " Plug 'mfussenegger/nvim-dap-python'
+    " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
+    " Plug 'sakhnik/nvim-gdb'                               " pdb into vim
 
-        " Plug 'mfussenegger/nvim-dap'
-        " Plug 'mfussenegger/nvim-dap-python'
-        " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
-        " Plug 'sakhnik/nvim-gdb'                               " pdb into vim
+    " Plug 'tiagovla/tokyodark.nvim'
+    " Plug 'glepnir/indent-guides.nvim'                      " indent line
+    " Plug 'Shougo/denite.nvim'                              " file , buffers manager
+    " Plug 'ncm2/float-preview.nvim/'
 
-        " Plug 'tiagovla/tokyodark.nvim'
-        " Plug 'glepnir/indent-guides.nvim'                      " indent line
-        " Plug 'Shougo/denite.nvim'                              " file , buffers manager
-        " Plug 'ncm2/float-preview.nvim/'
-
-        " Plug 'vijaymarupudi/nvim-fzf'                          " fzf
-        " Plug 'ibhagwan/fzf-lua'
+    " Plug 'vijaymarupudi/nvim-fzf'                          " fzf
+    " Plug 'ibhagwan/fzf-lua'
 
 else
-        " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
-	" Plug 'justinmk/vim-sneak'                               " jump using 2-chars
-        Plug 'preservim/nerdtree'                              " file explorer
-        Plug 'wellle/targets.vim'                              " Better objects
-        Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
-        Plug 'tpope/vim-commentary'                             " comment objects
-	Plug 'luochen1990/rainbow'                             " rainbow parenthesis
-	Plug 'nathom/filetype.nvim'                            " better startup ?
+    " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
+    " Plug 'justinmk/vim-sneak'                               " jump using 2-chars
+    Plug 'preservim/nerdtree'                              " file explorer
+    Plug 'wellle/targets.vim'                              " Better objects
+    Plug 'jeetsukumaran/vim-pythonsense'                   " add python objects (it works !!)
+    Plug 'tpope/vim-commentary'                             " comment objects
+    Plug 'luochen1990/rainbow'                             " rainbow parenthesis
+    Plug 'nathom/filetype.nvim'                            " better startup ?
+    Plug 'ryanoasis/vim-devicons'                          " add icon
 endif
 
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
+Plug 'rhysd/clever-f.vim'
 Plug 'vim-scripts/restore_view.vim'
-" Plug 'tpope/vim-scriptease'
 Plug 't9md/vim-textmanip'                            " move blocks of text easy
 Plug 'tyru/open-browser.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'tpope/vim-scriptease'
 " Plug 't9md/vim-choosewin'
 " Plug 'junegunn/vim-easy-align'                       " Helps alignment TODO: LEARN
 " Plug 'sjl/gundo.vim'                                 " add undo tree
 " Plug 'chimay/wheel/'                                 " better join lines
 " Plug 'junegunn/loclisteasy-align'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " Plug 'junegunn/fzf.vim'
 
 " --------------------------------------------------------------
@@ -601,20 +598,20 @@ Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer wi
 " ---------------------- IDE ------------------------------------------------ #
 " --------------------------------------------------------------------------- "
 Plug 'tpope/vim-sleuth'                                 " automatic indentation config
-Plug 'brooth/far.vim'                                   " search and replace
+" Plug 'brooth/far.vim'                                   " search and replace
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
 Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
-Plug 'AndrewRadev/sideways.vim'                         " move func args
-Plug 'qwertologe/nextval.vim'                           " better ctrl-a
-Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
 Plug 'tpope/vim-surround'                              " surround oparator
+Plug 'chrisbra/csv.vim'
+" Plug 'AndrewRadev/sideways.vim'                         " move func args
+" Plug 'qwertologe/nextval.vim'                           " better ctrl-a
+" Plug 'yssl/QFEnter'                                   " open buffers from quickfix list easy
 " Plug 'flwyd/vim-conjoin'                                " better join lines
 " Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
 " Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
-Plug 'chrisbra/csv.vim'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
@@ -628,7 +625,7 @@ Plug 'chrisbra/csv.vim'
 " ---------------------- git -----------------------------------
 " --------------------------------------------------------------
 Plug 'tpope/vim-fugitive'                               " git integration plugin
-Plug 'rbong/vim-flog'                                   " Commit viewer
+" Plug 'rbong/vim-flog'                                   " Commit viewer
 "
 " --------------------------------------------------------------
 " ---------------------- run in vim ----------------------------
@@ -680,15 +677,16 @@ Plug 'glts/vim-textobj-comment'                        " comment text object
 " ---------------------- Theming -------------------------------
 " --------------------------------------------------------------
 
-Plug 'vim-airline/vim-airline'                         " tabline
-Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'                         " tabline
+" Plug 'vim-airline/vim-airline-themes'
 if has('nvim')
+  Plug 'noib3/cokeline.nvim'                             " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
-  Plug 'windwp/floatline.nvim'
+  " Plug 'windwp/floatline.nvim'
   Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
   Plug 'marko-cerovac/material.nvim'
-  Plug 'rktjmp/lush.nvim'
-  Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
+  " Plug 'rktjmp/lush.nvim'
+  " Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
   Plug 'Shatur/neovim-ayu'
   " Plug 'pierrzacharias/material.nvim'                    " colorscheme
   " Plug 'Yggdroot/indentLine'                             " indent guide
@@ -701,9 +699,8 @@ endif
 
 " Plug 'RRethy/vim-illuminate'
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
-Plug 'ryanoasis/vim-devicons'                          " add icon
 Plug 'camspiers/animate.vim'                           " windows move animation
-Plug 'psliwka/vim-smoothie'                            " Better scroll
+" Plug 'psliwka/vim-smoothie'                            " Better scroll
 Plug 'mhinz/vim-startify'                              " add start page to vim
 " Plug 'kshenoy/vim-signature'                           " show marks in signcolumn
 
@@ -825,6 +822,22 @@ nnoremap <silent> <localleader>oh :FSSplitLeft<cr>
 nnoremap <silent> <localleader>oj :FSSplitBelow<cr>
 nnoremap <silent> <localleader>ok :FSSplitAbove<cr>
 nnoremap <silent> <localleader>ol :FSSplitRight<cr>
+
+" -------------------------------------------------------------
+"  bufdel
+"  ------------------------------------------------------------
+if has('nvim')
+  nnoremap <silent> xx <cmd>BufDel<cr>
+  nnoremap <silent> xc <cmd>BufDel!<cr>
+endif
+
+" -------------------------------------------------------------
+"  clever-f
+"  ------------------------------------------------------------
+let g:clever_f_smart_case = 1
+map ; <Plug>(clever-f-repeat-forward)
+map , <Plug>(clever-f-repeat-back)
+let g:clever_f_chars_match_any_signs='.'
 
 " -------------------------------------------------------------
 "  ultisnips
@@ -1082,9 +1095,12 @@ let g:subversivePreserveCursorPosition=1 "cursor will not move when substitution
 " --------------------------------------------------------------
 " airline
 " --------------------------------------------------------------
-" let g:airline_theme = 'uwu'
-let g:airline_theme = 'base16_material'
+if has("nvim")
+else
+" let g:airline_theme = 'term'
+let g:airline_theme = 'tomorrow'
 let g:airline_inactive_collapse=1
+let g:airline_experimental = 1
 let g:airline_inactive_alt_sep=1
 let g:airline_powerline_fonts = 1
 let g:airline_disable_statusline = 1
@@ -1097,24 +1113,11 @@ let g:airline#extensions#tabline#close_symbol = ''
 let g:airline#extensions#tabline#show_close_button = 0
 " let g:airline#extensions#tabline#buffer_min_count = 0   " show tabline only if there is more than 1 buffer
 
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+" let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#fnamemod = ':t' " show only file name on tabs
 
 let g:airline#extensions#tabline#show_tab_type = 3
 "  enable/disable displaying tab number in tabs mode. >
-nmap <silent> <A-q> <Plug>AirlineSelectTab1
-nmap <silent> <A-w> <Plug>AirlineSelectTab2
-nmap <silent> <A-e> <Plug>AirlineSelectTab3
-nmap <silent> <A-r> <Plug>AirlineSelectTab4
-nmap <silent> <A-t> <Plug>AirlineSelectTab5
-nmap <silent> <A-y> <Plug>AirlineSelectTab6
-nmap <silent> <A-u> <Plug>AirlineSelectTab7
-nmap <silent> <A-i> <Plug>AirlineSelectTab8
-nmap <silent> <A-o> <Plug>AirlineSelectTab9
-nmap <silent> <A-o> <Plug>AirlineSelectTab9
-nmap <silent> <A-p> <Plug>AirlineSelectTab0
-nmap <silent>  <A-[> <Plug>AirlineSelectPrevTab
-nmap <silent> <A-]> <Plug>AirlineSelectNextTab
 
 " let g:airline#extensions#tabline#show_splits = 1
 let g:airline#extensions#tabline#buffer_idx_mode=1
@@ -1137,7 +1140,7 @@ let g:airline#extensions#tabline#buffer_idx_format = {
 				\ '8': 'i:',
 				\ '9': 'o:'
 				\}
-" endif
+endif
 
 " --------------------------------------------------------------
 " vimtex
@@ -1424,6 +1427,59 @@ endif
 " nnoremap <A-s> :lua require"illuminate".toggle_pause()<cr>
 
 " --------------------------------------------------------------------------
+" -- airline
+" -- -----------------------------------------------------------------------
+if has("nvim")
+else
+nmap <silent> <A-q> <Plug>AirlineSelectTab1
+nmap <silent> <A-w> <Plug>AirlineSelectTab2
+nmap <silent> <A-e> <Plug>AirlineSelectTab3
+nmap <silent> <A-r> <Plug>AirlineSelectTab4
+nmap <silent> <A-t> <Plug>AirlineSelectTab5
+nmap <silent> <A-y> <Plug>AirlineSelectTab6
+nmap <silent> <A-u> <Plug>AirlineSelectTab7
+nmap <silent> <A-i> <Plug>AirlineSelectTab8
+nmap <silent> <A-o> <Plug>AirlineSelectTab9
+nmap <silent> <A-o> <Plug>AirlineSelectTab9
+nmap <silent> <A-p> <Plug>AirlineSelectTab0
+nmap <silent> <A-[> <Plug>AirlineSelectPrevTab
+nmap <silent> <A-]> <Plug>AirlineSelectNextTab
+endif
+
+
+" --------------------------------------------------------------------------
+" -- cokeline
+" -- -----------------------------------------------------------------------
+if has("nvim")
+nmap <silent> <A-q> <Plug>(cokeline-focus-1)
+nmap <silent> <A-w> <Plug>(cokeline-focus-2)
+nmap <silent> <A-e> <Plug>(cokeline-focus-3)
+nmap <silent> <A-r> <Plug>(cokeline-focus-4)
+nmap <silent> <A-t> <Plug>(cokeline-focus-5)
+nmap <silent> <A-y> <Plug>(cokeline-focus-6)
+nmap <silent> <A-u> <Plug>(cokeline-focus-7)
+nmap <silent> <A-i> <Plug>(cokeline-focus-8)
+nmap <silent> <A-o> <Plug>(cokeline-focus-9)
+" Switch the position of the current buffer with the i-th buffer
+nmap <silent> <A-Q> <Plug>(cokeline-switch-1)
+nmap <silent> <A-W> <Plug>(cokeline-switch-2)
+nmap <silent> <A-E> <Plug>(cokeline-switch-3)
+nmap <silent> <A-R> <Plug>(cokeline-switch-4)
+nmap <silent> <A-T> <Plug>(cokeline-switch-5)
+nmap <silent> <A-Y> <Plug>(cokeline-switch-6)
+nmap <silent> <A-U> <Plug>(cokeline-switch-7)
+nmap <silent> <A-I> <Plug>(cokeline-switch-8)
+nmap <silent> <A-O> <Plug>(cokeline-switch-9)
+" Focus the previous/next buffer
+nmap <silent> <A-[> <Plug>(cokeline-focus-prev)
+nmap <silent> <A-]> <Plug>(cokeline-focus-next)
+" Switch the position of the current buffer with the previous/next buffer
+nmap <silent> <A-{> <Plug>(cokeline-switch-prev)
+nmap <silent> <A-}> <Plug>(cokeline-switch-next)
+endif
+
+
+" --------------------------------------------------------------------------
 " -- fugitive
 " -- -----------------------------------------------------------------------
 nnoremap <leader>G :Git<space>
@@ -1433,10 +1489,13 @@ nnoremap <leader>G :Git<space>
 " -- -----------------------------------------------------------------------
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> gv <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gh <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> gs <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gv <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> ]d <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> [d <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <silent> ga <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+nnoremap <silent> gl <cmd>lua lua vim.lsp.diagnostic.set_loclist()<CR>
 " nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
 nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.definition()<cr>
 nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
@@ -1455,7 +1514,7 @@ nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 	" vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
 
 	" -- show hover hover
-	nnoremap <silent>gh :Lspsaga hover_doc<CR>
+	" nnoremap <silent>gh :Lspsaga hover_doc<CR>
 
 	" -- scroll down hover doc or scroll in definition preview
 	" nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
@@ -1466,12 +1525,12 @@ nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 	" nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 
 	" -- preview definition
-	nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
+	" nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
 
 	" -- show diagnostic
 	" nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
 	" autocmd BufReadPost * map ga :Lspsaga show_line_diagnostics<CR>
-	nnoremap <silent> ga <Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+	" nnoremap <silent> ga <Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
 	" -- jump diagnostic
 	nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
@@ -1852,9 +1911,9 @@ endif
 set background=dark
 
 set cursorline                               " Highlight current line
+hi CursorLine guibg=#0D1016
 " hi CursorLine guibg=#282828
- hi CursorLine guibg=#000000
--
+hi TabLineFill guibg=#1F2430
 " -------------------------------------------------------------
 "  vim sneak
 "  ------------------------------------------------------------
