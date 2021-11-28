@@ -508,6 +508,7 @@ if has('nvim')
     Plug 'neovim/nvim-lspconfig'                           " lsp configuration
     Plug 'hrsh7th/nvim-cmp'                                " completion plugin
     Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'simrat39/symbols-outline.nvim'
 
     " Plug 'hrsh7th/cmp-buffer'
     " Plug 'hrsh7th/cmp-cmdline'
@@ -525,7 +526,7 @@ if has('nvim')
     " -------------------------------------------------------------------------- #
     " ------------------ theming ----------------------------------------------- #
     " -------------------------------------------------------------------------- #
-    Plug 'lewis6991/gitsigns.nvim'
+    Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
     Plug 'sindrets/diffview.nvim'                          " diffview
     Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
@@ -569,6 +570,8 @@ endif
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
+Plug 'Xuyuanp/scrollbar.nvim'
+Plug 'psliwka/vim-smoothie'
 Plug 'rhysd/clever-f.vim'
 Plug 'vim-scripts/restore_view.vim'
 Plug 't9md/vim-textmanip'                            " move blocks of text easy
@@ -824,6 +827,27 @@ nnoremap <silent> <localleader>ok :FSSplitAbove<cr>
 nnoremap <silent> <localleader>ol :FSSplitRight<cr>
 
 " -------------------------------------------------------------
+"  scrollbar
+"  ------------------------------------------------------------
+if has('nvim')
+  augroup ScrollbarInit
+    autocmd!
+    autocmd WinScrolled,VimResized,QuitPre * silent! lua require('scrollbar').show()
+    autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
+    autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
+  augroup end
+
+  " let g:scrollbar_shape = {
+  "   \ 'head': '∧',
+  "   \ 'body': '█',
+  "   \ 'tail': '∨',
+  "   \ }
+
+  let g:scrollbar_winblend = 50
+
+endif
+
+" -------------------------------------------------------------
 "  bufdel
 "  ------------------------------------------------------------
 if has('nvim')
@@ -837,7 +861,7 @@ endif
 let g:clever_f_smart_case = 1
 map ; <Plug>(clever-f-repeat-forward)
 map , <Plug>(clever-f-repeat-back)
-let g:clever_f_chars_match_any_signs='.'
+let g:clever_f_chars_match_any_signs=';'
 
 " -------------------------------------------------------------
 "  ultisnips
@@ -882,8 +906,6 @@ let g:grepper_dir="repo"
 let g:grepper_side=1
 let g:grepper_tools=['ag']
 let g:grepper_highlight=1
-nmap gn  <plug>(GrepperOperator)
-xmap gn  <plug>(GrepperOperator)
 
 " --------------------------------------------------------------
 " unstack
@@ -1460,6 +1482,21 @@ nmap <silent> <A-y> <Plug>(cokeline-focus-6)
 nmap <silent> <A-u> <Plug>(cokeline-focus-7)
 nmap <silent> <A-i> <Plug>(cokeline-focus-8)
 nmap <silent> <A-o> <Plug>(cokeline-focus-9)
+nmap <silent> gr10 <Plug>(cokeline-focus-10)
+nmap <silent> gr11 <Plug>(cokeline-focus-11)
+nmap <silent> gr12 <Plug>(cokeline-focus-12)
+nmap <silent> gr13 <Plug>(cokeline-focus-13)
+nmap <silent> gr14 <Plug>(cokeline-focus-14)
+nmap <silent> gr15 <Plug>(cokeline-focus-15)
+nmap <silent> gr16 <Plug>(cokeline-focus-16)
+nmap <silent> gr17 <Plug>(cokeline-focus-17)
+nmap <silent> gr18 <Plug>(cokeline-focus-18)
+nmap <silent> gr19 <Plug>(cokeline-focus-19)
+nmap <silent> gr20 <Plug>(cokeline-focus-20)
+nmap <silent> gr21 <Plug>(cokeline-focus-21)
+nmap <silent> gr22 <Plug>(cokeline-focus-22)
+nmap <silent> gr23 <Plug>(cokeline-focus-23)
+nmap <silent> gr24 <Plug>(cokeline-focus-24)
 " Switch the position of the current buffer with the i-th buffer
 nmap <silent> <A-Q> <Plug>(cokeline-switch-1)
 nmap <silent> <A-W> <Plug>(cokeline-switch-2)
@@ -1480,9 +1517,21 @@ endif
 
 
 " --------------------------------------------------------------------------
+" -- diffview
+" -- -----------------------------------------------------------------------
+nnoremap <leader>vo :DiffviewOpen<space>
+nnoremap <leader>vd :DiffviewOpen develop<CR>
+nnoremap <leader>vc :DiffviewClose<CR>
+
+" --------------------------------------------------------------------------
 " -- fugitive
 " -- -----------------------------------------------------------------------
 nnoremap <leader>G :Git<space>
+nnoremap <leader>ga :Git add -u<CR>
+nnoremap <leader>gs :Git status<CR>
+nnoremap <leader>gm :Git commit<CR>
+nnoremap <leader>gp :Git pull<CR>
+nnoremap <leader>gc :Git checkout <C-r>+
 "
 " --------------------------------------------------------------------------
 " -- lsp
@@ -1541,6 +1590,8 @@ endif
 " -- Grepper
 " -- -----------------------------------------------------------------------
 nnoremap <A-g> :Grepper<CR>
+nmap gn  <plug>(GrepperOperator)
+xmap gn  <plug>(GrepperOperator)
 
 " --------------------------------------------------------------------------
 " -- Telescope
@@ -1548,10 +1599,10 @@ nnoremap <A-g> :Grepper<CR>
  if has('nvim')
 	" Find files using Telescope command-line sugar.
 	" nnoremap <leader>t :Telescope <CR>
-	nnoremap <leader>ff <cmd>Telescope find_files<cr>
-	nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-	nnoremap <leader>fb <cmd>Telescope buffers<cr>
-	nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+	nnoremap <space>n <cmd>Telescope find_files<cr>
+	" nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+	nnoremap fb <cmd>Telescope buffers<cr>
+	" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 endif
 
 " " --------------------------------------------------------------------------

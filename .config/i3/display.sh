@@ -22,7 +22,7 @@ chosen=$(echo -e $choices | dmenu -i)
 if [ `xrandr | grep DP-3 | grep -c ' connected '` -eq 1 ]; then
         EXTERNAL_OUTPUT="DP-3"
 fi
-
+# xrandr --output "eDp-1" --off --output "DP-3" --auto --primary ;;
 # xrander will run and turn on the display you want, if you have an option for 3 displays, this will need some modifications
 case "$chosen" in
     external) xrandr --output $INTERNAL_OUTPUT --off --output $EXTERNAL_OUTPUT --auto --primary ;;

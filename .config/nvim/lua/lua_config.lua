@@ -3,6 +3,60 @@
 -- -------------------------------------------------------------------------- #
 
 -- -------------------------------------------------------------------------- #
+-- --------------------- symbols ------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- vim.g.symbols_outline = {
+--     highlight_hovered_item = true,
+--     show_guides = true,
+--     auto_preview = true,
+--     position = 'right',
+--     width = 25,
+--     show_numbers = false,
+--     show_relative_numbers = false,
+--     show_symbol_details = true,
+--     preview_bg_highlight = 'Pmenu',
+--     keymaps = { -- These keymaps can be a string or a table for multiple keys
+--         close = {"<Esc>", "q"},
+--         goto_location = "<Cr>",
+--         focus_location = "o",
+--         hover_symbol = "<C-space>",
+--         toggle_preview = "K",
+--         rename_symbol = "r",
+--         code_actions = "a",
+--     },
+--     lsp_blacklist = {},
+--     symbol_blacklist = {},
+--     symbols = {
+--         File = {icon = "", hl = "TSURI"},
+--         Module = {icon = "", hl = "TSNamespace"},
+--         Namespace = {icon = "", hl = "TSNamespace"},
+--         Package = {icon = "", hl = "TSNamespace"},
+--         Class = {icon = "𝓒", hl = "TSType"},
+--         Method = {icon = "ƒ", hl = "TSMethod"},
+--         Property = {icon = "", hl = "TSMethod"},
+--         Field = {icon = "", hl = "TSField"},
+--         Constructor = {icon = "", hl = "TSConstructor"},
+--         Enum = {icon = "ℰ", hl = "TSType"},
+--         Interface = {icon = "ﰮ", hl = "TSType"},
+--         Function = {icon = "", hl = "TSFunction"},
+--         Variable = {icon = "", hl = "TSConstant"},
+--         Constant = {icon = "", hl = "TSConstant"},
+--         String = {icon = "𝓐", hl = "TSString"},
+--         Number = {icon = "#", hl = "TSNumber"},
+--         Boolean = {icon = "⊨", hl = "TSBoolean"},
+--         Array = {icon = "", hl = "TSConstant"},
+--         Object = {icon = "⦿", hl = "TSType"},
+--         Key = {icon = "🔐", hl = "TSType"},
+--         Null = {icon = "NULL", hl = "TSType"},
+--         EnumMember = {icon = "", hl = "TSField"},
+--         Struct = {icon = "𝓢", hl = "TSType"},
+--         Event = {icon = "🗲", hl = "TSType"},
+--         Operator = {icon = "+", hl = "TSOperator"},
+--         TypeParameter = {icon = "𝙏", hl = "TSParameter"}
+--     }
+-- }
+
+-- -------------------------------------------------------------------------- #
 -- --------------------- Diffview ------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 -- Lua
@@ -132,7 +186,20 @@ require('telescope').setup{
 --  ----------------- kommentary -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 -- require('kommentary.config')
-require('Comment').setup()
+require('Comment').setup(
+    -- toggler = {
+    --     ---line-comment keymap
+    --     line = 'cl',
+    --     ---block-comment keymap
+    --     block = 'cb',
+    -- },
+    -- opleader = {
+    --     ---line-comment keymap
+    --     line = 'cc',
+    --     ---block-comment keymap
+    --     block = 'gb',
+    -- },
+)
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-textobjects -------------------------------- #
@@ -284,8 +351,8 @@ cmp.setup({
   sources = {
     { name = 'nvim_lsp' },
     { name = 'buffer' },
-    { name = 'ultisnips' },
-    { name = 'path' },
+    -- { name = 'ultisnips' },
+    -- { name = 'path' },
   }
 })
 
@@ -403,8 +470,15 @@ require'hop'.setup()
   -- keys = 'aqwsderfvgtnhuipjmnklo',
 vim.api.nvim_set_keymap('n', 'fj', "<cmd>lua require'hop'.hint_words()<cr>", {})
 vim.api.nvim_set_keymap('n', 'fk', "<cmd>lua require'hop'.hint_char2()<cr>", {})
+
 vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
-vim.api.nvim_set_keymap('n', 'f;', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
+vim.api.nvim_set_keymap('n', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
+vim.api.nvim_set_keymap('o', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
+vim.api.nvim_set_keymap('o', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
+vim.api.nvim_set_keymap('', 'tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
+vim.api.nvim_set_keymap('', 'Tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
+
+
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lspkind ----------------------------------------------- #
@@ -785,7 +859,196 @@ require('gitsigns').setup()
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('wlsample.mybubble')
+-- require('wlsample.mybubble')
+-- require('wlsample.bubble')
+local windline = require('windline')
+local helper = require('windline.helpers')
+local sep = helper.separators
+local vim_components = require('windline.components.vim')
+
+local b_components = require('windline.components.basic')
+local state = _G.WindLine.state
+
+local lsp_comps = require('windline.components.lsp')
+local git_comps = require('windline.components.git')
+
+local hl_list = {
+    -- Black = { 'white', 'black' },
+    -- White = { 'black', 'white' },
+    Inactive = { 'InactiveFg', 'InactiveBg' },
+    Active = { 'ActiveFg', 'ActiveBg' },
+}
+local basic = {}
+
+basic.divider = { b_components.divider, '' }
+basic.file_name_inactive = { b_components.full_file_name, hl_list.Inactive }
+basic.line_col_inactive = { b_components.line_col, hl_list.Inactive }
+basic.progress_inactive = { b_components.progress, hl_list.Inactive }
+
+basic.file = {
+    name = 'file',
+    hl_colors = {
+        sep_before = { 'NormalFg', 'NormalBg' },
+        sep_after = { 'NormalFg', 'NormalBg' },
+        text = { 'NormalBg', 'NormalFg' },
+    },
+    text = function()
+        return {
+            -- { sep.left_rounded, state.mode[2] .. 'Before' },
+            { sep.left_rounded, 'sep_before' },
+            {b_components.cache_file_icon({ default = '' }), 'text'},
+            { ' ', 'text' },
+            { b_components.cache_file_name('[No Name]', 'text') },
+            { b_components.file_modified(' ')},
+            -- { b_components.cache_file_size()},
+            { sep.right_rounded, 'sep_after'},
+        }
+    end,
+    width = 150,
+}
+basic.file_inac = {
+    name = 'file',
+    hl_colors = {
+        text = { 'NormalFg', 'NormalBg' },
+    },
+    text = function()
+        return {
+            { b_components.cache_file_name('[No Name]', 'text') },
+            { b_components.file_modified(' ')},
+        }
+    end,
+}
+basic.gps = {
+    name = 'gps',
+    hl_colors = {
+        sep_before = { 'magenta_light', 'black' },
+        sep_after = { 'magenta_light', 'black' },
+        text = { 'black', 'magenta_light' },
+    },
+    text = function()
+      if require("nvim-gps").is_available() then
+        if (require("nvim-gps").get_location() == "") then
+          return {
+            -- { sep.left_rounded, 'sep_before' },
+            -- {"📡", 'text'},
+            -- { sep.right_rounded, 'sep_after'},
+          }
+        else
+          return {
+            { sep.left_rounded, 'sep_before' },
+            {require("nvim-gps").get_location(), 'text'},
+            { sep.right_rounded, 'sep_after'},
+          }
+        end
+      else
+        return {
+          -- { sep.left_rounded, 'sep_before' },
+          -- {"📡", 'text'},
+          -- { sep.right_rounded, 'sep_after'},
+        }
+      end
+    end
+}
+basic.tabe = {
+    name = 'gps',
+    hl_colors = {
+        sep_before = { 'yellow', 'black' },
+        sep_after = { 'yellow', 'black' },
+        text = { 'black', 'yellow' },
+    },
+    text = function()
+      return {
+        { sep.left_rounded, 'sep_before' },
+        {"Tab " .. vim.fn.tabpagenr() .. '/' .. vim.fn.tabpagenr('$'), 'text' },
+        { sep.right_rounded, 'sep_after'},
+      }
+    end
+}
+basic.git_branch = {
+    name = 'gps',
+    hl_colors = {
+        sep_after = { 'NormalFg', 'NormalBg' },
+    },
+    text = function()
+      return {
+        { git_comps.git_branch({ icon = '  ' }), { 'green', 'NormalBg' }, 90 },
+      }
+    end,
+    width = 150,
+}
+
+
+local default = {
+    filetypes = { 'default' },
+    active = {
+        { ' ', hl_list.NormalBg },
+        basic.tabe,
+        { ' ', hl_list.NormalBg },
+        basic.gps,
+        { ' ', hl_list.NormalBg },
+        -- { ' ', hl_list.NormalBg },
+        basic.divider,
+        basic.file,
+        basic.git_branch,
+        { ' ', hl_list.NormalBg },
+        -- { ' ', hl_list.NormalBg },
+        { ' ', hl_list.NormalBg },
+    },
+    inactive = {
+        basic.file_inac,
+        basic.divider,
+        -- basic.divider,
+        -- basic.line_col_inactive,
+        -- { '', hl_list.Inactive },
+        -- basic.progress_inactive,
+    },
+}
+
+local quickfix = {
+    filetypes = { 'qf', 'Trouble' },
+    active = {
+        { ' Quickfix ', { 'NormalFg', 'NormalBg' } },
+        -- { helper.separators.slant_right, { 'NormalBg', 'black_light' } },
+        { sep.left_rounded, { 'NormalFg', 'NormalBg' } },
+        {
+            function()
+                return vim.fn.getqflist({ title = 0 }).title
+            end,
+            { 'NormalBg', 'NormalFg' },
+        },
+        { ' Total : %L ', { 'NormalBg', 'NormalFg' } },
+        -- { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
+        { sep.right_rounded, { 'NormalFg', 'NormalBg' } },
+        { ' ', { 'NormalFg', 'NormalBg' } },
+        basic.divider,
+        -- { helper.separators.slant_right, { 'InactiveBg', 'NormalBg' } },
+    },
+    always_active = true,
+    show_last_status = true
+}
+
+local explorer = {
+    filetypes = { 'fern', 'NvimTree', 'lir' },
+    active = {
+        { b_components.divider, '' },
+        { b_components.file_name(''), { 'NormalFg', 'NormalBg' } },
+    },
+    always_active = true,
+    show_last_status = true
+}
+
+windline.setup({
+    colors_name = function(colors)
+        -- ADD MORE COLOR HERE ----
+        return colors
+    end,
+    statuslines = {
+        default,
+        explorer,
+        quickfix,
+    },
+})
+
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- cokeline -------------------------------------------- "
@@ -931,7 +1194,6 @@ require('cokeline').setup({
     },
     {
       text = '',
-      -- content = "%{T3}%{T-}"
       hl = {
           bg = function(buffer)
               if buffer.is_focused then
