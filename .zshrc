@@ -39,7 +39,7 @@ ZSH_THEME="robbyrussell"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+export DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -76,6 +76,7 @@ plugins=(
     aws
     zsh-syntax-highlighting
     zsh-completions
+    zsh-vi-mode
 )
 
 autoload -U compinit && compinit
@@ -83,6 +84,17 @@ autoload -U compinit && compinit
 source $ZSH/oh-my-zsh.sh
 
 source $HOME/.oh-my-zsh/custom/plugins/zsh-completions/zsh-completions.plugin.zsh
+
+# The plugin will auto execute this zvm_after_lazy_keybindings function
+function zvm_after_lazy_keybindings() {
+  # Here we define the custom widget
+  zvm_define_widget my_custom_widget
+
+  # In normal mode, press Ctrl-E to invoke this widget
+    zvm_bindkey H ^
+    zvm_bindkey L $
+    zvm_bindkey <space> y
+}
 
 
 # only aws command completion
@@ -131,14 +143,15 @@ alias red5="redshift -O 5000K"
 alias poly="./.config/polybar/launch.sh"
 alias ex="exec xset r rate 120 150"
 alias vpn="sudo openfortivpn"
+alias ta="~/.config/tmux/auto_setup.sh"
 # alias back="hsetroot -solid '#000000'"
 # alias back="feh --bg-scale ~/Pictures/xUjtUYC.png"
 alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias re="pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten sshk"
-alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-35-180-6-113.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
-alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-37-220-107.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
+alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-37-215-58.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
+alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-35-181-43-0.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
 
 
 alias icat="kitty +kitten icat"

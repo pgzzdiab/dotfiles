@@ -40,6 +40,7 @@ set hls                           " highlight search
 filetype plugin on
 set path-=.
 
+" set cmdheight=0
 
 if has("nvim")
   " Pmenu transparancy
@@ -52,14 +53,16 @@ set completeopt=menuone,noselect  " completion menu
 " set shortmess+=c                                             " Remove messages from in-completion menus
 
 " ----------------- indent ---------------------------------------------------
-" set softtabstop=0
-" set shiftwidth=2
-" set tabstop=4                       " 4 spaces to represent tab
-" set expandtab
-" set smarttab
-" set autoindent                      " autoindent files
 " set smartindent                    " auto indent while editing
 " set ai                              " acitve indentation objects
+
+set softtabstop=4
+set shiftwidth=2             " spaces per tab (when shifting)
+set tabstop=4             " spaces per tab
+set smarttab         " <tab>/<BS> indent/dedent in leading whitespace
+set autoindent          " maintain indent of current line
+set noexpandtab        " don't expand tabs into spaces
+set shiftround
 
 set scrolloff=10                    " limit of line to scroll
 set showtabline=2                   " always show tab number
@@ -112,7 +115,8 @@ endif
 set suffixes+=.pyc,.pyo           " ignore compiled Python files
 set suffixes+=.egg-info           " ignore compiled Python files
 set suffixes+=.png                " don't edit .png files please
-set wildignore+=*.pyc,*.pyo       " same as 'suffixes', but for tab completion
+set wildignore+=*.pyc,*.pyo,*.pyd,*.so       " same as 'suffixes', but for tab completion
+au BufEnter * set fo-=c fo-=r fo-=o " don't comment new line auto
 set wildignore+=*/__pycache__/*   " compiled python files
 set wildignore+=*/*.egg-info/*    " setuptools droppings
 set wildignore+=*/.venv           " virtualenv
@@ -195,24 +199,25 @@ endif
 " ---------------------------------------------------------------------------
 " ----------------- C++ -----------------------------------------------------
 " ---------------------------------------------------------------------------
-function! s:JbzCppMan()
-    let old_isk = &iskeyword
-    setl iskeyword+=:
-    let str = expand("<cword>")
-    let &l:iskeyword = old_isk
-    execute 'Man ' . str
-endfunction
-command! JbzCppMan :call s:JbzCppMan()
-au FileType cpp nnoremap <buffer>K :JbzCppMan<CR>
+
+" function! s:JbzCppMan()
+"     let old_isk = &iskeyword
+"     setl iskeyword+=:
+"     let str = expand("<cword>")
+"     let &l:iskeyword = old_isk
+"     execute 'Man ' . str
+" endfunction
+" command! JbzCppMan :call s:JbzCppMan()
+" au FileType cpp nnoremap <buffer>K :JbzCppMan<CR>
 
 
-function! s:JbzRemoveDebugPrints()
-  let save_cursor = getcurpos()
-  :g/\/\/\ prdbg$/d
-  call setpos('.', save_cursor)
-endfunction
-command! JbzRemoveDebugPrints call s:JbzRemoveDebugPrints()
-au FileType c,cpp nnoremap <buffer><leader>rd :JbzRemoveDebugPrints<CR>
+" function! s:JbzRemoveDebugPrints()
+"   let save_cursor = getcurpos()
+"   :g/\/\/\ prdbg$/d
+"   call setpos('.', save_cursor)
+" endfunction
+" command! JbzRemoveDebugPrints call s:JbzRemoveDebugPrints()
+" au FileType c,cpp nnoremap <buffer><leader>rd :JbzRemoveDebugPrints<CR>
 
 
 " _____________________________________________________________________________ "
@@ -312,7 +317,7 @@ endfunction
 " 	" endif
 " endfunction
 
-autocmd BufWritePre * :%s/\s\+$//e
+" autocmd BufWritePre * :%s/\s\+$//e
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -354,8 +359,10 @@ else
 endif
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> 'c "_
-noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
-noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
+noremap <Leader>R  :cdo %s//
+noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
+" noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
+" noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
 map Q <Nop>                                        " disable entring in ex mode
 noremap j gj
 noremap k gk
@@ -365,13 +372,15 @@ noremap gt :tabnew%<CR><C-o>
 noremap <C-f> :find<space>
 noremap " '
 noremap ' "
+noremap go o
+noremap gO O
 
 " Add newlines from normal mode
 " nnoremap <CR> o<Esc>
 " nnoremap <S-cr> O<Esc>
 
 nnoremap <silent> '' "+yiw                         " copy word into clipboard
-nnoremap <silent> "<space> "+yy                    " copy line into clipboard
+nnoremap <silent> '<space> "+yy                    " copy line into clipboard
 " for comment line
 map co :call FillLine('-', '#')<CR>                " for commenting fill rest of line with --- until char 79
 map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # ---..-- #
@@ -379,14 +388,15 @@ map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # 
 map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---")
 
 " nnoremap <expr> fs ':%s/'.expand('<cword>').'//gn<CR>``' " search current word under cursor
-nnoremap fh *N
-nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
-nnoremap ck i"+\"<Esc>hK                           " cut too long string
+nnoremap fj *N
+nnoremap ck i" + \"<Esc>hK                           " cut too long string
 " nnoremap P i<cr><esc>                              " cut line
 :map H ^
 :map L g_
 inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
 nnoremap <M-f> <Esc><Esc>:update<CR>
+
+noremap fg "+yy
 
 " -------------------- quickfix list ----------------------------- #
 " nnoremap <silent> <F5> :copen<cr>
@@ -451,6 +461,7 @@ nnoremap <C-W>[ :call FollowTag()<CR>zt   " Follow tag in a vertical window
 "
 " Add easy nbreakpoint shortcut with correct identation
 nnoremap <silent> <C-Y> :let a='import pdb; pdb.set_trace()'\|put=a<CR>kJi<CR><ESC>
+nnoremap <silent> <A-d> :let a="__import__('ipdb').set_trace()"\|put=a<CR>kJi<CR><ESC>
 
 "
 " split
@@ -493,39 +504,46 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
+    Plug 'mcauley-penney/tidy.nvim'
     Plug 'ojroques/nvim-bufdel'
     Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     Plug 'kyazdani42/nvim-tree.lua'                        " file tree
+    Plug 'preservim/nerdtree'                              " file explorer
     Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
     Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
+    Plug 'L3MON4D3/LuaSnip'
+    Plug 'rafamadriz/friendly-snippets'                    " Snippets collection for a set of different programming languages for faster development.
 
     " -------------------------------------------------------------------------- #
     " ------------------ LSP --------------------------------------------------- #
     " -------------------------------------------------------------------------- #
-    Plug 'ray-x/lsp_signature.nvim'                        " force to see function signature when typing
-    Plug 'neovim/nvim-lspconfig'                           " lsp configuration
-    Plug 'hrsh7th/nvim-cmp'                                " completion plugin
+    Plug 'neovim/nvim-lsp'                           " lsp configuration
+    Plug 'neovim/nvim-lspconfig'                     " lsp configuration
+    Plug 'williamboman/nvim-lsp-installer'         " nvim-lspconfig companion
+    " Plug 'simrat39/symbols-outline.nvim'
+    Plug 'hrsh7th/nvim-cmp'                          " completion plugin
     Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'simrat39/symbols-outline.nvim'
+    Plug 'hrsh7th/cmp-nvim-lua'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'ray-x/lsp_signature.nvim'                " force to see function signature when typing
+    Plug 'saadparwaiz1/cmp_luasnip'
 
-    " Plug 'hrsh7th/cmp-buffer'
-    " Plug 'hrsh7th/cmp-cmdline'
-    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-    " Plug 'folke/lsp-colors.nvim'                           " colorscheme for lsp
-    " Plug 'simrat39/symbols-outline.nvim'                   " tree with variables using lsp
+    Plug 'MunifTanjim/nui.nvim'
 
+    Plug 'hrsh7th/cmp-cmdline'
     Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
     Plug 'SmiteshP/nvim-gps'
-    Plug 'phaazon/hop.nvim'                                " better than sneack
+    Plug 'ggandor/lightspeed.nvim'
     Plug 'TimUntersberger/neogit'                          " git helper
-    " Plug 'b3nj5m1n/kommentary'                             " comments
     Plug 'numToStr/Comment.nvim'
 
     " -------------------------------------------------------------------------- #
     " ------------------ theming ----------------------------------------------- #
     " -------------------------------------------------------------------------- #
+    Plug 'rmagatti/igs.nvim'                               " git helper
     Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
     Plug 'sindrets/diffview.nvim'                          " diffview
@@ -536,24 +554,15 @@ if has('nvim')
     Plug 'nvim-telescope/telescope.nvim'
     Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
 
-    " Plug 'weilbith/nvim-lsp-smag'                          " Smart tags with lsp
-    " Plug 'nvim-lua/lsp-status.nvim'
-    " Plug 'glepnir/lspsaga.nvim'                            " light-weight lsp plugin based on neovim built-in lsp
-    " Plug 'nvim-treesitter/completion-treesitter'           " better use of treesitter for completion
-    " Plug 'kristijanhusak/completion-tags'                  " better using tag in completion
+    Plug 'lewis6991/spellsitter.nvim'                    " spell checker
 
-    " Plug 'mfussenegger/nvim-dap'
-    " Plug 'mfussenegger/nvim-dap-python'
-    " Plug 'lewis6991/spellsitter.nvim'                    " spell checker
-    " Plug 'sakhnik/nvim-gdb'                               " pdb into vim
-
-    " Plug 'tiagovla/tokyodark.nvim'
-    " Plug 'glepnir/indent-guides.nvim'                      " indent line
-    " Plug 'Shougo/denite.nvim'                              " file , buffers manager
-    " Plug 'ncm2/float-preview.nvim/'
-
-    " Plug 'vijaymarupudi/nvim-fzf'                          " fzf
-    " Plug 'ibhagwan/fzf-lua'
+    " ----------------------------------------------------------------------- "
+    Plug 'glepnir/indent-guides.nvim'                      " indent line
+    Plug 'Shougo/denite.nvim'                              " file , buffers manager
+    Plug 'ncm2/float-preview.nvim/'
+    Plug 'vijaymarupudi/nvim-fzf'                          " fzf
+    Plug 'ibhagwan/fzf-lua'
+    Plug 'tiagovla/tokyodark.nvim'
 
 else
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -570,7 +579,9 @@ endif
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
-Plug 'Xuyuanp/scrollbar.nvim'
+Plug 'itchyny/vim-gitbranch'                         " get current branch name
+Plug 'Matt-A-Bennett/surround-funk.vim'
+Plug 'svban/YankAssassin.vim'
 Plug 'psliwka/vim-smoothie'
 Plug 'rhysd/clever-f.vim'
 Plug 'vim-scripts/restore_view.vim'
@@ -650,6 +661,7 @@ Plug 'tpope/vim-fugitive'                               " git integration plugin
 " --------------------------------------------------------------
 Plug 'pgzzdiab/vim-unstack'                            " parse python callback from clipbord/tmux buffer into quickfix list
 Plug 'mgedmin/python_open_module.vim'                  " Python standard library source code
+Plug 'jeetsukumaran/vim-python-indent-black'
 Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " Plug 'jmcantrell/vim-virtualenv'                       " Tool for python venv
 " Plug 'westurner/venv.vim'
@@ -664,7 +676,8 @@ Plug 'FooSoft/vim-argwrap'                             " wrap functions args
 Plug 'jeetsukumaran/vim-indentwise'                    " Move to indent
 Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
 Plug 'kana/vim-textobj-user'                           " add new text objects
-Plug 'glts/vim-textobj-comment'                        " comment text object
+" Plug 'glts/vim-textobj-comment'                        " comment text object
+Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
 " Plug 'christoomey/vim-system-copy'                   " mapping for clipoard
 "
 " --------------------------------------------------------------
@@ -683,15 +696,17 @@ Plug 'glts/vim-textobj-comment'                        " comment text object
 " Plug 'vim-airline/vim-airline'                         " tabline
 " Plug 'vim-airline/vim-airline-themes'
 if has('nvim')
-  Plug 'noib3/cokeline.nvim'                             " tabline
+  Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
   " Plug 'windwp/floatline.nvim'
   Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
   Plug 'marko-cerovac/material.nvim'
+
   " Plug 'rktjmp/lush.nvim'
   " Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
-  Plug 'Shatur/neovim-ayu'
-  " Plug 'pierrzacharias/material.nvim'                    " colorscheme
+  " Plug 'Shatur/neovim-ayu'
+  Plug 'rebelot/kanagawa.nvim'
+
   " Plug 'Yggdroot/indentLine'                             " indent guide
   " Plug 'hoob3rt/lualine.nvim'                          " statusbar
   " Plug 'famiu/feline.nvim'                               " statusbar
@@ -796,6 +811,7 @@ endif
 let g:openbrowser_search_engines = extend(
 \ get(g:, 'openbrowser_search_engines', {}),
 \ {
+\   'microsoft': 'https://docs.microsoft.com/fr-fr/search/?scope=C%2B%2B&view=msvc-170&terms={query}',
 \   'cppreference': 'https://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search={query}',
 \   'qt': 'https://doc.qt.io/qt-5/search-results.html?q={query}',
 \   'python': 'https://docs.python.org/dev/search.html?q={query}&check_keywords=yes&area=default',
@@ -806,6 +822,7 @@ let g:openbrowser_search_engines = extend(
 \ },
 \ 'keep'
 \)
+nnoremap <silent> <leader>cm :call openbrowser#smart_search(expand('<cword>'), "microsoft")<CR>
 nnoremap <silent> <leader>osx :call openbrowser#smart_search(expand('<cword>'), "cppreference")<CR>
 nnoremap <silent> <leader>osq :call openbrowser#smart_search(expand('<cword>'), "qt")<CR>
 nnoremap <silent> <leader>dd :call openbrowser#smart_search(expand('<cword>'), "python")<CR>
@@ -830,20 +847,20 @@ nnoremap <silent> <localleader>ol :FSSplitRight<cr>
 "  scrollbar
 "  ------------------------------------------------------------
 if has('nvim')
-  augroup ScrollbarInit
-    autocmd!
-    autocmd WinScrolled,VimResized,QuitPre * silent! lua require('scrollbar').show()
-    autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
-    autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
-  augroup end
+  " augroup ScrollbarInit
+  "   autocmd!
+  "   autocmd WinScrolled,VimResized,QuitPre * silent! lua require('scrollbar').show()
+  "   autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
+  "   autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
+  " augroup end
 
   " let g:scrollbar_shape = {
-  "   \ 'head': '∧',
-  "   \ 'body': '█',
-  "   \ 'tail': '∨',
+  "   \ 'head': '',
+  "   \ 'body': '|',
+  "   \ 'tail': '',
   "   \ }
 
-  let g:scrollbar_winblend = 50
+  " let g:scrollbar_winblend = 80
 
 endif
 
@@ -855,14 +872,25 @@ if has('nvim')
   nnoremap <silent> xc <cmd>BufDel!<cr>
 endif
 
-" -------------------------------------------------------------
-"  clever-f
-"  ------------------------------------------------------------
+" " -------------------------------------------------------------
+" "  lightspeed
+" "  ------------------------------------------------------------
+" map f <Plug>Lightspeed_f
+" map F <Plug>Lightspeed_F
+" map t <Plug>Lightspeed_t
+" map T <Plug>Lightspeed_T
+" map ; <Plug>Lightspeed_;_sx
+" map , <Plug>Lightspeed_,_sx`
+" map , <Plug>Lightspeed_;_fx
+
+" " -------------------------------------------------------------
+" "  clever-f
+" "  ------------------------------------------------------------
 let g:clever_f_smart_case = 1
 map ; <Plug>(clever-f-repeat-forward)
 map , <Plug>(clever-f-repeat-back)
 let g:clever_f_chars_match_any_signs=';'
-
+"
 " -------------------------------------------------------------
 "  ultisnips
 "  ------------------------------------------------------------
@@ -876,11 +904,11 @@ let g:clever_f_chars_match_any_signs=';'
 "  moonfly
 "  ------------------------------------------------------------
 " Vimscript initialization file
-let g:moonflyWithNerdIcon = 1
+" let g:moonflyWithNerdIcon = 1
 " Vimscript initialization file
-let g:moonflyWithNvimLspIndicator = 1
-let g:moonflyWithGitBranch = 1
-let g:moonflyWithGitBranchCharacter = 1
+" let g:moonflyWithNvimLspIndicator = 1
+" let g:moonflyWithGitBranch = 1
+" let g:moonflyWithGitBranchCharacter = 1
 
 " -------------------------------------------------------------
 "  Grepper
@@ -908,9 +936,19 @@ let g:grepper_tools=['ag']
 let g:grepper_highlight=1
 
 " --------------------------------------------------------------
+" igs
+" --------------------------------------------------------------
+nnoremap <leader>gem <cmd>lua require('igs').edit_modified()<CR>
+nnoremap <leader>ges <cmd>lua require('igs').edit_staged()<CR>
+nnoremap <leader>gea <cmd>lua require('igs').edit_all()<CR>
+nnoremap <leader>gqm <cmd>lua require('igs').qf_modified()<CR>
+nnoremap <leader>gqs <cmd>lua require('igs').qf_staged()<CR>
+nnoremap <leader>gqa <cmd>lua require('igs').qf_all()<CR>
+
+" --------------------------------------------------------------
 " unstack
 " --------------------------------------------------------------
-nnoremap <A-d> :UnstackFromClipboard<CR>
+nnoremap <A-a> :UnstackFromClipboard<CR>
 nnoremap <space>j :copen<CR><C-w>JG<CR>
 
 " nnoremap <A-d> :UnstackFromClipboard \| copen<CR><C-w>JG<CR>
@@ -1068,15 +1106,15 @@ if has('nvim')
 	" --------------------------------------------------------------
 	" LUA TREE
 	" --------------------------------------------------------------
-	let g:nvim_tree_width = 50 "30 by default
+	" let g:nvim_tree_width = 50 "30 by default
 	" let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache'] "empty by default
-	let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
-	let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
-	let g:nvim_tree_show_icons = {
-		\ 'git': 0,
-		\ 'folders': 1,
-		\ 'files': 1,
-		\ }
+	" let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
+	" let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
+	" let g:nvim_tree_show_icons = {
+	" 	\ 'git': 0,
+	" 	\ 'folders': 1,
+	" 	\ 'files': 1,
+	" 	\ }
 
 else
 	" --------------------------------------------------------------
@@ -1214,35 +1252,47 @@ let g:startify_session_autoload = 1
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
 let g:startify_custom_header = [
-      \ '           ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓                      ',
-      \ '           ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒                      ',
-      \ '          ▓██  ▀█ ██▒▒███   ▒██░  ██▒ ▓██  █▒░▒██▒▓██    ▓██░                      ',
-      \ '          ▓██▒  ▐▌██▒▒▓█  ▄ ▒██   ██░  ▒██ █░░░██░▒██    ▒██                       ',
-      \ '          ▒██░   ▓██░░▒████▒░ ████▓▒░   ▒▀█░  ░██░▒██▒   ░██▒                      ',
-      \ '          ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░▓  ░ ▒░   ░  ░                      ',
-      \ '          ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░                      ',
-      \ '             ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░                         ',
-      \ '                   ░    ░  ░    ░ ░        ░   ░         ░         go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr                ',
+      \ '                      ▄              ▄                                                                                                                    ▄              ▄      ',
+      \ '                     ▌▒█           ▄▀▒▌         _____   ______        ______           _____     ____      ____  ____      ______  _______              ▌▒█           ▄▀▒▌     ',
+      \ '                     ▌▒▒▀        ▄▀▒▒▒▐        |\    \ |\     \   ___|\     \     ____|\    \   |    |    |    ||    |    |      \/       \             ▌▒▒▀        ▄▀▒▒▒▐     ',
+      \ '                    ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐        \\    \| \     \ |     \     \   /     /\    \  |    |    |    ||    |   /          /\     \            ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐     ',
+      \ '                  ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐        \|    \  \     ||     ,_____/| /     /  \    \ |    |    |    ||    |  /     /\   / /\     |          ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐     ',
+      \ '                ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌        |     \  |    ||     \--"\_|/|     |    |    ||    |    |    ||    | /     /\ \_/ / /    /|         ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌     ',
+      \ '               ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌       |      \ |    ||     /___/|  |     |    |    ||    |    |    ||    ||     |  \|_|/ /    / |        ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌    ',
+      \ '               ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐       |    |\ \|    ||     \____|\ |\     \  /    /||\    \  /    /||    ||     |       |    |  |        ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐    ',
+      \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌      |____||\_____/||____ "     /|| \_____\/____/ || \ ___\/___ / ||____||\____\       |____|  /       ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌   ',
+      \ '              ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌      |    |/ \|   |||    /_____/ | \ |    ||    | / \ |   ||   | / |    || |    |      |    | /        ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
+      \ '              ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐      |____|   |___|/|____|     | /  \|____||____|/   \|___||___|/  |____| \|____|      |____|/         ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
+      \ '             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌     \(       )/    \( |_____|/      \(    )/        \(    )/      \(      \(          )/             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌  ',
+      \ '             ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐                                                                                                       ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
+      \ '              ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌                                                                                                        ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
+      \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐       go  brr   brrrrrrrrrrr   brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr       ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐    ',
+      \ '               ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                                                                                                          ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌    ',
+      \ '                 ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                                                                                                             ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀     ',
+      \ '                ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                                                                                                              ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀       ',
       \ ]
-			" \ '                         ▄              ▄                  ',
-			" \ '                        ▌▒█           ▄▀▒▌    wow          ',
-			" \ '                        ▌▒▒▀        ▄▀▒▒▒▐                 ',
-			" \ '                       ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐    much data science  ',
-			" \ '                     ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐                 ',
-			" \ '                   ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌    much code    ',
-			" \ '                  ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌                ',
-			" \ '                  ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐   data go brrrrrrrrrrr ',
-			" \ '                 ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌               ',
-			" \ '                 ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌               ',
-			" \ '                 ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐               ',
-			" \ '                ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌              ',
-			" \ '                ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐               ',
-			" \ '                 ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌               ',
-			" \ '                 ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐                ',
-			" \ '                  ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                ',
-			" \ '                    ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                 ',
-			" \ '                   ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                   ',
-			" \ '                  ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀                      ',
+      " \ '           ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓                      ',
+      " \ '           ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒                      ',
+      " \ '          ▓██  ▀█ ██▒▒███   ▒██░  ██▒ ▓██  █▒░▒██▒▓██    ▓██░                      ',
+      " \ '          ▓██▒  ▐▌██▒▒▓█  ▄ ▒██   ██░  ▒██ █░░░██░▒██    ▒██                       ',
+      " \ '          ▒██░   ▓██░░▒████▒░ ████▓▒░   ▒▀█░  ░██░▒██▒   ░██▒                      ',
+      " \ '          ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░▓  ░ ▒░   ░  ░                      ',
+      " \ '          ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░                      ',
+      " \ '             ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░                         ',
+
+# save session from current branch name
+function! GetUniqueSessionName()
+  let path = fnamemodify(getcwd(), ':~:t')
+  let path = empty(path) ? 'no-project' : path
+  let branch = gitbranch#name()
+  let branch = empty(branch) ? '' : '-' . branch
+  return substitute(path . branch, '/', '-', 'g')
+endfunction
+
+" autocmd User        StartifyReady silent execute 'SLoad '  . GetUniqueSessionName()
+autocmd VimLeavePre *             silent execute 'SSave! ' . GetUniqueSessionName()
+
+
 " -------------- make nerdtree work at startup ------------------------------ "
 " autocmd VimEnter *
 "                 \   if !argc()
@@ -1536,16 +1586,16 @@ nnoremap <leader>gc :Git checkout <C-r>+
 " --------------------------------------------------------------------------
 " -- lsp
 " -- -----------------------------------------------------------------------
-nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> gh <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> gs <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gv <cmd>lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> ]d <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
-nnoremap <silent> [d <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
-nnoremap <silent> ga <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-nnoremap <silent> gl <cmd>lua lua vim.lsp.diagnostic.set_loclist()<CR>
-" nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
+" nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+" nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> gh <cmd>lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <silent> gs <cmd>lua vim.lsp.buf.hover()<CR>
+" nnoremap <silent> gv <cmd>lua vim.lsp.buf.rename()<CR>
+" nnoremap <silent> ]d <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+" nnoremap <silent> [d <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+" nnoremap <silent> ga <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+" nnoremap <silent> gl <cmd>lua lua vim.lsp.diagnostic.set_loclist()<CR>
+" " nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
 nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.definition()<cr>
 nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
 
@@ -1600,8 +1650,8 @@ xmap gn  <plug>(GrepperOperator)
 	" Find files using Telescope command-line sugar.
 	" nnoremap <leader>t :Telescope <CR>
 	nnoremap <space>n <cmd>Telescope find_files<cr>
-	" nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-	nnoremap fb <cmd>Telescope buffers<cr>
+	nnoremap fn <cmd>Telescope live_grep<cr>
+	nnoremap <space>b <cmd>Telescope buffers<cr>
 	" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 endif
 
@@ -1617,6 +1667,14 @@ endif
 " endif
 
 " --------------------------------------------------------------------------
+" -- YankAssassin
+" -- -----------------------------------------------------------------------
+augroup highlight_yank
+      autocmd!
+      au TextYankPost * silent! lua vim.highlight.on_yank{ higroup="IncSearch", timeout=200 }
+  augroup END
+
+" --------------------------------------------------------------------------
 " -- QFEnter
 " -- -----------------------------------------------------------------------
 if has('nvim')
@@ -1628,17 +1686,17 @@ endif
 
 
 if has('nvim')
-	" --------------------------------------------------------------------------
-	" -- LUA TREE
-	" -- -----------------------------------------------------------------------
+	" --------------------------------------------------------------------
+	"  LUA TREE
+	" --------------------------------------------------------------------
 	nnoremap <A-;> :NvimTreeToggle<CR>
-	" nnoremap <leader>t :NvimTreeRefresh<CR>
+	nnoremap <leader>t :NvimTreeRefresh<CR>
 	nnoremap <leader>n :NvimTreeFindFile<CR>
 else
-	" -------------------------------------------------------------------------- "
+	" ------------------------------------------------------------------- "
 	" NERDTree
-	" -------------------------------------------------------------------------- "
-	map <C-n> :NERDTreeToggle<CR>
+	" ------------------------------------------------------------------- "
+	map <A-;> :NERDTreeToggle<CR>
 	function! NERDTreeYankCurrentNode()
 			let n = g:NERDTreeFileNode.GetSelected()
 			if n != {}
@@ -1665,12 +1723,12 @@ endif
 "  Trouble nvim
 "  -----------------------------------------------------------
 if has('nvim')
-	nnoremap <leader>xx <cmd>TroubleToggle<cr>
-	nnoremap <leader>xw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
-	nnoremap <leader>xd <cmd>TroubleToggle lsp_document_diagnostics<cr>
-	nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
-	nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
-	nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+    nnoremap <leader>xx <cmd>TroubleToggle<cr>
+    nnoremap <leader>xw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
+    nnoremap <leader>xd <cmd>TroubleToggle lsp_document_diagnostics<cr>
+    nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+    nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
+    nnoremap gR <cmd>TroubleToggle lsp_references<cr>
 endif
 
 " -------------------------------------------------------------
@@ -1797,20 +1855,27 @@ nnoremap <silent> <M-'> :ArgWrap<CR><Esc>
 " nnoremap <silent> <leader>mp :call libcallnr("vimtweak64.dll", "EnableTopMost", 0)<CR>
 
 " -------------------------------------------------------------------------- "
+" vim-textobj-entire
+" -------------------------------------------------------------------------- "
+
+nmap ae <plug>(textobj-entire-a)
+nmap <leader>ae <plug>(textobj-entire-i)
+
+" -------------------------------------------------------------------------- "
 " submersive
 " -------------------------------------------------------------------------- "
-" s for substitute
-nmap s <plug>(SubversiveSubstitute)
-nmap ss <plug>(SubversiveSubstituteLine)
-nmap S <plug>(SubversiveSubstituteToEndOfLine)
+nmap o <plug>(SubversiveSubstitute)
+nmap oo <plug>(SubversiveSubstituteLine)
+nmap O <plug>(SubversiveSubstituteToEndOfLine)
+nnoremap fj "+oo
 " Substitute Over Range Motion
-" nmap <leader>s <plug>(SubversiveSubstituteRange)
-" xmap <leader>s <plug>(SubversiveSubstituteRange)
-" nmap <leader>s <plug>(SubversiveSubstituteWordRange)
+nmap op <plug>(SubversiveSubstituteRange)
+xmap op <plug>(SubversiveSubstituteRange)
+nmap owp <plug>(SubversiveSubstituteWordRange)
 " need to confirm substitution
-nmap <leader>cs <plug>(SubversiveSubstituteRangeConfirm)
-xmap <leader>cs <plug>(SubversiveSubstituteRangeConfirm)
-nmap <leader>css <plug>(SubversiveSubstituteWordRangeConfirm)
+nmap <leader>c <plug>(SubversiveSubstituteRangeConfirm)
+xmap <leader>c <plug>(SubversiveSubstituteRangeConfirm)
+nmap <leader>co <plug>(SubversiveSubstituteWordRangeConfirm)
 
 " -------------------------------------------------------------------------- "
 " latex
@@ -1862,7 +1927,13 @@ nnoremap <silent> <Right> :call animate#window_delta_width(-10)<CR>
 " -------------------------------------------------------------------------- "
 "  symboloutline
 " --------------------------------------------------------------------------
-nnoremap <leader>S :SymbolsOutline<CR>
+" nnoremap <leader>S :SymbolsOutline<CR>
+
+" -------------------------------------------------------------------------- "
+" pycodestyle
+" -------------------------------------------------------------------------- "
+" let g:pylsp.plugins.pycodestyle.ignore = []
+" let g:pylsp.plugins.pycodestyle.maxLineLength = 200
 
 " -------------------------------------------------------------------------- "
 " coc
@@ -1918,7 +1989,7 @@ else
   " map <buffer> af <Plug>(PythonsenseOuterFunctionTextObject)
   " map <buffer> if <Plug>(PythonsenseInnerFunctionTextObject)
   " map <buffer> ad <Plug>(PythonsenseOuterDocStringTextObject)
-  " map <buffer> id <Plug>(PythonsenseInnerDocStringTextObject)
+ " map <buffer> id <Plug>(PythonsenseInnerDocStringTextObject)
   " map <buffer> ]] <Plug>(PythonsenseStartOfNextPythonClass)
   " map <buffer> ][ <Plug>(PythonsenseEndOfPythonClass)
   " map <buffer> [[ <Plug>(PythonsenseStartOfPythonClass)
@@ -1929,6 +2000,12 @@ else
   autocmd BufReadPost * map Mk <Plug>(PythonsenseEndOfPreviousPythonFunction)
 endif
 
+" --------------------------------------------------------------------------- #
+"  -----------------<< FineCmdline >>---------------------------------------- #
+" --------------------------------------------------------------------------- #
+" nnoremap : <cmd>FineCmdline<CR>
+" nnoremap <leader>r yiw<cmd>FineCmdline<CR>%s///gc<left><left><left><left><C-r>"<right>
+" nnoremap <C-f> <cmd>FineCmdline<CR>find<space>
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -1947,9 +2024,7 @@ endif
 " ------------------------------------------------------------------------- "
 
 if has('nvim')
-    " colorscheme material
-    colorscheme ayu
-    " let g:material_theme_style = 'oceanic'
+    " colorscheme ayu
 else
     colorscheme material
     let $BAT_THEME='material'
@@ -1962,9 +2037,9 @@ endif
 set background=dark
 
 set cursorline                               " Highlight current line
-hi CursorLine guibg=#0D1016
-" hi CursorLine guibg=#282828
-hi TabLineFill guibg=#1F2430
+" hi CursorLine guibg=#0D1016
+hi TabLineFill guibg=#0D1016
+
 " -------------------------------------------------------------
 "  vim sneak
 "  ------------------------------------------------------------
@@ -1980,10 +2055,10 @@ hi TabLineFill guibg=#1F2430
 	" hi link LspSagaSignatureHelpBorder guifg='#F29718' guibg='#14191F'
 	" hi link LspSagaDefPreviewBorder guifg='#F29718' guibg='#14191F'
 	" hi link LspLinesDiagBorder guifg='#F29718' guibg='#14191F'
-" 	let g:LspDiagnosticsSignError = ""
-" 	let g:LspDiagnosticsSignWarning = ""
-" 	let g:LspDiagnosticsSignInformation = ""
-" 	let g:LspDiagnosticsSignHint = ""
+	let g:LspDiagnosticsSignError = ""
+	let g:LspDiagnosticsSignWarning = ""
+	let g:LspDiagnosticsSignInformation = ""
+	let g:LspDiagnosticsSignHint = ""
 endif
 
 " ------------------------------------------------------------------------- "
@@ -2024,5 +2099,4 @@ endif
 " -------------------------------------------------------------
 "  vim signature
 "  ------------------------------------------------------------
-hi SignatureMarkText guifg=#B0BEC5 guibg=NONE
-
+" hi SignatureMarkText guifg=#B0BEC5 guibg=NONE

@@ -132,25 +132,32 @@ require'qf_helper'.setup({
 ---------------------------------------------------------------------------------
 ---- TELESCOPE
 ---- ----------------------------------------------------------------------------
+local actions = require("telescope.actions")
 require('telescope').setup{
   defaults = {
     vimgrep_arguments = {
-      'rg',
-      '--color=never',
-      -- '--no-heading',
-      -- '--with-filename',
+      -- 'rg',
+      'ag',
+      -- '--color=never',
+      '--no-heading',
+      '--with-filename',
       -- '--line-number',
       -- '--column',
       -- '--smart-case'
     },
-    prompt_prefix = "> ",
-    selection_caret = "> ",
+    mappings = {
+      i = {
+        ["<esc>"] = actions.close,
+      }
+    },
+    prompt_prefix = ": ",
+    selection_caret = "➔ ",
     theme = "dropdown",
     entry_prefix = "  ",
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "descending",
-    layout_strategy = "horizontal",
+    layout_strategy = "vertical",
     layout_config = {
       horizontal = {mirror = false, },
       vertical = {mirror = false, }
@@ -278,7 +285,6 @@ require'nvim-treesitter.configs'.setup {
 -- -------------------------------------------------------------------------- #
 --  ----------------- nvim-cmp ---------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-local cmp = require'cmp'
 local lsp_symbols = {
     Text = "   (Text) ",
     Method = "   (Method)",
@@ -306,35 +312,24 @@ local lsp_symbols = {
     Operator = "   (Operator)",
     TypeParameter = "   (TypeParameter)",
 }
+
+-- Set completeopt to have a better completion experience
+vim.o.completeopt = 'menuone,noselect'
+
+local cmp = require'cmp'
+
 cmp.setup({
-  snippet = {
+
+  completion = {
+    --completeopt = 'menu,menuone,noinsert',
+  },
+
+ snippet = {
       expand = function(args)
-        vim.fn["UltiSnips#Anon"](args.body)
+        require('luasnip').lsp_expand(args.body)
       end,
-    },
-  experimental = {
-    ghost_text = true,
   },
-  documentation = {
-    -- border = "rounded",
-    winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
-    -- maxwidth = require('core.utils').fix_width(0, 0.9),
-    -- maxheight = require('core.utils').fix_height(0, 0.9)
-  },
-  mapping = {
-    ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-    ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
-    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    -- ['<CR>'] = cmp.mapping.confirm({
-    --   behavior = cmp.ConfirmBehavior.Replace,
-    --   select = true,
-    -- })
-  },
+
   formatting = {
         format = function(entry, item)
             item.kind = lsp_symbols[item.kind]
@@ -349,26 +344,76 @@ cmp.setup({
         end,
     },
   sources = {
-    { name = 'nvim_lsp' },
-    { name = 'buffer' },
-    -- { name = 'ultisnips' },
-    -- { name = 'path' },
+      { name = 'nvim_lsp' },
+      { name = 'nvim_lua' },
+      { name = 'path' },
+      { name = 'luasnip' },
+      -- { name = 'ultisnips' },
+      { name = 'buffer', keyword_length=1 },
+      { name = 'calc' },
+    },
+
+  experimental = {
+      ghost_text = true,
+  },
+
+})
+
+-- Require function for tab to work with LUA-SNIP
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+local luasnip = require("luasnip")
+
+
+cmp.setup({
+  documentation = {
+    -- border = "rounded",
+    winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
+    -- maxwidth = require('core.utils').fix_width(0, 0.9),
+    -- maxheight = require('core.utils').fix_height(0, 0.9)
+  },
+  mapping = {
+    -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+    -- ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    -- ['<CR>'] = cmp.mapping.confirm({
+    --   behavior = cmp.ConfirmBehavior.Replace,
+    --   select = true,
+
+   ["<Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                  cmp.select_next_item()
+                elseif luasnip.expand_or_jumpable() then
+                  luasnip.expand_or_jump()
+                elseif has_words_before() then
+                  cmp.complete()
+                else
+                  fallback()
+                end
+              end, { "i", "s" }
+    ),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                  cmp.select_prev_item()
+                elseif luasnip.jumpable(-1) then
+                  luasnip.jump(-1)
+                else
+                  fallback()
+                end
+              end, { "i", "s" }
+    ),
+
   }
 })
 
--- cmp.setup.cmdline('/', {
---     sources = {
---       { name = 'buffer' }
---     }
--- })
--- -- Use cmdline & path source for ':'.
---   cmp.setup.cmdline(':', {
---     sources = cmp.config.sources({
---       { name = 'path' }
---     }, {
---       { name = 'cmdline' }
---     })
---  })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- gps --------------------------------------------------- "
@@ -405,79 +450,204 @@ require("nvim-gps").setup()
 -- })
 
 -- -------------------------------------------------------------------------- #
---  ----------------- lsp --------------------------------------------------- "
+-- -----------------< lsp >-------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-local nvim_lsp=require('lspconfig')
+local lsp_installer = require("nvim-lsp-installer")
 
+-- Provide settings first!
+lsp_installer.settings {
+    ui = {
+        icons = {
+            server_installed = "✓",
+            server_pending = "➜",
+            server_uninstalled = "✗",
+        },
+    },
 
+    -- Limit for the maximum amount of servers to be installed at the same time. Once this limit is reached, any further
+    -- servers that are requested to be installed will be put in a queue.
+    max_concurrent_installers = 4,
+}
 
--- local on_attach=function(client, bufnr)
+local function make_server_ready(attach)
+  lsp_installer.on_server_ready(function(server)
+      local opts = {}
+      opts.on_attach = attach
+
+      -- for lua
+      if server.name == "sumneko_lua" then
+        -- only apply these settings for the "sumneko_lua" server
+          opts.settings = {
+            Lua = {
+              diagnostics = {
+                -- Get the language server to recognize the 'vim', 'use' global
+                globals = {'vim', 'use', 'require'},
+              },
+              workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = vim.api.nvim_get_runtime_file("", true),
+              },
+              -- Do not send telemetry data containing a randomized but unique identifier
+              telemetry = {
+                enable = false,
+              },
+            },
+          }
+      end
+
+      -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
+      server:setup(opts)
+      vim.cmd [[ do User LspAttachBuffers ]]
+  end)
+end
+
+local function install_server(server)
+  local lsp_installer_servers = require'nvim-lsp-installer.servers'
+  local ok, server_analyzer = lsp_installer_servers.get_server(server)
+  if ok then
+    if not server_analyzer:is_installed() then
+      server_analyzer:install(server)   -- will install in background
+      -- lsp_installer.install(server)     -- install window will popup
+    end
+  end
+end
+
+local servers = {
+  "sumneko_lua",        -- for Lua
+  "pyright",            -- for Python
+  "pylsp",            -- for Python
+  "vimls",            -- for Python
+  "clangd",             -- for C/C++
+  "bashls",             -- for Bash
+  "jsonls",             -- for Bash
+  "sqlls",             -- for Bash
+}
+
+local On_attach = function(client, bufnr)
+
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  -- Enable completion triggered by <c-x><c-o>
+  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', 'ga', '<cmd>lua vim.diagnostic.open_float()<CR>',  opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  -- buf_set_keymap("n", "<space>f", '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  -- code action is integrated with telescope, for more see "telescope.lua" file
+  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  -- buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workleader_folder()<CR>', opts)
+  -- buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workleader_folder()<CR>', opts)
+  -- buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workleader_folders()))<CR>', opts)
+end
+
+-- setup the LS
+require "lspconfig"
+make_server_ready(On_attach)    -- LSP mappings
+
+-- install the LS
+for _, server in ipairs(servers) do
+  install_server(server)
+end
+
+-- local nvim_lsp=require('lspconfig')
+local on_attach=function(client, bufnr)
 	-- Enable completion triggered by <c-x><c-o>
 	-- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 	-- Mappings.
-	-- local opts={noremap=true, silent=true }
-	-- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+	local opts={noremap=true, silent=true }
+	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 	-- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-	-- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
 	-- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-	-- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-	-- buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
--- 	buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
--- 	buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
--- 	buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
--- 	buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
--- 	buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
--- 	buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
--- 	buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
--- 	buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
--- 	buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
--- 	buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
--- 	buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
--- end
-
--- replace the default lsp diagnostic letters with prettier symbols
-vim.fn.sign_define("LspDiagnosticsSignError", {text = "", numhl = "LspDiagnosticsDefaultError"})
-vim.fn.sign_define("LspDiagnosticsSignWarning", {text = "", numhl = "LspDiagnosticsDefaultWarning"})
-vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspDiagnosticsDefaultInformation"})
-vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
-
+	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+	buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+	buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+	buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+	-- buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+	-- buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+	-- buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+	-- buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+	-- buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+	-- buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+	buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+	buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+	-- buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+end
 
 -- local coq = require("coq")
 -- nvim_lsp.pyright.setup(coq.lsp_ensure_capabilities())
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-nvim_lsp.pyright.setup{
-    capabilities = capabilities
-}
-nvim_lsp.cmake.setup{
-    capabilities = capabilities
-}
+-- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+-- nvim_lsp.pyright.setup{
+--     capabilities = capabilities
+-- }
+-- nvim_lsp.cmake.setup{
+--     capabilities = capabilities
+-- }
 
--- remove underlying on diagnostic
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-	vim.lsp.diagnostic.on_publish_diagnostics,
-	{
-		underline = false,
-		update_in_insert = true,
-		virtual_text = false
-	}
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = false,
+    signs = true,
+    update_in_insert = false,
+    -- virtual_text = {true},
+  }
 )
+vim.diagnostic.config({
+  virtual_text = false,
+})
+
+-- show diagnostic on float window(like auto complete)
+-- vim.api.nvim_command [[ autocmd CursorHold  *.lua,*.sh,*.bash,*.dart,*.py,*.cpp,*.c,js lua vim.lsp.diagnostic.show_line_diagnostics() ]]
+
+-- se LSP diagnostic symbols/signs
+--─────────────────────────────────────────────────--
+vim.api.nvim_command [[ sign define DiagnosticSignError text=✗ texthl=DiagnosticSignError linehl= numhl= ]]
+vim.api.nvim_command [[ sign define DiagnosticSignWarn  text=⚠ texthl=DiagnosticSignWarn  linehl= numhl= ]]
+vim.api.nvim_command [[ sign define DiagnosticSignInfo  text= texthl=DiagnosticSignInfo  linehl= numhl= ]]
+vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=DiagnosticSignHint  linehl= numhl= ]]
+
+-- vim.api.nvim_command [[ hi DiagnosticUnderlineError cterm=underline gui=underline guisp=#840000]]
+-- vim.api.nvim_command [[ hi DiagnosticUnderlineHint cterm=underline  gui=underline guisp=#17D6EB ]]
+-- vim.api.nvim_command [[ hi DiagnosticUnderlineWarn cterm=underline  gui=underline guisp=#2f2905 ]]
+
+-- Auto-format files prior to saving them
+--vim.api.nvim_command[[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)]]
+
+--[[
+   " to change colors, it's better to define in color scheme
+   " highlight LspDiagnosticsUnderlineError         guifg=#EB4917 gui=undercurl
+   " highlight LspDiagnosticsUnderlineWarning       guifg=#EBA217 gui=undercurl
+   " highlight LspDiagnosticsUnderlineInformation   guifg=#17D6EB gui=undercurl
+   " highlight LspDiagnosticsUnderlineHint          guifg=#17EB7A gui=undercurl
+--]]
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- hop ----------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require'hop'.setup()
-  -- keys = 'aqwsderfvgtnhuipjmnklo',
-vim.api.nvim_set_keymap('n', 'fj', "<cmd>lua require'hop'.hint_words()<cr>", {})
-vim.api.nvim_set_keymap('n', 'fk', "<cmd>lua require'hop'.hint_char2()<cr>", {})
 
-vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
-vim.api.nvim_set_keymap('n', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
-vim.api.nvim_set_keymap('o', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
-vim.api.nvim_set_keymap('o', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
-vim.api.nvim_set_keymap('', 'tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
-vim.api.nvim_set_keymap('', 'Tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
-
+-- require'hop'.setup()
+-- vim.api.nvim_set_keymap('n', 'fj', "<cmd>lua require'hop'.hint_words()<cr>", {})
+-- vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char2()<cr>", {})
+-- vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
+-- vim.api.nvim_set_keymap('n', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
+-- vim.api.nvim_set_keymap('o', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
+-- vim.api.nvim_set_keymap('o', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
+-- vim.api.nvim_set_keymap('', 'tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
+-- vim.api.nvim_set_keymap('', 'Tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
 
 
 -- -------------------------------------------------------------------------- #
@@ -488,27 +658,27 @@ vim.api.nvim_set_keymap('', 'Tl', "<cmd>lua require'hop'.hint_char1({ direction 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp signature ----------------------------------------- #
 -- -------------------------------------------------------------------------- #
-cfg = {
-  bind = true, -- This is mandatory, otherwise border config won't get registered.
-               -- If you want to hook lspsaga or other signature handler, pls set to false
-  doc_lines = 2, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
-                 -- set to 0 if you do not want any API comments be shown
-                 -- This setting only take effect in insert mode, it does not affect signature help in normal
-                 -- mode
-
-  hint_enable = true, -- virtual hint enable
-  hint_prefix = "",  -- Panda for parameter
-  hint_scheme = "String",
-  use_lspsaga = true,  -- set to true if you want to use lspsaga popup
-  handler_opts = {
-    border = "shadow"   -- double, single, shadow, none
-  },
-  decorator = {"`", "`"}  -- decoractor can be `decorator = {"***", "***"}`  `decorator = {"**", "**"}` `decorator = {"**_", "_**"}`
-                          -- `decorator = {"*", "*"} see markdown help for more details
-                          -- <u></u> ~ ~ does not supported by nvim
-
-}
-require'lsp_signature'.on_attach(cfg)
+-- cfg = {
+--   bind = true, -- This is mandatory, otherwise border config won't get registered.
+--                -- If you want to hook lspsaga or other signature handler, pls set to false
+--   doc_lines = 2, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
+--                  -- set to 0 if you do not want any API comments be shown
+--                  -- This setting only take effect in insert mode, it does not affect signature help in normal
+--                  -- mode
+--
+--   hint_enable = true, -- virtual hint enable
+--   hint_prefix = "",  -- Panda for parameter
+--   hint_scheme = "String",
+--   use_lspsaga = true,  -- set to true if you want to use lspsaga popup
+--   handler_opts = {
+--     border = "shadow"   -- double, single, shadow, none
+--   },
+--   decorator = {"`", "`"}  -- decoractor can be `decorator = {"***", "***"}`  `decorator = {"**", "**"}` `decorator = {"**_", "_**"}`
+--                           -- `decorator = {"*", "*"} see markdown help for more details
+--                           -- <u></u> ~ ~ does not supported by nvim
+--
+-- }
+-- require'lsp_signature'.on_attach(cfg)
 
 
 
@@ -520,26 +690,13 @@ require('neogit').setup {}
 -- -------------------------------------------------------------------------- #
 --  ----------------- lightspeed -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
--- require'lightspeed'.setup {
-  -- jump_to_first_match = true,
-  -- jump_on_partial_input_safety_timeout = 400,
-  -- -- This can get _really_ slow if the window has a lot of content,
-  -- -- turn it on only if your machine can always cope with it.
-  -- highlight_unique_chars = false,
-  -- grey_out_search_area = true,
-  -- match_only_the_start_of_same_char_seqs = true,
-  -- limit_ft_matches = 5,
-  -- x_mode_prefix_key = '<c-x>',
-  -- substitute_chars = { ['\r'] = '¬' },
-  -- instant_repeat_fwd_key = nil,
-  -- instant_repeat_bwd_key = nil,
-  -- -- If no values are given, these will be set at runtime,
-  -- -- based on `jump_to_first_match`.
-  -- labels = nil,
-  -- cycle_group_fwd_key = nil,
-  -- cycle_group_bwd_key = nil,
--- }
 
+require'lightspeed'.setup {
+  ignore_case = true,
+  repeat_ft_with_target_char = true,
+}
+
+--
 -- -------------------------------------------------------------------------- #
 --  ----------------- illuminate -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
@@ -670,51 +827,44 @@ require'nvim-tree'.setup {
   -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
   update_cwd          = false,
   -- show lsp diagnostics in the signcolumn
+
   diagnostics = {
-    enable = true,
-    icons = {
-      hint = "",
-      info = "",
-      warning = "",
-      error = "",
-    }
+    enable = false,
   },
   -- update the focused file on `BufEnter`, un-collapses the folders recursively until it finds the file
   update_focused_file = {
     -- enables the feature
-    enable      = false,
+    enable      = true,
     -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
     -- only relevant when `update_focused_file.enable` is true
     update_cwd  = false,
     -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
     -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
-    ignore_list = {}
+    -- ignore_list = {}
   },
   -- configuration options for the system open command (`s` in the tree by default)
-  system_open = {
+  -- system_open = {
     -- the command to run this, leaving nil should work in most cases
-    cmd  = nil,
+    -- cmd  = nil,
     -- the command arguments as a list
-    args = {}
-  },
-
+    -- args = {}
+  -- },
   view = {
     -- width of the window, can be either a number (columns) or a string in `%`, for left or right side placement
     width = 30,
     -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
-    height = 30,
+    -- height = 30,
     -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
     side = 'left',
     -- if true the tree will resize itself after opening a file
-    auto_resize = false,
-    mappings = {
+    auto_resize = true,
+    -- mappings = {
       -- custom only false will merge the list with the default mappings
       -- if true, it will only use your list to set the mappings
-      custom_only = false,
+      -- custom_only = false,
       -- list of mappings to set on the tree manually
-      list = {}
+      -- list = {}
     }
-  }
 }
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
@@ -756,18 +906,42 @@ local list = {
 -- -------------------------------------------------------------------------- #
 -- ----------------- ayu ---------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('ayu').setup({
-  mirage=true,
-  overrides = {
-  Comment = {fg = '#707A8C'},
-  String = {fg = '#E6BA7E'},
-  LineNr = {fg = '#465742'},
-  CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
-  Search = {fg = '#7CB0E6', bg = '#33415E'},
-  -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
-  }
+-- require('ayu').setup({
+--   mirage=true,
+--   overrides = {
+--   Comment = {fg = '#707A8C'},
+--   String = {fg = '#E6BA7E'},
+--   LineNr = {fg = '#465742'},
+--   CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
+--   Search = {fg = '#7CB0E6', bg = '#33415E'},
+--   -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
+--   }
+-- })
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- kanagawa ---------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('kanagawa').setup({
+    undercurl = true,           -- enable undercurls
+    -- commentStyle = "italic",
+    -- functionStyle = "NONE",
+    keywordStyle = "italic",
+    statementStyle = "bold",
+    typeStyle = "NONE",
+    variablebuiltinStyle = "italic",
+    specialReturn = true,       -- special highlight for the return keyword
+    specialException = true,    -- special highlight for exception handling keywords
+    transparent = false,        -- do not set background color
+    colors = {},
+    overrides = {
+      -- override existing hl-groups, the new keywords are merged with existing ones
+      -- VertSplit  = { fg = default_colors.bg_dark, bg = "NONE" },
+      Search = {fg = '#7CB0E6', bg = '#33415E'},
+    },
 })
 
+-- setup must be called before loading
+vim.cmd("colorscheme kanagawa")
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- material ----------------------------------------------- #
@@ -855,6 +1029,16 @@ require('gitsigns').setup()
   -- use_decoration_api = true,
   -- use_internal_diff = true,  -- If luajit is present
 -- }
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- \<igs\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('igs').setup {
+  debug = false, -- print debug logs
+  log_level = "info", -- log level for igs
+  run_copen = true, -- run copen after qf commands
+  default_mappings = false, -- set default mappings
+}
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
@@ -1054,7 +1238,7 @@ windline.setup({
 --  ----------------- cokeline -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
 local get_hex = require('cokeline/utils').get_hex
-
+--
 require('cokeline').setup({
   default_hl = {
     focused = {
@@ -1069,15 +1253,15 @@ require('cokeline').setup({
 
   components = {
     {
-      text = '',
-      -- let g:airline_left_alt_sep = ''
-      -- let g:airline_right_alt_sep = ''
-      --content = "%{T3}%{T-}"
-      --content = "%{T3}%{T-}"
+      text = '',
       hl = {
           bg = function(buffer)
-              if buffer.is_focused then
+              if (buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
+              elseif buffer.is_focused then
                   return "#CBCCC6"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#575F66"
               else
                   return "#1F2430"
               end
@@ -1111,8 +1295,12 @@ require('cokeline').setup({
 
       hl = {
           bg = function(buffer)
-              if buffer.is_focused then
+              if (buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
+              elseif buffer.is_focused then
                   return "#CBCCC6"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#575F66"
               else
                   return "#1F2430"
               end
@@ -1120,6 +1308,8 @@ require('cokeline').setup({
           fg = function(buffer)
               if buffer.is_focused then
                   return "#1F2430"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
               else
                   return "#707A8C"
               end
@@ -1133,7 +1323,9 @@ require('cokeline').setup({
       text = function(buffer) return buffer.unique_prefix end,
       hl = {
           bg = function(buffer)
-              if buffer.is_focused then
+              if buffer.is_modified then
+                  return "#BAE67E"
+              elseif buffer.is_focused then
                   return "#CBCCC6"
               else
                   return "#1F2430"
@@ -1142,6 +1334,8 @@ require('cokeline').setup({
           fg = function(buffer)
               if buffer.is_focused then
                   return "#1F2430"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
               else
                   return "#707A8C"
               end
@@ -1163,8 +1357,12 @@ require('cokeline').setup({
       end,
       hl = {
           bg = function(buffer)
-              if buffer.is_focused then
+              if (buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
+              elseif buffer.is_focused then
                   return "#CBCCC6"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#575F66"
               else
                   return "#1F2430"
               end
@@ -1172,6 +1370,8 @@ require('cokeline').setup({
           fg = function(buffer)
               if buffer.is_focused then
                   return "#1F2430"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
               else
                   return "#707A8C"
               end
@@ -1184,20 +1384,53 @@ require('cokeline').setup({
     {
       text = function(buffer)
         if buffer.is_readonly then
-          return " 🔒"
+          return "[🔒] "
         end
         if buffer.is_modified then
-          return " + "
+          return "[+] "
         end
           return ""
-        end
-    },
-    {
-      text = '',
+      end,
       hl = {
           bg = function(buffer)
-              if buffer.is_focused then
+              if (buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
+              elseif buffer.is_focused then
                   return "#CBCCC6"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#575F66"
+              else
+                  return "#1F2430"
+              end
+          end,
+          fg = function(buffer)
+              if buffer.is_focused then
+                  return "#1F2430"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
+              else
+                  return "#707A8C"
+              end
+              if buffer.is_modified then
+                  return "#BAE67E"
+              end
+          end,
+      }
+    },
+    {
+      text = '',
+      -- content = "%{T3}%{T-}"
+      -- content = "%{T3}%{T-}"
+      -- content = "%{T3}%{T-}"
+      -- content = "%{T3}%{T-}"
+      hl = {
+          bg = function(buffer)
+              if (buffer.is_focused and buffer.is_modified) then
+                  return "#BAE67E"
+              elseif buffer.is_focused then
+                  return "#CBCCC6"
+              elseif (not buffer.is_focused and buffer.is_modified) then
+                  return "#575F66"
               else
                   return "#1F2430"
               end
@@ -1218,4 +1451,40 @@ require('cokeline').setup({
 })
 
 
-
+-- -------------------------------------------------------------------------- #
+--  -----------------<< fine-cmdline >>------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- require('fine-cmdline').setup({
+--   cmdline = {
+--     enable_keymaps = true,
+--     smart_history = true
+--   },
+--   popup = {
+--     position = {
+--       row = '50%',
+--       col = '50%',
+--     },
+--     size = {
+--       width = '40%',
+--       height = 1
+--     },
+--     border = {
+--         -- highlight = "FloatBorder",
+--         highlight = "Comment",
+--         -- style = 'rounded',
+--         style = 'double',
+--         -- border = { style = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, },
+--       --   padding = {
+--       --     top = 2,
+--       --     bottom = 2,
+--       --     left = 3,
+--       --     right = 3,
+--       -- },
+--     },
+--     relative = "editor",
+--     -- relative = "cursor",
+--     win_options = {
+--       winhighlight = 'Normal:Normal',
+--     },
+--   },
+-- })
