@@ -88,7 +88,8 @@ set updatetime=100                  " Smaller updatetime for CursorHold & Cursor
 set mouse=a                         " enbable mouse functionnalities
 set hidden                          " buffer are hidden when abandonned
 set autoread                        " automatically reload files changed on disk
-set switchbuf=useopen               " quickfix reuses open windows
+" set switchbuf=useopen               " quickfix reuses open windows
+set switchbuf=usetab              " try to reuse windows/tabs when switching buffers
 
 " When editing a file, always jump to the last cursor position
 autocmd BufReadPost *
@@ -397,7 +398,7 @@ inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
 nnoremap <M-f> <Esc><Esc>:update<CR>
 
 noremap fg "+yy
-
+nnoremap g. /\V<C-r>"<CR>cgn<C-a><Esc>
 " -------------------- quickfix list ----------------------------- #
 " nnoremap <silent> <F5> :copen<cr>
 " nnoremap ]c :cnext<CR>                             " go to next item in quickfix list
@@ -504,6 +505,7 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
+    " Plug 'rcarriga/nvim-notify'
     Plug 'mcauley-penney/tidy.nvim'
     Plug 'ojroques/nvim-bufdel'
     Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
@@ -765,11 +767,20 @@ call plug#end()
 " <<<<<<<<<<<<<<<<<<<< Plugin Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
+
 if has('nvim')
 	" some neovim packges are configured here
 	" lua require('$HOME/.vim/lua/lua_config')
 	lua require('lua_config')
 
+endif
+
+" --------------------------------------------------------------
+" blankline indent
+" --------------------------------------------------------------
+if has('nvim')
+  let g:indentLine_char = "▎"
+  let g:indent_blankline_extra_indent_level = -1
 endif
 
 " if has('nvim')
@@ -1081,22 +1092,6 @@ endif
 " set previewheight=60                 " remap tag open in new split windows
 
 " --------------------------------------------------------------
-" blankline inddent
-" --------------------------------------------------------------
-if has('nvim')
-  let g:indent_blankline_extra_indent_level = -1
-  let g:indentLine_char = "▎"
-  " let g:indent_blankline_char = "▏"
-  " let g:indentLine_setColors = 1
-  " " let g:indentLine_color_term = 15
-  " let g:indentLine_color_gui = '#F29718'
-  " let g:indentLine_bgcolor_gui = '#B8CC52'
-  " " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-  " " let g:indentLine_leadingSpaceEnabled=1
-  " let g:indentLine_showFirstIndentLevel=0
-endif
-
-" --------------------------------------------------------------
 " animate
 " --------------------------------------------------------------
 let g:animate#duration = 200.0
@@ -1280,7 +1275,7 @@ let g:startify_custom_header = [
       " \ '          ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░                      ',
       " \ '             ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░                         ',
 
-# save session from current branch name
+" save session from current branch name
 function! GetUniqueSessionName()
   let path = fnamemodify(getcwd(), ':~:t')
   let path = empty(path) ? 'no-project' : path
@@ -1649,8 +1644,10 @@ xmap gn  <plug>(GrepperOperator)
  if has('nvim')
 	" Find files using Telescope command-line sugar.
 	" nnoremap <leader>t :Telescope <CR>
-	nnoremap <space>n <cmd>Telescope find_files<cr>
-	nnoremap fn <cmd>Telescope live_grep<cr>
+	" nnoremap <space>n <cmd>Telescope find_files<cr>
+	nnoremap <space>n <cmd>Telescope git_files<cr>
+	" nnoremap fn <cmd>Telescope live_grep<cr>
+	nnoremap fn <cmd>Telescope grep_string<cr>
 	nnoremap <space>b <cmd>Telescope buffers<cr>
 	" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 endif

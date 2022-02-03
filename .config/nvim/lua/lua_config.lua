@@ -2,6 +2,7 @@
 -- Neovim lua configuration
 -- -------------------------------------------------------------------------- #
 
+vim.opt.termguicolors = true
 -- -------------------------------------------------------------------------- #
 -- --------------------- symbols ------------------------------------------- #
 -- -------------------------------------------------------------------------- #
@@ -136,13 +137,12 @@ local actions = require("telescope.actions")
 require('telescope').setup{
   defaults = {
     vimgrep_arguments = {
-      -- 'rg',
-      'ag',
-      -- '--color=never',
+      "rg",
+      "--color=never",
       '--no-heading',
       '--with-filename',
-      -- '--line-number',
-      -- '--column',
+      '--line-number',
+      '--column',
       -- '--smart-case'
     },
     mappings = {
@@ -150,25 +150,38 @@ require('telescope').setup{
         ["<esc>"] = actions.close,
       }
     },
-    prompt_prefix = ": ",
-    selection_caret = "➔ ",
+    prompt_prefix = "   ",
+    selection_caret = "  ",
     theme = "dropdown",
     entry_prefix = "  ",
     initial_mode = "insert",
     selection_strategy = "reset",
-    sorting_strategy = "descending",
-    layout_strategy = "vertical",
+    sorting_strategy = "ascending",
+    -- layout_strategy = "vertical",
     layout_config = {
-      horizontal = {mirror = false, },
-      vertical = {mirror = false, }
+      horizontal = {
+        prompt_position = "top",
+        preview_width = 0.55,
+        results_width = 0.8,
+      },
+      vertical = {
+        mirror = false,
+      },
+      width = 0.94,
+      height = 0.80,
+      -- preview_cutoff = 120,
     },
-    file_sorter = require'telescope.sorters'.get_fuzzy_file,
+    -- file_sorter = require'telescope.sorters'.get_fuzzy_file,
+    -- file_sorter = require'telescope.sorters'.get_generic_fuzzy_sorter,
+    -- file_sorter = require'telescope.sorters'.get_fzy_sorter,
     file_ignore_patterns = {
       '.pyc',
       '.pyi',
       'venv/.*',
-      'site-packages/.*'
+      'site-packages/.*',
+      'node_modules-packages'
     },
+      path_display = { "truncate" },
     generic_sorter = require'telescope.sorters'.get_generic_fuzzy_sorter,
     winblend = 0,
     -- width = 0.75,
@@ -177,17 +190,29 @@ require('telescope').setup{
     -- results_width = 0.8,
     border = {},
     borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+      -- borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
     color_devicons = true,
-    use_less = false,
-    -- set_env = { ['COLORTERM'] = 'truecolor' },
+    use_less = true,
+    -- use_less = false,
+    set_env = { ["COLORTERM"] = "truecolor" }, -- default = nil,
     -- default = nil,
     file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
     grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
     qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
-    -- Developer configurations: Not meant for general overridebuffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
+    -- Developer configurations: Not meant for general override
+    buffer_previewer_maker = require("telescope.previewers").buffer_previewer_maker,
   }
 }
 
+-- -------------------------------------------------------------------------- #
+--  ----------------- blankline indent -------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('indent_blankline').setup{
+    buftype_exclude = { "terminal" },
+    filetype_exclude = { "dashboard" },
+    enabled = true,
+    -- space_char_blankline = "",
+}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- kommentary -------------------------------------------- #
@@ -211,8 +236,12 @@ require('Comment').setup(
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-textobjects -------------------------------- #
 -- -------------------------------------------------------------------------- #
-require "nvim-treesitter"
 require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = true,
+  },
   textobjects = {
     move = {
       enable = true,
@@ -1488,3 +1517,55 @@ require('cokeline').setup({
 --     },
 --   },
 -- })
+
+-- --------------------------------------------------------------
+-- notify
+-- --------------------------------------------------------------
+-- local present, Popup = pcall(require, "nui.popup")
+-- if not present then return end
+--
+-- local M = {}
+-- local default_width = 30
+-- local default_height = 2
+--
+-- local note = Popup({
+--   enter = false,
+--   focusable = false,
+--   position = { row = 1,  col = "100%" },
+--   border = { style = "none", padding = { 1, 2 } },
+--   size = { width = default_width, height = default_height },
+--   buf_options = {
+--     modifiable = true,
+--     readonly = false,
+--   },
+-- })
+--
+-- local notify = function(title, content, dismiss, type, width, height)
+--   local heading = title
+--   local body = content
+--
+--   local size = { width = width and width or default_width, height = height and height or default_height }
+--
+--   note:set_size(size)
+--
+--   if (string.len(title) > size.width) then
+--     heading = '...'..string.sub(title, -1*(size.width-3))
+--   end
+--
+--   if (string.len(content) > size.width) then
+--     body = '...'..string.sub(content, -1*(size.width-3))
+--   end
+--
+--   note:mount()
+--   vim.defer_fn(function() note:unmount() end, dismiss or 2000)
+--   vim.api.nvim_buf_set_lines(note.bufnr, 0, 2, false, { heading, body })
+--   vim.api.nvim_buf_add_highlight(note.bufnr, -1, type, 0, 0, size.width)
+--   vim.api.nvim_buf_add_highlight(note.bufnr, -1, 'NotifyBody', 1, 0, size.width)
+-- end
+--
+-- M.info = function(title, content, dismiss, width, height) notify(title, content, dismiss, 'NotifyInfo', width, height) end
+-- M.error = function(title, content, dismiss, width, height) notify(title, content, dismiss, 'NotifyError', width, height) end
+-- M.success = function(title, content, dismiss, width, height) notify(title, content, dismiss, 'NotifySuccess', width, height) end
+-- vim.notify = M
+--
+-- return M
