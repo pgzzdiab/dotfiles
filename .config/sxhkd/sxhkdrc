@@ -172,4 +172,3 @@ super + {Left,Down,Up,Right}
 # XF86Audio{Raise,Lower}Volume
 #     pamixer {-i,-d} 4
 # XF86AudioMute
-

@@ -361,7 +361,7 @@ endif
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> 'c "_
 noremap <Leader>R  :cdo %s//
-noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
+" noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
 " noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
 " noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
 map Q <Nop>                                        " disable entring in ex mode
@@ -506,6 +506,8 @@ call plug#begin(g:plug_install_files)
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
     " Plug 'rcarriga/nvim-notify'
+    Plug 'windwp/nvim-autopairs'
+    Plug 'LudoPinelli/comment-box.nvim'
     Plug 'mcauley-penney/tidy.nvim'
     Plug 'ojroques/nvim-bufdel'
     Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
@@ -524,7 +526,6 @@ if has('nvim')
     Plug 'neovim/nvim-lsp'                           " lsp configuration
     Plug 'neovim/nvim-lspconfig'                     " lsp configuration
     Plug 'williamboman/nvim-lsp-installer'         " nvim-lspconfig companion
-    " Plug 'simrat39/symbols-outline.nvim'
     Plug 'hrsh7th/nvim-cmp'                          " completion plugin
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-nvim-lua'
@@ -539,13 +540,12 @@ if has('nvim')
     Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
     Plug 'SmiteshP/nvim-gps'
     Plug 'ggandor/lightspeed.nvim'
-    Plug 'TimUntersberger/neogit'                          " git helper
     Plug 'numToStr/Comment.nvim'
 
     " -------------------------------------------------------------------------- #
     " ------------------ theming ----------------------------------------------- #
     " -------------------------------------------------------------------------- #
-    Plug 'rmagatti/igs.nvim'                               " git helper
+    " Plug 'rmagatti/igs.nvim'                               " git helper
     Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
     Plug 'sindrets/diffview.nvim'                          " diffview
@@ -559,7 +559,7 @@ if has('nvim')
     Plug 'lewis6991/spellsitter.nvim'                    " spell checker
 
     " ----------------------------------------------------------------------- "
-    Plug 'glepnir/indent-guides.nvim'                      " indent line
+    " Plug 'glepnir/indent-guides.nvim'                      " indent line
     Plug 'Shougo/denite.nvim'                              " file , buffers manager
     Plug 'ncm2/float-preview.nvim/'
     Plug 'vijaymarupudi/nvim-fzf'                          " fzf
@@ -701,7 +701,8 @@ if has('nvim')
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
   " Plug 'windwp/floatline.nvim'
-  Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
+  Plug 'lukas-reineke/indent-blankline.nvim'
+  " Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
   Plug 'marko-cerovac/material.nvim'
 
   " Plug 'rktjmp/lush.nvim'
@@ -717,7 +718,6 @@ else
   " Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 endif
 
-" Plug 'RRethy/vim-illuminate'
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
 Plug 'camspiers/animate.vim'                           " windows move animation
 " Plug 'psliwka/vim-smoothie'                            " Better scroll
@@ -778,9 +778,27 @@ endif
 " --------------------------------------------------------------
 " blankline indent
 " --------------------------------------------------------------
+" if has('nvim')
+"   let g:indentLine_char = "▎"
+"   let g:indent_blankline_extra_indent_level = -1
+" endif
+
+" --------------------------------------------------------------
+" comment-box
+" --------------------------------------------------------------
 if has('nvim')
-  let g:indentLine_char = "▎"
-  let g:indent_blankline_extra_indent_level = -1
+  " left aligned fixed size box with left aligned text
+  " nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
+  " vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
+
+  " centered adapted box with centered text
+  nnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
+  vnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
+
+  " centered line
+  nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
+  " inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
+
 endif
 
 " if has('nvim')
@@ -998,7 +1016,7 @@ let g:echodoc#enable_at_startup=1
 " --------------------------------------------------------------
 let g:indent_guides_enable_on_vim_startup=1
 let g:indent_guides_guide_size=2
-let g:indent_guides_auto_colors=1
+" let g:indent_guides_auto_colors=1
 let g:indent_guides_color_change_percent = 8
 let g:indent_guides_start_level = 2
 let g:indent_guides_exclude_filetypes = ['help', 'startify']
@@ -1542,6 +1560,11 @@ nmap <silent> gr21 <Plug>(cokeline-focus-21)
 nmap <silent> gr22 <Plug>(cokeline-focus-22)
 nmap <silent> gr23 <Plug>(cokeline-focus-23)
 nmap <silent> gr24 <Plug>(cokeline-focus-24)
+nmap <silent> gr25 <Plug>(cokeline-focus-24)
+nmap <silent> gr26 <Plug>(cokeline-focus-24)
+nmap <silent> gr27 <Plug>(cokeline-focus-24)
+nmap <silent> gr28 <Plug>(cokeline-focus-24)
+nmap <silent> gr29 <Plug>(cokeline-focus-24)
 " Switch the position of the current buffer with the i-th buffer
 nmap <silent> <A-Q> <Plug>(cokeline-switch-1)
 nmap <silent> <A-W> <Plug>(cokeline-switch-2)
@@ -1855,8 +1878,8 @@ nnoremap <silent> <M-'> :ArgWrap<CR><Esc>
 " vim-textobj-entire
 " -------------------------------------------------------------------------- "
 
-nmap ae <plug>(textobj-entire-a)
-nmap <leader>ae <plug>(textobj-entire-i)
+" nmap ae <plug>(textobj-entire-a)
+" nmap <leader>ae <plug>(textobj-entire-i)
 
 " -------------------------------------------------------------------------- "
 " submersive
@@ -2022,6 +2045,7 @@ endif
 
 if has('nvim')
     " colorscheme ayu
+    colorscheme kanagawa
 else
     colorscheme material
     let $BAT_THEME='material'
@@ -2062,7 +2086,8 @@ endif
 " ------------------- column limit ---------------------------------------- "
 " ------------------------------------------------------------------------- "
 " highlight ColorColumn guibg= #213B47
- set colorcolumn=80"
+" set colorcolumn=80
+set colorcolumn=90
 
 " ------------------------------------------------------------------------- "
 " ------------------- folding --------------------------------------------- "

@@ -3,6 +3,7 @@
 -- -------------------------------------------------------------------------- #
 
 vim.opt.termguicolors = true
+
 -- -------------------------------------------------------------------------- #
 -- --------------------- symbols ------------------------------------------- #
 -- -------------------------------------------------------------------------- #
@@ -207,12 +208,19 @@ require('telescope').setup{
 -- -------------------------------------------------------------------------- #
 --  ----------------- blankline indent -------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('indent_blankline').setup{
-    buftype_exclude = { "terminal" },
-    filetype_exclude = { "dashboard" },
-    enabled = true,
+-- require('indent_blankline').setup{
+  --   buftype_exclude = { "terminal" },
+    -- filetype_exclude = { "dashboard" },
+   --  enabled = true,
     -- space_char_blankline = "",
+-- }
+require("indent_blankline").setup {
+    -- for example, context is off by default, use this to turn it on
+    show_current_context = true,
+    show_current_context_start = true,
+    -- show_end_of_line = true,
 }
+
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- kommentary -------------------------------------------- #
@@ -232,84 +240,6 @@ require('Comment').setup(
     --     block = 'gb',
     -- },
 )
-
--- -------------------------------------------------------------------------- #
---  ----------------- treesitter-textobjects -------------------------------- #
--- -------------------------------------------------------------------------- #
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = true,
-  },
-  textobjects = {
-    move = {
-      enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
-      goto_next_start = {
-        ["mj"] = "@function.outer",
-        ["]]"] = "@class.outer",
-        ["qj"] = "@conditional.outer",
-        ["'j"] = "@loop.outer",
-        -- ["cj"] = "@comment.outer",
-      },
-      goto_next_end = {
-        ["Mj"] = "@function.outer",
-        ["]["] = "@class.outer",
-        -- ["cJ"] = "@comment.outer",
-      },
-      goto_previous_start = {
-        ["mk"] = "@function.outer",
-        ["[["] = "@class.outer",
-        ["qk"] = "@conditional.outer",
-        ["'k"] = "@loop.outer",
-        -- ["ck"] = "@comment.outer",
-      },
-      goto_previous_end = {
-        ["Mk"] = "@function.outer",
-        -- ["[]"] = "@class.outer",
-        -- ["cK"] = "@comment.outer",
-      },
-    },
-    -- swap = {
-    --   enable = true,
-    --   swap_next = {
-    --     ["<leader>a"] = "@parameter.inner",
-    --   },
-    --   swap_previous = {
-    --     ["<leader>A"] = "@parameter.inner",
-    --   },
-    -- },
-    select = {
-      enable = true,
-
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
-
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        -- ["ac"] = "@class.outer",
-        ["ic"] = "@class.inner",
-        ["qa"] = "@conditional.outer",
-        ["'a"] = "@loop.outer",
-        -- ["cc"] = "@comment.outer",
-
-
-      },
-    },
-  },
-  -- indent = {
-    -- enable = true
-  -- },
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-    colors = {'#FFCC00', '#82AAFF', '#fe8019'},
-  },
-
-}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- nvim-cmp ---------------------------------------------- #
@@ -665,26 +595,6 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 --]]
 
 -- -------------------------------------------------------------------------- #
---  ----------------- hop ----------------------------------------------- #
--- -------------------------------------------------------------------------- #
-
--- require'hop'.setup()
--- vim.api.nvim_set_keymap('n', 'fj', "<cmd>lua require'hop'.hint_words()<cr>", {})
--- vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char2()<cr>", {})
--- vim.api.nvim_set_keymap('n', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
--- vim.api.nvim_set_keymap('n', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
--- vim.api.nvim_set_keymap('o', 'fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
--- vim.api.nvim_set_keymap('o', 'Fl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false, inclusive_jump = true })<cr>", {})
--- vim.api.nvim_set_keymap('', 'tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
--- vim.api.nvim_set_keymap('', 'Tl', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
-
-
--- -------------------------------------------------------------------------- #
---  ----------------- lspkind ----------------------------------------------- #
--- -------------------------------------------------------------------------- #
--- require('lspkind').init()
-
--- -------------------------------------------------------------------------- #
 --  ----------------- lsp signature ----------------------------------------- #
 -- -------------------------------------------------------------------------- #
 -- cfg = {
@@ -710,12 +620,6 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 -- require'lsp_signature'.on_attach(cfg)
 
 
-
--- -------------------------------------------------------------------------- #
---  ----------------- neogit -------------------------------------------- "
--- -------------------------------------------------------------------------- #
-require('neogit').setup {}
-
 -- -------------------------------------------------------------------------- #
 --  ----------------- lightspeed -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
@@ -724,26 +628,6 @@ require'lightspeed'.setup {
   ignore_case = true,
   repeat_ft_with_target_char = true,
 }
-
---
--- -------------------------------------------------------------------------- #
---  ----------------- illuminate -------------------------------------------- "
--- -------------------------------------------------------------------------- #
--- require'lspconfig'.pyright.setup{
---   on_attach = function(client)
---       require 'illuminate'.on_attach(client)
---     end,
--- }
-
--- -------------------------------------------------------------------------- #
--- LSP color -----------------------------------------------------------------
--- -------------------------------------------------------------------------- #
--- require("lsp-colors").setup({
---   Error = "#db4b4b",
---   Warning = "#e0af68",
---   Information = "#0db9d7",
---   Hint = "#10B981"
--- })
 
 -- -------------------------------------------------------------------------- #
 -- trouble ------------------------------------------------------------------ #
@@ -787,14 +671,10 @@ require("trouble").setup {
     -- lsp_blacklist = {}
 }
 
-
-
-
 -- -------------------------------------------------------------------------- #
 -- ---------------- colorizer ----------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require('colorizer').setup()
-
 
 ---------------------------------------------------------------------------------
 ---- nvim-bufferline
@@ -807,26 +687,6 @@ require('colorizer').setup()
 --			mappings = true,
 --			buffer_close_icon= "",
 --			modified_icon = "●",
-
--- -------------------------------------------------------------------------- #
--- symbol lsp --------------------------------------------------------------- #
--- -------------------------------------------------------------------------- #
--- vim.g.symbols_outline = {
---     highlight_hovered_item = false,
---     show_guides = true,
---     auto_preview = false, -- experimental
---     position = 'right',
---     keymaps = {
---         close = "<Esc>",
---         goto_location = "<Cr>",
---         focus_location = "o",
---         hover_symbol = "<C-space>",
---         rename_symbol = "r",
---         code_actions = "a",
---     },
---     lsp_blacklist = {},
--- }
-
 
 -------------------------------------------------------------------------------
 -- LUA TREE
@@ -954,9 +814,9 @@ require('kanagawa').setup({
     undercurl = true,           -- enable undercurls
     -- commentStyle = "italic",
     -- functionStyle = "NONE",
-    keywordStyle = "italic",
-    statementStyle = "bold",
-    typeStyle = "NONE",
+    -- keywordStyle = "italic",
+    -- statementStyle = "bold",
+    -- typeStyle = "NONE",
     variablebuiltinStyle = "italic",
     specialReturn = true,       -- special highlight for the return keyword
     specialException = true,    -- special highlight for exception handling keywords
@@ -968,9 +828,8 @@ require('kanagawa').setup({
       Search = {fg = '#7CB0E6', bg = '#33415E'},
     },
 })
-
 -- setup must be called before loading
-vim.cmd("colorscheme kanagawa")
+-- vim.cmd("colorscheme kanagawa")
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- material ----------------------------------------------- #
@@ -1062,12 +921,12 @@ require('gitsigns').setup()
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<igs\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('igs').setup {
-  debug = false, -- print debug logs
-  log_level = "info", -- log level for igs
-  run_copen = true, -- run copen after qf commands
-  default_mappings = false, -- set default mappings
-}
+-- require('igs').setup {
+--   debug = false, -- print debug logs
+--   log_level = "info", -- log level for igs
+--   run_copen = true, -- run copen after qf commands
+--   default_mappings = false, -- set default mappings
+-- }
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
@@ -1107,13 +966,11 @@ basic.file = {
     },
     text = function()
         return {
-            -- { sep.left_rounded, state.mode[2] .. 'Before' },
             { sep.left_rounded, 'sep_before' },
             {b_components.cache_file_icon({ default = '' }), 'text'},
             { ' ', 'text' },
             { b_components.cache_file_name('[No Name]', 'text') },
             { b_components.file_modified(' ')},
-            -- { b_components.cache_file_size()},
             { sep.right_rounded, 'sep_after'},
         }
     end,
@@ -1141,11 +998,7 @@ basic.gps = {
     text = function()
       if require("nvim-gps").is_available() then
         if (require("nvim-gps").get_location() == "") then
-          return {
-            -- { sep.left_rounded, 'sep_before' },
-            -- {"📡", 'text'},
-            -- { sep.right_rounded, 'sep_after'},
-          }
+          return { }
         else
           return {
             { sep.left_rounded, 'sep_before' },
@@ -1154,11 +1007,7 @@ basic.gps = {
           }
         end
       else
-        return {
-          -- { sep.left_rounded, 'sep_before' },
-          -- {"📡", 'text'},
-          -- { sep.right_rounded, 'sep_after'},
-        }
+        return { }
       end
     end
 }
@@ -1199,21 +1048,15 @@ local default = {
         { ' ', hl_list.NormalBg },
         basic.gps,
         { ' ', hl_list.NormalBg },
-        -- { ' ', hl_list.NormalBg },
         basic.divider,
         basic.file,
         basic.git_branch,
         { ' ', hl_list.NormalBg },
-        -- { ' ', hl_list.NormalBg },
         { ' ', hl_list.NormalBg },
     },
     inactive = {
         basic.file_inac,
         basic.divider,
-        -- basic.divider,
-        -- basic.line_col_inactive,
-        -- { '', hl_list.Inactive },
-        -- basic.progress_inactive,
     },
 }
 
@@ -1221,7 +1064,6 @@ local quickfix = {
     filetypes = { 'qf', 'Trouble' },
     active = {
         { ' Quickfix ', { 'NormalFg', 'NormalBg' } },
-        -- { helper.separators.slant_right, { 'NormalBg', 'black_light' } },
         { sep.left_rounded, { 'NormalFg', 'NormalBg' } },
         {
             function()
@@ -1230,11 +1072,9 @@ local quickfix = {
             { 'NormalBg', 'NormalFg' },
         },
         { ' Total : %L ', { 'NormalBg', 'NormalFg' } },
-        -- { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
         { sep.right_rounded, { 'NormalFg', 'NormalBg' } },
         { ' ', { 'NormalFg', 'NormalBg' } },
         basic.divider,
-        -- { helper.separators.slant_right, { 'InactiveBg', 'NormalBg' } },
     },
     always_active = true,
     show_last_status = true
@@ -1262,6 +1102,16 @@ windline.setup({
     },
 })
 
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- comment box -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+require('comment-box').setup({
+	-- doc_width = 80, -- width of the document
+	-- box_width = 60, -- width of the boxes
+  outer_blank_lines = true, -- insert a blank line above and below the box
+  inner_blank_lines = false, -- insert a blank line above and below the text
+})
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- cokeline -------------------------------------------- "
@@ -1569,3 +1419,121 @@ require('cokeline').setup({
 -- vim.notify = M
 --
 -- return M
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- treesitter-textobjects -------------------------------- #
+-- -------------------------------------------------------------------------- #
+require'nvim-treesitter.configs'.setup {
+
+  ensure_installed = "maintained",
+
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+
+  textobjects = {
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        ["mj"] = "@function.outer",
+        ["]]"] = "@class.outer",
+        ["qj"] = "@conditional.outer",
+        ["'j"] = "@loop.outer",
+        -- ["cj"] = "@comment.outer",
+      },
+      goto_next_end = {
+        ["Mj"] = "@function.outer",
+        ["]["] = "@class.outer",
+        -- ["cJ"] = "@comment.outer",
+      },
+      goto_previous_start = {
+        ["mk"] = "@function.outer",
+        ["[["] = "@class.outer",
+        ["qk"] = "@conditional.outer",
+        ["'k"] = "@loop.outer",
+        -- ["ck"] = "@comment.outer",
+      },
+      goto_previous_end = {
+        ["Mk"] = "@function.outer",
+        -- ["[]"] = "@class.outer",
+        -- ["cK"] = "@comment.outer",
+      },
+    },
+    -- swap = {
+    --   enable = true,
+    --   swap_next = {
+    --     ["<leader>a"] = "@parameter.inner",
+    --   },
+    --   swap_previous = {
+    --     ["<leader>A"] = "@parameter.inner",
+    --   },
+    -- },
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        -- ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["qa"] = "@conditional.outer",
+        ["'a"] = "@loop.outer",
+        -- ["cc"] = "@comment.outer",
+      },
+    },
+  },
+
+  -- indent = {
+  --   enable = true
+  -- },
+
+  rainbow = {
+    enable = true,
+    extended_mode = true,
+    colors = {'#FFCC00', '#82AAFF', '#fe8019'},
+  },
+
+}
+
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- nvim-autopair ----------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('nvim-autopairs').setup({
+  disable_filetype = { "TelescopePrompt" , "vim" },
+})
+-- local Rule = require('nvim-autopairs.rule')
+-- local npairs = require('nvim-autopairs')
+--
+-- npairs.add_rule(Rule("$$","$$","tex"))
+--
+-- -- you can use some built-in conditions
+--
+-- local cond = require('nvim-autopairs.conds')
+-- print(vim.inspect(cond))
+--
+-- npairs.setup({
+--     check_ts = true,
+--     ts_config = {
+--         lua = {'string'},-- it will not add a pair on that treesitter node
+--         javascript = {'template_string'},
+--         java = false,-- don't check treesitter on java
+--     }
+-- })
+--
+-- local ts_conds = require('nvim-autopairs.ts-conds')
+--
+--
+-- -- press % => %% only while inside a comment or string
+-- npairs.add_rules({
+--   Rule("%", "%", "lua")
+--     :with_pair(ts_conds.is_ts_node({'string','comment'})),
+--   Rule("$", "$", "lua")
+--     :with_pair(ts_conds.is_not_ts_node({'function'}))
+-- })

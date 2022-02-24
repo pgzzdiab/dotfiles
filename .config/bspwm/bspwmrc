@@ -101,7 +101,6 @@ nm-applet &     #network
 # xss-lock --transfer-sleep-lock -- i3lock --nofork
 
 bspc config wm_name LG3D
-bspc rule -a pycharm-community state=floating
 
 # bspc rule -a Gimp desktop='^8' state=floating follow=on
 # bspc rule -a Chromium desktop='^2'
@@ -114,4 +113,7 @@ bspc rule -a pycharm-community state=floating
 # xset fp+ /usr/share/fonts/bitmap &
 
 # made single windows on desktop monocle
-/home/pierre/.config/bspwm/remove_border_only_one_windows.sh
+# /home/pierre/.config/bspwm/remove_border_only_one_windows.sh
+
+# maps capslock to escape
+# xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'

@@ -150,8 +150,8 @@ alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias re="pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten sshk"
-alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-37-215-58.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
-alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-35-181-43-0.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
+alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-38-118-253.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
+alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-38-118-253.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
 
 
 alias icat="kitty +kitten icat"
