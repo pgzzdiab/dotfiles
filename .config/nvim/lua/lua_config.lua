@@ -217,7 +217,7 @@ require('telescope').setup{
 require("indent_blankline").setup {
     -- for example, context is off by default, use this to turn it on
     show_current_context = true,
-    show_current_context_start = true,
+    -- show_current_context_start = true,
     -- show_end_of_line = true,
 }
 
@@ -1493,11 +1493,11 @@ require'nvim-treesitter.configs'.setup {
   --   enable = true
   -- },
 
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-    colors = {'#FFCC00', '#82AAFF', '#fe8019'},
-  },
+  -- rainbow = {
+  --   enable = true,
+  --   extended_mode = false,
+  --   colors = {'#FFCC00', '#82AAFF', '#fe8019'},
+  -- },
 
 }
 

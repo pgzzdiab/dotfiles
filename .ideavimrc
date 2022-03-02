@@ -1,8 +1,8 @@
 set ignorecase                          " ignore caased whern searching
 set incsearch                           " show current search
-set number                 
+set number
 set relativenumber                      " relative line number
-set showmode   
+set showmode
 set smartcase
 set novisualbell
 
@@ -16,7 +16,7 @@ noremap <space> y
 nnoremap <silent> "" "+yiw                         " copy word into clipboard
 nnoremap <silent> "<space> "+yy                    " copy line into clipboard
 
-nnoremap sv *``                                    " search current word under cursor
+" nnoremap sv *``                                    " search current word under cursor
 " map <space> y                                      " <space> is now to copy
 " map ck i\<CR><ESC>                                 " cut linne with an \
 nnoremap ck i"+\"<Esc>hK                           " cut too long string
@@ -48,18 +48,14 @@ noremap <silent> <C-Right> :vertical resize -3<CR>
 noremap <silent> <C-Up>  :resize +3<CR>
 noremap <silent> <C-Down> :resize -3<CR>
 
-
-
-
-
 " ---------------- easymotion ----------------------------------------------- #
 set easymotion                          " Emulate vim-easymotion
-nmap z <Plug>(easymotion-f2)
-nmap Z <Plug>(easymotion-F2)
+nmap s <Plug>(easymotion-f2)
+nmap S <Plug>(easymotion-F2)
 
 " ---------------- NERDTree ------------------------------------------------- #
 set NERDTree
-map <C-n> :NERDTreeToggle<CR>
+map <A-;> :NERDTreeToggle<CR>
 
 " ---------------- surround ------------------------------------------------- #
 set surround                        " Emulate vim-surround
@@ -71,10 +67,10 @@ set multiple-cursors
 set commentary
 
 " ---------------- ReplaceWithRegister -------------------------------------- #
-set ReplaceWithRegister 
-nmap s  <Plug>ReplaceWithRegisterOperator
-nmap ss <Plug>ReplaceWithRegisterLine
-xmap s  <Plug>ReplaceWithRegisterVisual
+set ReplaceWithRegister
+nmap o  <Plug>ReplaceWithRegisterOperator
+nmap oo <Plug>ReplaceWithRegisterLine
+xmap o  <Plug>ReplaceWithRegisterVisual
 
 " ---------------- argtextobj ----------------------------------------------- #
 set argtextobj            " Emulate https://www.vim.org/scripts/script.php?script_id=2699
@@ -88,7 +84,7 @@ set textobj-entire         " text object of entire buffer
 " ---------------- textobj-indent ------------------------------------------- #
 set textobj-indent          " motion on indent objects
 
-map \f :action ReformatCode<CR> "ReformatCode
+" map \f :action ReformatCode<CR> "ReformatCode
 
 source ~/.vimrc
 source ~/vimfiles/mappings.vim
