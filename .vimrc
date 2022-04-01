@@ -376,6 +376,18 @@ noremap ' "
 noremap go o
 noremap gO O
 
+
+" In insert mode insert the last searched with <\   /> surrounding
+inoremap <A-a> <c-r>=substitute(@/, '^\%(\\<lt>\)\=\(.\{-}\)\%(\\>\)\=$', '\1', '')<cr>
+
+nnoremap <silent>* :<C-u>call Star()\|set hlsearch<CR>
+function! Star()
+    let @c = expand('<cword>')
+    let @/ = '\<' . @c . '\>'
+    call histadd('/', @/)
+endfunction
+
+
 " Add newlines from normal mode
 " nnoremap <CR> o<Esc>
 " nnoremap <S-cr> O<Esc>
@@ -676,7 +688,7 @@ Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 Plug 'tpope/vim-unimpaired'                            " exchange lines relatively
 Plug 'FooSoft/vim-argwrap'                             " wrap functions args
 Plug 'jeetsukumaran/vim-indentwise'                    " Move to indent
-Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
+" Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
 Plug 'kana/vim-textobj-user'                           " add new text objects
 " Plug 'glts/vim-textobj-comment'                        " comment text object
 Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
@@ -701,8 +713,7 @@ if has('nvim')
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
   " Plug 'windwp/floatline.nvim'
-  Plug 'lukas-reineke/indent-blankline.nvim'
-  " Plug 'qualious/indent-blankline.nvim', {'branch': 'dont_show_sp_ch_if_tabs'}  " show indent on blankline
+  " Plug 'lukas-reineke/indent-blankline.nvim'
   Plug 'marko-cerovac/material.nvim'
 
   " Plug 'rktjmp/lush.nvim'
@@ -710,7 +721,7 @@ if has('nvim')
   " Plug 'Shatur/neovim-ayu'
   Plug 'rebelot/kanagawa.nvim'
 
-  " Plug 'Yggdroot/indentLine'                             " indent guide
+  Plug 'Yggdroot/indentLine'                             " indent guide
   " Plug 'hoob3rt/lualine.nvim'                          " statusbar
   " Plug 'famiu/feline.nvim'                               " statusbar
   " Plug 'romgrk/barbar.nvim'                              " bufferline
@@ -778,10 +789,10 @@ endif
 " --------------------------------------------------------------
 " blankline indent
 " --------------------------------------------------------------
-" if has('nvim')
-"   let g:indentLine_char = "▎"
-"   let g:indent_blankline_extra_indent_level = -1
-" endif
+if has('nvim')
+  let g:indentLine_char = "▎"
+  let g:indentLine_conceallevel = 2
+endif
 
 " --------------------------------------------------------------
 " comment-box
@@ -867,7 +878,7 @@ au BufEnter *.cc let b:fswitchdst = "h,hpp"
 au BufEnter *.h let b:fswitchdst = 'c,cpp,m,cc' | let b:fswitchlocs = 'reg:|include.*|src/**|'
 nnoremap <silent> <leader>F :FSHere<cr>
 " Extra hotkeys to open header/source in the split
-nnoremap <silent> <localleader>oh :FSSplitLeft<cr>
+nnoremap <silent> <localleader>oh :FSSprlitLeft<cr>
 nnoremap <silent> <localleader>oj :FSSplitBelow<cr>
 nnoremap <silent> <localleader>ok :FSSplitAbove<cr>
 nnoremap <silent> <localleader>ol :FSSplitRight<cr>
@@ -1014,12 +1025,12 @@ let g:echodoc#enable_at_startup=1
 " --------------------------------------------------------------
 " ------------------------- Indent  ----------------------------------------- "
 " --------------------------------------------------------------
-let g:indent_guides_enable_on_vim_startup=1
-let g:indent_guides_guide_size=2
-" let g:indent_guides_auto_colors=1
-let g:indent_guides_color_change_percent = 8
-let g:indent_guides_start_level = 2
-let g:indent_guides_exclude_filetypes = ['help', 'startify']
+" let g:indent_guides_enable_on_vim_startup=1
+" let g:indent_guides_guide_size=2
+" l let g:indent_guides_auto_colors=1
+" let g:indent_guides_color_change_percent = 8
+" let g:indent_guides_start_level = 2
+" let g:indent_guides_exclude_filetypes = ['help', 'startify']
 
 " --------------------------------------------------------------
 " alpha dll
@@ -1599,6 +1610,7 @@ nnoremap <leader>ga :Git add -u<CR>
 nnoremap <leader>gs :Git status<CR>
 nnoremap <leader>gm :Git commit<CR>
 nnoremap <leader>gp :Git pull<CR>
+nnoremap <leader>gg :Git push<CR>
 nnoremap <leader>gc :Git checkout <C-r>+
 "
 " --------------------------------------------------------------------------
@@ -1615,7 +1627,8 @@ nnoremap <leader>gc :Git checkout <C-r>+
 " nnoremap <silent> gl <cmd>lua lua vim.lsp.diagnostic.set_loclist()<CR>
 " " nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
 nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.definition()<cr>
-nnoremap <silent> <space>s <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
+nnoremap <silent> <space>s :split \| lua vim.lsp.buf.definition()<cr>
+nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
 
 " --------------------------------------------------------------------------
 " -- Lspsaga
@@ -1672,7 +1685,14 @@ xmap gn  <plug>(GrepperOperator)
 	" nnoremap fn <cmd>Telescope live_grep<cr>
 	nnoremap fn <cmd>Telescope grep_string<cr>
 	nnoremap <space>b <cmd>Telescope buffers<cr>
+	nnoremap <space>/ <cmd>lua require('telescope.builtin').search_history()<cr>
+	nnoremap <space>m <cmd>lua require('telescope.builtin').marks()<cr>
+	nnoremap x <cmd>lua require('telescope.builtin').treesitter()<cr>
+
+	" nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+
 	" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+	nnoremap <leader>tf :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>
 endif
 
 " " --------------------------------------------------------------------------
@@ -2059,7 +2079,7 @@ set background=dark
 
 set cursorline                               " Highlight current line
 " hi CursorLine guibg=#0D1016
-hi TabLineFill guibg=#0D1016
+" hi TabLineFill guibg=#0D1016
 
 " -------------------------------------------------------------
 "  vim sneak

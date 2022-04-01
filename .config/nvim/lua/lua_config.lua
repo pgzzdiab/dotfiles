@@ -158,19 +158,25 @@ require('telescope').setup{
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "ascending",
-    -- layout_strategy = "vertical",
+    layout_strategy = "center",
+    -- pickers = {
+    --     git_files = {
+    --       theme = "dropdown",
+    --     }
+    -- },
     layout_config = {
-      horizontal = {
-        prompt_position = "top",
-        preview_width = 0.55,
-        results_width = 0.8,
-      },
-      vertical = {
-        mirror = false,
-      },
-      width = 0.94,
+      -- horizontal = {
+      --   prompt_position = "top",
+      --   preview_width = 0.55,
+      --   results_width = 0.8,
+      -- },
+      -- vertical = {
+      --   mirror = false,
+      -- },
+      -- vertical = {width = 0.94},
+      width = 0.80,
       height = 0.80,
-      -- preview_cutoff = 120,
+      preview_cutoff = 120,
     },
     -- file_sorter = require'telescope.sorters'.get_fuzzy_file,
     -- file_sorter = require'telescope.sorters'.get_generic_fuzzy_sorter,
@@ -182,7 +188,7 @@ require('telescope').setup{
       'site-packages/.*',
       'node_modules-packages'
     },
-      path_display = { "truncate" },
+     path_display = { "truncate" },
     generic_sorter = require'telescope.sorters'.get_generic_fuzzy_sorter,
     winblend = 0,
     -- width = 0.75,
@@ -208,18 +214,16 @@ require('telescope').setup{
 -- -------------------------------------------------------------------------- #
 --  ----------------- blankline indent -------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require('indent_blankline').setup{
-  --   buftype_exclude = { "terminal" },
-    -- filetype_exclude = { "dashboard" },
-   --  enabled = true,
-    -- space_char_blankline = "",
+-- require("indent_blankline").setup {
+--     -- space_char_blankline = " ",
+--     show_trailing_blankline_indent = false,
+--     show_current_context = false,
+--     show_current_context_start = false,
+--     show_end_of_line = false,
+--     use_treesitter = false,
+--     filetype_exclude = { "help", "terminal", "packer", "NvimTree" },
+--     buftype_exclude = { "terminal" },
 -- }
-require("indent_blankline").setup {
-    -- for example, context is off by default, use this to turn it on
-    show_current_context = true,
-    -- show_current_context_start = true,
-    -- show_end_of_line = true,
-}
 
 
 -- -------------------------------------------------------------------------- #
@@ -820,11 +824,15 @@ require('kanagawa').setup({
     variablebuiltinStyle = "italic",
     specialReturn = true,       -- special highlight for the return keyword
     specialException = true,    -- special highlight for exception handling keywords
-    transparent = false,        -- do not set background color
+    transparent = true,        -- do not set background color
     colors = {},
     overrides = {
       -- override existing hl-groups, the new keywords are merged with existing ones
-      -- VertSplit  = { fg = default_colors.bg_dark, bg = "NONE" },
+      VertSplit  = {
+        -- fg = '#2D4F67',
+        fg = '#2A2A37',
+        bg = "NONE"
+      },
       Search = {fg = '#7CB0E6', bg = '#33415E'},
     },
 })
@@ -1120,42 +1128,42 @@ local get_hex = require('cokeline/utils').get_hex
 --
 require('cokeline').setup({
   default_hl = {
-    focused = {
-      fg = get_hex('Normal', 'fg'),
-      bg = "none",
-    },
-    unfocused = {
-      fg = get_hex('Comment', 'fg'),
-      bg = "none",
-    },
+    bg = get_hex('Normal', 'fg'),
+    fg = "#1F2430",
+--    focused = {
+--    },
+--    unfocused = {
+--      fg = get_hex('Comment', 'fg'),
+--      bg = "none",
+--    },
   },
 
   components = {
     {
-      text = '',
-      hl = {
-          bg = function(buffer)
-              if (buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              elseif buffer.is_focused then
-                  return "#CBCCC6"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#575F66"
-              else
-                  return "#1F2430"
-              end
-          end,
-          fg = function(buffer)
-              if buffer.is_focused then
-                  return "#1F2430"
-              else
-                  return "#1F2430"
-              end
-              if buffer.is_modified then
-                  return "#BAE67E"
-              end
-          end,
-      },
+      text = '',
+      -- hl = {
+      fg = function(buffer)
+          if (buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          elseif buffer.is_focused then
+              return "#CBCCC6"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#575F66"
+          else
+              return "#1F2430"
+          end
+      end,
+      bg = function(buffer)
+          if buffer.is_focused then
+              return "#1F2430"
+          else
+              return "#1F2430"
+          end
+          if buffer.is_modified then
+              return "#BAE67E"
+          end
+      end,
+      -- },
     },
     {
       text = function(buffer)
@@ -1172,93 +1180,87 @@ require('cokeline').setup({
         end
       end,
 
-      hl = {
-          bg = function(buffer)
-              if (buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              elseif buffer.is_focused then
-                  return "#CBCCC6"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#575F66"
-              else
-                  return "#1F2430"
-              end
-          end,
-          fg = function(buffer)
-              if buffer.is_focused then
-                  return "#1F2430"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              else
-                  return "#707A8C"
-              end
-              if buffer.is_modified then
-                  return "#BAE67E"
-              end
-          end,
-      },
+      -- hl = {
+      bg = function(buffer)
+          if (buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          elseif buffer.is_focused then
+              return "#CBCCC6"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#575F66"
+          else
+              return "#1F2430"
+          end
+      end,
+      fg = function(buffer)
+          if buffer.is_focused then
+              return "#1F2430"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          else
+              return "#707A8C"
+          end
+          if buffer.is_modified then
+              return "#BAE67E"
+          end
+      end,
+      -- },
     },
     {
       text = function(buffer) return buffer.unique_prefix end,
-      hl = {
-          bg = function(buffer)
-              if buffer.is_modified then
-                  return "#BAE67E"
-              elseif buffer.is_focused then
-                  return "#CBCCC6"
-              else
-                  return "#1F2430"
-              end
-          end,
-          fg = function(buffer)
-              if buffer.is_focused then
-                  return "#1F2430"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              else
-                  return "#707A8C"
-              end
-              if buffer.is_modified then
-                  return "#BAE67E"
-              end
-          end,
-      },
+      -- hl = {
+      bg = function(buffer)
+          if buffer.is_modified then
+              return "#BAE67E"
+          elseif buffer.is_focused then
+              return "#CBCCC6"
+          else
+              return "#1F2430"
+          end
+      end,
+      fg = function(buffer)
+          if buffer.is_focused then
+              return "#1F2430"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          else
+              return "#707A8C"
+          end
+          if buffer.is_modified then
+              return "#BAE67E"
+          end
+      end,
+      -- },
     },
-    -- {
-    --   text = function(buffer) return buffer.filename .. '' end,
-    --   hl = {
-    --     style = function(buffer) return buffer.is_focused and 'bold' or nil end,
-    --   },
-    -- },
     {
       text = function(buffer)
           return buffer.filename .. ' '
       end,
-      hl = {
-          bg = function(buffer)
-              if (buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              elseif buffer.is_focused then
-                  return "#CBCCC6"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#575F66"
-              else
-                  return "#1F2430"
+      -- hl = {
+      bg = function(buffer)
+          if (buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          elseif buffer.is_focused then
+              return "#CBCCC6"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#575F66"
+          else
+              return "#1F2430"
+          end
+      end,
+      fg = function(buffer)
+          if buffer.is_focused then
+              return "#1F2430"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          else
+              return "#707A8C"
+          end
+          if buffer.is_modified then
+              return "#BAE67E"
               end
-          end,
-          fg = function(buffer)
-              if buffer.is_focused then
-                  return "#1F2430"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              else
-                  return "#707A8C"
-              end
-              if buffer.is_modified then
-                  return "#BAE67E"
-              end
-          end,
-      }
+      end,
+      -- }
     },
     {
       text = function(buffer)
@@ -1270,61 +1272,62 @@ require('cokeline').setup({
         end
           return ""
       end,
-      hl = {
-          bg = function(buffer)
-              if (buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              elseif buffer.is_focused then
-                  return "#CBCCC6"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#575F66"
-              else
-                  return "#1F2430"
-              end
-          end,
-          fg = function(buffer)
-              if buffer.is_focused then
-                  return "#1F2430"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              else
-                  return "#707A8C"
-              end
-              if buffer.is_modified then
-                  return "#BAE67E"
-              end
-          end,
-      }
+      -- hl = {
+      bg = function(buffer)
+          if (buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          elseif buffer.is_focused then
+              return "#CBCCC6"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#575F66"
+          else
+              return "#1F2430"
+          end
+      end,
+      fg = function(buffer)
+          if buffer.is_focused then
+              return "#1F2430"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          else
+              return "#707A8C"
+          end
+          if buffer.is_modified then
+              return "#BAE67E"
+          end
+      end,
+      -- }
     },
     {
-      text = '',
+      text = '',
+      -- text = '',
       -- content = "%{T3}%{T-}"
       -- content = "%{T3}%{T-}"
       -- content = "%{T3}%{T-}"
       -- content = "%{T3}%{T-}"
-      hl = {
-          bg = function(buffer)
-              if (buffer.is_focused and buffer.is_modified) then
-                  return "#BAE67E"
-              elseif buffer.is_focused then
-                  return "#CBCCC6"
-              elseif (not buffer.is_focused and buffer.is_modified) then
-                  return "#575F66"
-              else
-                  return "#1F2430"
-              end
-          end,
-          fg = function(buffer)
-              if buffer.is_focused then
-                  return "#1F2430"
-              else
-                  return "#1F2430"
-              end
-              if buffer.is_modified then
-                  return "#BAE67E"
-              end
-          end,
-      },
+      -- hl = {
+      fg = function(buffer)
+          if (buffer.is_focused and buffer.is_modified) then
+              return "#BAE67E"
+          elseif buffer.is_focused then
+              return "#CBCCC6"
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return "#575F66"
+          else
+              return "#1F2430"
+          end
+      end,
+      bg = function(buffer)
+          if buffer.is_focused then
+              return "#1F2430"
+          else
+              return "#1F2430"
+          end
+          if buffer.is_modified then
+              return "#BAE67E"
+          end
+      end,
+      -- },
     },
   },
 })

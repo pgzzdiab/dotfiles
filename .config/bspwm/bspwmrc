@@ -26,7 +26,8 @@ bspc config border_width     1
 bspc config top_padding      -10
 bspc config right_padding    -10
 bspc config left_padding     -10
-bspc config bottom_padding   -16
+bspc config bottom_padding   -10
+# bspc config bottom_padding   -16
 
 bspc config window_gap       10
 
@@ -81,18 +82,20 @@ xset r rate 120 150
 # ~/.config/bspwm/scripts/dborders.sh &
 
 # background
-# feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg
+# hsetroot -solid "#ffffff" &
+feh --bg-scale ~/Pictures/macos-monterey-stock-red-dark-mode-layers-5k-6016x6016-5893.jpg
+# feh feh --bg-center ~/Pictures/Wallpapers/druillet.jpeg --bg-color "#ffffff"
 # hsetroot -solid "#263238" &
 # hsetroot -solid "#1F2430" &
-hsetroot -solid "#000000" &
 # hsetroot -solid "#E82424" &
+hsetroot -solid "#000000" &
 
 # poolybaaaaaar
-~/.config/polybar/launch.sh &
+# ~/.config/polybar/launch.sh &
 #network
 nm-applet &     #network
 # compositor
-# picom -b --experimental-backends &
+picom -b --experimental-backends &
 
 # conky
 # .config/scripts/launch_conky.sh
@@ -117,3 +120,4 @@ bspc config wm_name LG3D
 
 # maps capslock to escape
 # xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+# /home/pierre/.config/startup/startup/mystart

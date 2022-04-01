@@ -152,8 +152,7 @@ alias re="pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten sshk"
 alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-38-118-253.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
 # alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-38-128-204.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
-alias getresult="rsync -auvz ubuntu@ec2-13-38-128-204.eu-west-3.compute.amazonaws.com:/home/ubuntu/git/results/algo_validation dev/results/algo_validation/aws"
-
+alias getresult="rsync -avz -e "ssh -i .ssh/sims.pem" ubuntu@ec2-35-180-181-239.eu-west-3.compute.amazonaws.com:/home/ubuntu/git/results/xpAnalysis ~/dev/results/xpAnalysis/aws"
 
 alias icat="kitty +kitten icat"
 alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"

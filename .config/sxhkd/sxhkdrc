@@ -48,6 +48,8 @@ super + x
 super + s
 	~/.config/i3/display.sh
 
+super + a
+	kitty -e alsamixer
 
 # --------------------------------------------------------------------------- #
 # bspwm hotkeys
