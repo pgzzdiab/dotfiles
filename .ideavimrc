@@ -6,6 +6,7 @@ set showmode
 set smartcase
 set novisualbell
 
+
 set ideamarks
 set ideajoin
 
@@ -49,9 +50,10 @@ noremap <silent> <C-Up>  :resize +3<CR>
 noremap <silent> <C-Down> :resize -3<CR>
 
 " ---------------- easymotion ----------------------------------------------- #
-set easymotion                          " Emulate vim-easymotion
-nmap s <Plug>(easymotion-f2)
-nmap S <Plug>(easymotion-F2)
+set sneak
+" set easymotion                          " Emulate vim-easymotion
+" nmap s <Plug>(easymotion-f2)
+" nmap S <Plug>(easymotion-F2)
 
 " ---------------- NERDTree ------------------------------------------------- #
 set NERDTree
@@ -61,7 +63,7 @@ map <A-;> :NERDTreeToggle<CR>
 set surround                        " Emulate vim-surround
 
 " ---------------- multiple-cursors ----------------------------------------- #
-set multiple-cursors
+" set multiple-cursors
 
 " ---------------- commentary ----------------------------------------------- #
 set commentary
@@ -79,18 +81,18 @@ set argtextobj            " Emulate https://www.vim.org/scripts/script.php?scrip
 " set exchange              " Emulate vim-exchange
 
 " ---------------- textobj-entire ------------------------------------------- #
-set textobj-entire         " text object of entire buffer
+" set textobj-entire         " text object of entire buffer
 
 " ---------------- textobj-indent ------------------------------------------- #
 set textobj-indent          " motion on indent objects
 
 " map \f :action ReformatCode<CR> "ReformatCode
 
-source ~/.vimrc
-source ~/vimfiles/mappings.vim
-source ~/vimfiles/plugin.vim
-source ~/vimfiles/mapppings_plugin.vim
-source ~/vimfiles/colors/colors.vim
+
+
+
+
+
 
 "
 " Actions
@@ -113,7 +115,143 @@ vnoremap == :action ReformatCode<CR>
 " nnoremap cc :action CommentByLineComment<CR>
 " vnoremap cc :action CommentByLineComment<CR>
 
-nnoremap <C-CR> :action ShowIntentionActions<CR>
+" nnoremap <C-CR> :action ShowIntentionActions<CR>
+nnoremap <C-CR> :action OpenEditorInOppositeTabGroup<CR>
+
 
 nnoremap ,a :action GotoAction<CR>
 vnoremap ,a :action GotoAction<CR>
+
+
+" ---------------------------------------------------------------------- #
+" ---------------------------------------------------------------------- #
+" ---------------------------------------------------------------------- #
+" ---------------------------------------------------------------------- #
+
+								FROM VIMRC
+
+" ---------------------------------------------------------------------- #
+" ---------------------------------------------------------------------- #
+" ---------------------------------------------------------------------- #
+" ---------------------------------------------------------------------- #
+
+" -------------------------------------------------------------
+"  ALt key activation
+"  -----------------------------------------------------------
+" if has('nvim')
+" else
+"	execute "set <M-f>=\ef"
+"	execute "set <M-'>=\e'"
+" endif
+nnoremap <silent> vv <C-w>v
+nnoremap <silent> 'c "_
+noremap <Leader>R  :cdo %s//
+" noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
+" noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
+" noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
+map Q <Nop>                                        " disable entring in ex mode
+noremap j gj
+noremap k gk
+noremap <space> y
+noremap tt :tabclose<CR>
+noremap gt :tabnew%<CR><C-o>
+noremap <C-f> :find<space>
+noremap " '
+noremap ' "
+noremap go o
+noremap gO O
+
+" Add newlines from normal mode
+" nnoremap <CR> o<Esc>
+" nnoremap <S-cr> O<Esc>
+
+nnoremap <silent> '' "+yiw                         " copy word into clipboard
+nnoremap <silent> '<space> "+yy                    " copy line into clipboard
+
+
+
+" nnoremap <expr> fs ':%s/'.expand('<cword>').'//gn<CR>``' " search current word under cursor
+nnoremap fj *N
+nnoremap ck i" + \"<Esc>hK                           " cut too long string
+" nnoremap P i<cr><esc>                              " cut line
+:map H ^
+:map L g_
+inoremap <M-f> <Esc>:update<CR>                    " save buffer if changes
+nnoremap <M-f> <Esc><Esc>:update<CR>
+
+noremap fg "+yy
+nnoremap g. /\V<C-r>"<CR>cgn<C-a><Esc>
+" -------------------- quickfix list ----------------------------- #
+" nnoremap <silent> <F5> :copen<cr>
+" nnoremap ]c :cnext<CR>                             " go to next item in quickfix list
+" nnoremap [c :cprev<CR>                             " go to previous item in quickfix list
+
+
+
+"" ---- e.g press 1 to go to buffer 1 -----------
+map <M-1> :tabn1<CR>
+map <M-2> :tabn2<CR>
+map <M-3> :tabn3<CR>
+map <M-4> :tabn4<CR>
+map <M-5> :tabn5<CR>
+map <M-6> :tabn6<CR>
+map <M-7> :tabn7<CR>
+map <M-8> :tabn8<CR>
+map <M-9> :tabn9<CR>
+
+" ---- close buffers on left, rigth, ..
+nnoremap ql <C-w>lZZ<CR>
+nnoremap qh <C-w>hZZ<CR>
+nnoremap qj <C-w>jZZ<CR>
+nnoremap qk <C-w>kZZ<CR>
+nnoremap qq :x<CR>
+
+" ------ replace inner word and search replace word to reapeat -------
+nnoremap cj #*cgn
+
+" nnoremap <Leader>l :let &scrolloff=100-&scrolloff<CR>                " make edit line always centered
+
+" ---------------------- loclist --------------------------
+nnoremap <silent> <F3> :call LNext(0)<CR>
+nnoremap <silent> <F4> :call LNext(1)<CR>
+nnoremap ]l :lnext<CR>                             " go to next item in location list
+nnoremap [l :lprev<CR>                             " go to next item in location list
+nnoremap <C-w>p :lopen<CR>                  " open loclist
+" nnoremap <C-p> :lcl<CR>                     " close loclist --------------- #
+" nnoremap <M-u> :lla <CR>                    " navigate to last item in list
+
+"
+"
+" ------------------------ search ------------------------------------------- #
+"
+nnoremap <silent> ff :nohlsearch<Bar>:echo<CR> " Press ff to turn off highlighting and clear any message already displayed.
+
+"
+" ------------------------ registers ---------------------------------------- #
+"
+" List contents of all registers
+" nnoremap <silent> "" :registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>
+" Clean Registers
+command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
+
+"
+"
+" ------------------------ python pdb --------------------------------------- #
+"
+" Add easy nbreakpoint shortcut with correct identation
+nnoremap <silent> <C-Y> :let a='import pdb; pdb.set_trace()'\|put=a<CR>kJi<CR><ESC>
+nnoremap <silent> <A-d> :let a="__import__('ipdb').set_trace()"\|put=a<CR>kJi<CR><ESC>
+
+"
+" split
+"
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+"max height Ctrl-w _
+"maz width Ctrl-w |.
+noremap <silent> <C-Left> :vertical resize +3<CR>
+noremap <silent> <C-Right> :vertical resize -3<CR>
+noremap <silent> <C-Up>  :resize +3<CR>
+noremap <silent> <C-Down> :resize -3<CR>
