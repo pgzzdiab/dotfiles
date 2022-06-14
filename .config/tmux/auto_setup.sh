@@ -14,7 +14,8 @@ fi
 tmux new-session -d -s $session
 
 tmux rename-window -t $session:1 -n 'neovim'
-tmux send-keys -t 'neovim' C-m 'nvim' C-m
+tmux send-keys -t 'neovim' C-m '. venv/bin/activate' C-m
+tmux send-keys -t 'neovim' C-m 'v' C-m
 
 # Create and setup pane
 tmux new-window -t $session:2 -n 'python'

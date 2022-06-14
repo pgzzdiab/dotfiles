@@ -60,7 +60,7 @@ set softtabstop=4
 set shiftwidth=2             " spaces per tab (when shifting)
 set tabstop=4             " spaces per tab
 set smarttab         " <tab>/<BS> indent/dedent in leading whitespace
-set autoindent          " maintain indent of current line
+" set autoindent          " maintain indent of current line
 set noexpandtab        " don't expand tabs into spaces
 set shiftround
 
@@ -71,7 +71,8 @@ set incsearch                       " Show search result while typing
 set encoding=utf-8                  " encoding file
 filetype plugin indent on           " Enable filetype detection for plugins and indentation options
 set nocompatible
-set ignorecase                      " ingorecase when searching
+" set ignorecase                      " ingorecase when searching
+set smartcase                      " ingorecase when searching
 set path+=**                        " add previous directory for gf, :find, ..
 
 " set diffopt+=indent-heuristica      " option for diffmmode
@@ -98,6 +99,8 @@ autocmd BufReadPost *
             \ endif
 
 set nobackup                        " don't make a backup before overwritting a file
+" set paste
+set noautoindent
 set nowritebackup                   " don't make a backup before overwritting a file
 set noswapfile                      " No swap files for unmodified buffers
 set dir=/tmp                        " swap files to /tmp/
@@ -281,26 +284,25 @@ function! CheckPyFile()
 		let s:file = "> FILE:           " . expand("%:t:r") . "." . expand("%:t:e")
 		if (getline("1") !~ "# -*- coding: utf-8 -*")
 				normal!ggO# -*- coding: utf-8 -*
-				normal!o"""
-				call append(2, s:file)
-				normal!o> AUTEUR:         P. GAUTHIER
-				let created = "> CREATED         " . expand(strftime('%y/%m/%d %T'))
-				call append(5, created)
-				" let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
-				" call append(6, modif)
-				normal!GGo
-				normal!o> DESCRIPTION:    TODO
-				normal!o"""
+				" normal!o"""
+				" call append(2, s:file)
+				" normal!o> AUTEUR:         P. GAUTHIER
+				" let created = "> CREATED         " . expand(strftime('%y/%m/%d %T'))
+				" call append(5, created)
+				" " let modif = "> LAST MODIFIED:  " . expand(strftime('%y/%m/%d %T'))
+				" " call append(6, modif)
+				" normal!GGo
+				" normal!o> DESCRIPTION:    TODO
+				" normal!o"""
 				normal!o
 				normal!o
 				normal!odef main() -> None:
-				normal!o""" Main script's function """
-				normal!oreturn None
+				normal!o    """ Main script's function """
+				normal!o    return
 				normal!o
 				normal!o
 				normal!oif '__main__' == __name__:
-				normal!omain()
-				/\<TODO\>
+				normal!o    main()
 		endif
 endfunction
 
@@ -319,6 +321,31 @@ endfunction
 " endfunction
 
 " autocmd BufWritePre * :%s/\s\+$//e
+
+" for vim
+" function! Synctex()
+"     " remove 'silent' for debugging
+"     execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . g:syncpdf
+" endfunction
+" https://gist.github.com/vext01/16df5bd48019d451e078
+function! Synctex()
+    let vimura_param = " --synctex-forward " . line('.') . ":" . col('.') . ":" . expand('%:p') . " " . substitute(expand('%:p'),"tex$","pdf", "")
+    if has('nvim')
+        call jobstart("vimura neovim" . vimura_param)
+    else
+        exe "silent !vimura vim" . vimura_param . "&"
+    endif
+    redraw!
+endfunction
+
+nnoremap <leader>f <cmd>.!figlet<cr>
+""" Automation insert import python
+nnoremap <leader>in gg/import<CR>)Oimport numpy as np<Esc><C-o><C-o>
+nnoremap <leader>ip gg/import<CR>)Oimport pandas as pd<Esc><C-o><C-o>
+nnoremap <leader>ib gg/import<CR>)Ofrom beartype import beartype<Esc><C-o><C-o>
+nnoremap <leader>ic gg/import<CR>)Ofrom common.base import base<Esc><C-o><C-o>
+nnoremap <leader>it yiwgg/import<CR>ofrom typing import <C-r>"<Esc><C-o><C-o>
+
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -376,6 +403,8 @@ noremap ' "
 noremap go o
 noremap gO O
 
+noremap <leader>vu :find virtual_patient_simulator_utl.py<CR>
+noremap <leader>vv :find virtual_patient.py<CR>
 
 " In insert mode insert the last searched with <\   /> surrounding
 inoremap <A-a> <c-r>=substitute(@/, '^\%(\\<lt>\)\=\(.\{-}\)\%(\\>\)\=$', '\1', '')<cr>
@@ -517,6 +546,8 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
+    Plug 'nvim-treesitter/nvim-treesitter-context'
+    Plug 'kevinhwang91/rnvimr'                            " open ranger in nvim
     " Plug 'rcarriga/nvim-notify'
     Plug 'windwp/nvim-autopairs'
     Plug 'LudoPinelli/comment-box.nvim'
@@ -526,7 +557,6 @@ if has('nvim')
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     Plug 'kyazdani42/nvim-tree.lua'                        " file tree
-    Plug 'preservim/nerdtree'                              " file explorer
     Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
     Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
     Plug 'L3MON4D3/LuaSnip'
@@ -558,6 +588,7 @@ if has('nvim')
     " ------------------ theming ----------------------------------------------- #
     " -------------------------------------------------------------------------- #
     " Plug 'rmagatti/igs.nvim'                               " git helper
+    Plug 'Julpikar/night-owl.nvim'
     Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
     Plug 'sindrets/diffview.nvim'                          " diffview
@@ -593,6 +624,7 @@ endif
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
+Plug 'jessekelighine/vindent.vim'
 Plug 'itchyny/vim-gitbranch'                         " get current branch name
 Plug 'Matt-A-Bennett/surround-funk.vim'
 Plug 'svban/YankAssassin.vim'
@@ -614,8 +646,6 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " ---------------------- C++ ------------------------------------
 " --------------------------------------------------------------
 Plug 'derekwyatt/vim-fswitch'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- tmux ----------------------------------------------- "
@@ -713,15 +743,15 @@ if has('nvim')
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
   " Plug 'windwp/floatline.nvim'
-  " Plug 'lukas-reineke/indent-blankline.nvim'
+  Plug 'lukas-reineke/indent-blankline.nvim'
   Plug 'marko-cerovac/material.nvim'
 
   " Plug 'rktjmp/lush.nvim'
   " Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
-  " Plug 'Shatur/neovim-ayu'
+  Plug 'Shatur/neovim-ayu'
   Plug 'rebelot/kanagawa.nvim'
 
-  Plug 'Yggdroot/indentLine'                             " indent guide
+  " Plug 'Yggdroot/indentLine'                             " indent guide
   " Plug 'hoob3rt/lualine.nvim'                          " statusbar
   " Plug 'famiu/feline.nvim'                               " statusbar
   " Plug 'romgrk/barbar.nvim'                              " bufferline
@@ -750,7 +780,7 @@ Plug 'mhinz/vim-startify'                              " add start page to vim
 " --------------------------------------------------------------
 " ---------------------- Latex ---------------------------------
 " --------------------------------------------------------------
-" Plug 'lervag/vimtex'                                   " Latex plugin
+Plug 'lervag/vimtex'                                   " Latex plugin
 " Plug 'https://vimawesome.com/plugin/tex-fold'        " add-on for latex TODO
 " Plug 'vim-grammarous'                                " Grammar corrections
 "
@@ -790,8 +820,8 @@ endif
 " blankline indent
 " --------------------------------------------------------------
 if has('nvim')
-  let g:indentLine_char = "▎"
-  let g:indentLine_conceallevel = 2
+  " let g:indentLine_char = "▎"
+  " let g:indentLine_conceallevel = 2
 endif
 
 " --------------------------------------------------------------
@@ -882,6 +912,16 @@ nnoremap <silent> <localleader>oh :FSSprlitLeft<cr>
 nnoremap <silent> <localleader>oj :FSSplitBelow<cr>
 nnoremap <silent> <localleader>ok :FSSplitAbove<cr>
 nnoremap <silent> <localleader>ol :FSSplitRight<cr>
+
+" -------------------------------------------------------------
+"  vindent
+"  ------------------------------------------------------------
+let g:vindent_motion_prev = '[l'
+let g:vindent_motion_next = ']l'
+let g:vindent_object_ii   = 'ii'
+let g:vindent_object_iI   = 'iI'
+let g:vindent_object_ai   = 'ai'
+let g:vindent_object_aI   = 'aI'
 
 " -------------------------------------------------------------
 "  scrollbar
@@ -1005,7 +1045,8 @@ if has('nvim')
   nnoremap <silent> <C-N> <cmd>QNext<CR>
   nnoremap <silent> <C-P> <cmd>QPrev<CR>
   " toggle the quickfix open/closed without jumping to it
-  nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
+  " nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
+  nnoremap <silent> <leader>q <cmd>copen<CR>
   nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
   " <C-t>	open in a new tab
   " <C-s>	open in a horizontal split
@@ -1131,7 +1172,7 @@ if has('nvim')
 	" LUA TREE
 	" --------------------------------------------------------------
 	" let g:nvim_tree_width = 50 "30 by default
-	" let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache'] "empty by default
+	let g:nvim_tree_ignore = ['.git', 'node_modules', '.cache', '.pyc', '__pycache__', '.DS_Store', 'tags', '.idea', '.sass-cache', '.aux'] "empty by default
 	" let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
 	" let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
 	" let g:nvim_tree_show_icons = {
@@ -1229,9 +1270,34 @@ endif
 " --------------------------------------------------------------
 " vimtex
 " --------------------------------------------------------------
-"let g:vimtex_enabled=1
-"let g:livepreview_previewer = 'zathura'
-"let g:vimtex_view_general_viewer = 'zathura'
+let g:vimtex_enabled=1
+let g:livepreview_previewer = 'zathura'
+let g:vimtex_view_general_viewer = 'zathura'
+"" let g:livepreview_engine = 'lualatex'
+let g:vimtex_compiler_method = 'latexmk'
+let maplocalleader = "x"
+"" let g:vimtex_compiler_latexmk_engines = 'lualatex'
+"" See $pdf_mode = 4 in .latexmk for lualatx
+let g:vimtex_compiler_latexmk = {
+   \ 'backend' : 'jobs',
+   \ 'background' : 1,
+   \ 'build_dir' : '',
+   \ 'callback' : 1,
+   \ 'continuous' : 1,
+   \ 'executable' : 'latexmk',
+   \ 'options' : [
+       \   '-shell-escape',
+       \   '-silent',
+       \   '-synctex=1',
+       \   '-gg'
+   \ ],
+   \}
+""
+let g:tex_flavor = 'latex'
+
+" -----------------------------------------------------
+" specifig options for lualatex document like my cv
+" -----------------------------------------------------
 "" let g:livepreview_engine = 'lualatex'
 "let g:vimtex_compiler_method = 'latexmk'
 "" let g:vimtex_compiler_latexmk_engines = 'lualatex'
@@ -1276,25 +1342,28 @@ let g:startify_session_autoload = 1
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
 let g:startify_custom_header = [
-      \ '                      ▄              ▄                                                                                                                    ▄              ▄      ',
-      \ '                     ▌▒█           ▄▀▒▌         _____   ______        ______           _____     ____      ____  ____      ______  _______              ▌▒█           ▄▀▒▌     ',
-      \ '                     ▌▒▒▀        ▄▀▒▒▒▐        |\    \ |\     \   ___|\     \     ____|\    \   |    |    |    ||    |    |      \/       \             ▌▒▒▀        ▄▀▒▒▒▐     ',
-      \ '                    ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐        \\    \| \     \ |     \     \   /     /\    \  |    |    |    ||    |   /          /\     \            ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐     ',
-      \ '                  ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐        \|    \  \     ||     ,_____/| /     /  \    \ |    |    |    ||    |  /     /\   / /\     |          ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐     ',
-      \ '                ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌        |     \  |    ||     \--"\_|/|     |    |    ||    |    |    ||    | /     /\ \_/ / /    /|         ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌     ',
-      \ '               ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌       |      \ |    ||     /___/|  |     |    |    ||    |    |    ||    ||     |  \|_|/ /    / |        ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌    ',
-      \ '               ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐       |    |\ \|    ||     \____|\ |\     \  /    /||\    \  /    /||    ||     |       |    |  |        ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐    ',
-      \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌      |____||\_____/||____ "     /|| \_____\/____/ || \ ___\/___ / ||____||\____\       |____|  /       ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌   ',
-      \ '              ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌      |    |/ \|   |||    /_____/ | \ |    ||    | / \ |   ||   | / |    || |    |      |    | /        ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
-      \ '              ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐      |____|   |___|/|____|     | /  \|____||____|/   \|___||___|/  |____| \|____|      |____|/         ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
-      \ '             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌     \(       )/    \( |_____|/      \(    )/        \(    )/      \(      \(          )/             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌  ',
-      \ '             ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐                                                                                                       ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
-      \ '              ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌                                                                                                        ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
-      \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐       go  brr   brrrrrrrrrrr   brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr       ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐    ',
-      \ '               ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                                                                                                          ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌    ',
-      \ '                 ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                                                                                                             ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀     ',
-      \ '                ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                                                                                                              ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀       ',
+      \ '                                                                ╭╮╭┬─╮╭─╮┬  ┬┬╭┬╮                    ',
+      \ '                                                                │││├┤ │ │╰┐┌╯││││                    ',
+      \ '                                                                ╯╰╯╰─╯╰─╯ ╰╯ ┴┴ ┴                    ',
       \ ]
+      " \ '                      ▄              ▄                                                                                                                    ▄              ▄      ',
+      " \ '                     ▌▒█           ▄▀▒▌         _____   ______        ______           _____     ____      ____  ____      ______  _______              ▌▒█           ▄▀▒▌     ',
+      " \ '                     ▌▒▒▀        ▄▀▒▒▒▐        |\    \ |\     \   ___|\     \     ____|\    \   |    |    |    ||    |    |      \/       \             ▌▒▒▀        ▄▀▒▒▒▐     ',
+      " \ '                    ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐        \\    \| \     \ |     \     \   /     /\    \  |    |    |    ||    |   /          /\     \            ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐     ',
+      " \ '                  ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐        \|    \  \     ||     ,_____/| /     /  \    \ |    |    |    ||    |  /     /\   / /\     |          ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐     ',
+      " \ '                ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌        |     \  |    ||     \--"\_|/|     |    |    ||    |    |    ||    | /     /\ \_/ / /    /|         ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌     ',
+      " \ '               ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌       |      \ |    ||     /___/|  |     |    |    ||    |    |    ||    ||     |  \|_|/ /    / |        ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌    ',
+      " \ '               ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐       |    |\ \|    ||     \____|\ |\     \  /    /||\    \  /    /||    ||     |       |    |  |        ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐    ',
+      " \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌      |____||\_____/||____ "     /|| \_____\/____/ || \ ___\/___ / ||____||\____\       |____|  /       ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌   ',
+      " \ '              ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌      |    |/ \|   |||    /_____/ | \ |    ||    | / \ |   ||   | / |    || |    |      |    | /        ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
+      " \ '              ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐      |____|   |___|/|____|     | /  \|____||____|/   \|___||___|/  |____| \|____|      |____|/         ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
+      " \ '             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌     \(       )/    \( |_____|/      \(    )/        \(    )/      \(      \(          )/             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌  ',
+      " \ '             ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐                                                                                                       ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
+      " \ '              ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌                                                                                                        ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
+      " \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐       go  brr   brrrrrrrrrrr   brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr       ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐    ',
+      " \ '               ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                                                                                                          ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌    ',
+      " \ '                 ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                                                                                                             ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀     ',
+      " \ '                ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                                                                                                              ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀       ',
       " \ '           ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓                      ',
       " \ '           ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒                      ',
       " \ '          ▓██  ▀█ ██▒▒███   ▒██░  ██▒ ▓██  █▒░▒██▒▓██    ▓██░                      ',
@@ -1303,6 +1372,8 @@ let g:startify_custom_header = [
       " \ '          ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░▓  ░ ▒░   ░  ░                      ',
       " \ '          ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░                      ',
       " \ '             ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░                         ',
+
+
 
 " save session from current branch name
 function! GetUniqueSessionName()
@@ -1726,17 +1797,50 @@ endif
 
 
 if has('nvim')
+  " --------------------------------------------------------------------
+  "  rnvimr
+  " --------------------------------------------------------------------
+  nnoremap <silent> <space>r :RnvimrToggle<CR>
+  tnoremap <silent> <space>r <C-\><C-n>:RnvimrToggle<CR>
+
+  " Resize floating window by all preset layouts
+  " tnoremap <silent> <leader>ri <C-\><C-n>:RnvimrResize<CR>
+
+  " Resize floating window by special preset layouts
+  " tnoremap <silent> <leader>rl <C-\><C-n>:RnvimrResize 1,8,9,11,5<CR>
+
+  " Hide the files included in gitignore
+  let g:rnvimr_hide_gitignore = 1
+  " Make Neovim wipe the buffers corresponding to the files deleted by Ranger
+  let g:rnvimr_enable_bw = 1
+
+  " Link CursorLine into RnvimrNormal highlight in the Floating window
+  highlight link RnvimrNormal CursorLine
+
+  " Map Rnvimr action
+  let g:rnvimr_action = {
+	      \ '<C-t>': 'NvimEdit tabedit',
+	      \ '<C-x>': 'NvimEdit split',
+	      \ '<C-v>': 'NvimEdit vsplit',
+	      \ 'gw': 'JumpNvimCwd',
+	      \ 'yw': 'EmitRangerCwd'
+	      \ }
+
+endif
+
+if has('nvim')
+
 	" --------------------------------------------------------------------
 	"  LUA TREE
 	" --------------------------------------------------------------------
-	nnoremap <A-;> :NvimTreeToggle<CR>
+	nnoremap <A-m> :NvimTreeToggle<CR>
 	nnoremap <leader>t :NvimTreeRefresh<CR>
 	nnoremap <leader>n :NvimTreeFindFile<CR>
 else
 	" ------------------------------------------------------------------- "
 	" NERDTree
 	" ------------------------------------------------------------------- "
-	map <A-;> :NERDTreeToggle<CR>
+	map <A-m> :NERDTreeToggle<CR>
 	function! NERDTreeYankCurrentNode()
 			let n = g:NERDTreeFileNode.GetSelected()
 			if n != {}
@@ -1871,7 +1975,7 @@ map ]= <Plug>(IndentWiseNextEqualIndent)
 " -------------------------------------------------------------------------- "
 " wrap
 " -------------------------------------------------------------------------- "
-nnoremap <silent> <M-'> :ArgWrap<CR><Esc>
+nnoremap <silent> <M-;> :ArgWrap<CR><Esc>
 
 " -------------------------------------------------------------------------- "
 " vimtweak
@@ -1920,10 +2024,12 @@ nmap <leader>co <plug>(SubversiveSubstituteWordRangeConfirm)
 " -------------------------------------------------------------------------- "
 " latex
 " -------------------------------------------------------------------------- "
-" map <C-s> :call Synctex()<cr>
-" nnoremap <M-c> :VimtexCompile<cr>
+map <C-s> :call Synctex()<cr>
+nnoremap <A-c> :VimtexCompile<cr>
 " :copen to see error
-" nnoremap <M-3> :copen<cr>
+" nnoremap <M-i> :copen<cr>
+nnoremap <space>j :ccl<CR>
+nnoremap <A-s> <plug>(vimtex-cmd-create)
 
 " -------------------------------------------------------------------------- "
 " animate
@@ -2047,6 +2153,33 @@ endif
 " nnoremap <leader>r yiw<cmd>FineCmdline<CR>%s///gc<left><left><left><left><C-r>"<right>
 " nnoremap <C-f> <cmd>FineCmdline<CR>find<space>
 
+" -------------------------------------------------------------------------- "
+" luasnip
+" -------------------------------------------------------------------------- "
+
+function! Template_1()
+  let att  = getreg('a')
+  exe 'normal!o@property'
+  exe 'normal!odef ' . att . '(self):'
+  exe 'normal!o    """'
+  exe 'normal!<<o    Basic getter'
+  exe 'normal!o    """'
+  exe 'normal!o    return self._' . att
+  exe 'normal!o'
+  exe 'normal!o@' . att . '.setter'
+  exe 'normal!o@beartype'
+  exe 'normal!odef ' . att . '(self, in_' . att . '):'
+  exe 'normal!o    self._' . att . ' = in_' . att
+  exe 'normal!o'
+endfunction
+
+
+nnoremap <leader>sa g^f_l"aye/@property<CR>k:call Template_1()<CR>11k<10j....>10jjj>3j8j>>
+" 8k<8j....>8<CR>j>3<CR>8j>>
+
+
+
+
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -2064,8 +2197,9 @@ endif
 " ------------------------------------------------------------------------- "
 
 if has('nvim')
-    " colorscheme ayu
-    colorscheme kanagawa
+    colorscheme ayu
+    " colorscheme kanagawa
+    " colorscheme night-owl
 else
     colorscheme material
     let $BAT_THEME='material'
@@ -2142,3 +2276,8 @@ set colorcolumn=90
 "  vim signature
 "  ------------------------------------------------------------
 " hi SignatureMarkText guifg=#B0BEC5 guibg=NONE
+
+" -------------------------------------------------------------------------- #
+"  ----------------- treesitter-context --------------------------------------- #
+" -------------------------------------------------------------------------- #
+highlight! TreesitterContext guibg=#383E4C

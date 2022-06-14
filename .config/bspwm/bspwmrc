@@ -23,13 +23,14 @@ bspc config border_width     1
 # bspc config right_padding    5
 # bspc config left_padding     5
 # bspc config bottom_padding   -10
-bspc config top_padding      -10
-bspc config right_padding    -10
-bspc config left_padding     -10
+bspc config top_padding      -5
+bspc config right_padding    -5
+bspc config left_padding     -5
+# bspc config bottom_padding   -10
 bspc config bottom_padding   -10
-# bspc config bottom_padding   -16
 
-bspc config window_gap       10
+# bspc config window_gap       10
+bspc config window_gap       5
 
 bspc config focused_border_color "#938AA9"
 bspc config normal_border_color "#000000"
@@ -37,7 +38,7 @@ bspc config presel_feedback_color "#000000"
 bspc config split_ratio 0.52
 bspc config borderless_monocle true
 bspc config gapless_monocle false
-bspc config single_monocle false
+bspc config single_monocle true
 bspc config ignore_ewmh_focus false
 
 bspc config remove_disabled_monitors    true
@@ -63,7 +64,7 @@ bspc rule -a "Zathura" state=tiled
 # bspc rule -a "qutebrowser" desktop=^1 follow=on
 # bspc rule -a *:*:aerc desktop=^2 follow=on
 # bspc rule -a *:*:ikhal desktop=^2 follow=on
-# bspc rule -a *:*:Tasks desktop=^2 follow=on
+# bspc rule -a *:*:Tasks deskto0=^2 follow=on
 #bspc rule -a libreoffice-* desktop=^3 follow=on #Fix me
 # bspc rule -a "Zathura" desktop=^3 follow=on
 # bspc rule -a *:*:weechat desktop=^6 follow=on
@@ -83,19 +84,18 @@ xset r rate 120 150
 
 # background
 # hsetroot -solid "#ffffff" &
-feh --bg-scale ~/Pictures/macos-monterey-stock-red-dark-mode-layers-5k-6016x6016-5893.jpg
-# feh feh --bg-center ~/Pictures/Wallpapers/druillet.jpeg --bg-color "#ffffff"
-# hsetroot -solid "#263238" &
-# hsetroot -solid "#1F2430" &
+# feh --bg-scale ~/Pictures/6cb7ca510f0bfd9f7e40d08b89a50fcc.jpg
+# feh --bg-center ~/Pictures/diabeloop-logo.png -B "#1F2430"
+feh --bg-center ~/Pictures/ascii_logo_5.png -B "#1F2430"
 # hsetroot -solid "#E82424" &
-hsetroot -solid "#000000" &
+# hsetroot -solid "#000000" &
 
 # poolybaaaaaar
-# ~/.config/polybar/launch.sh &
+~/.config/polybar/launch.sh &
 #network
 nm-applet &     #network
 # compositor
-picom -b --experimental-backends &
+# picom -b --experimental-backends &
 
 # conky
 # .config/scripts/launch_conky.sh

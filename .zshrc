@@ -162,8 +162,10 @@ alias radio="pyradio --stations .config/pyradio/stations.csv"
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # icat ~/Images/logo_diabeloop_bleu_rvb.png
-icat ~/Pictures/diabeloop-logo.png
-fm6000 -r
+# icat --align=center Pictures/diabeloop-logo.png
+icat --align=center ~/Pictures/ascii_logo_4.png
+# fm6000 -r
+neofetch --kitty ~/Pictures/me2.png --size 250px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
+# neofetch --kitty ~/Pictures/diabeloop-logo.png --crop_mode fitt -x --size 250px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
 
-
-complete -C "/home/pierre/.local/bin/aws_completer" aws
+# complete -C "/home/pierre/.local/bin/aws_completer" aws

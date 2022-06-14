@@ -214,17 +214,62 @@ require('telescope').setup{
 -- -------------------------------------------------------------------------- #
 --  ----------------- blankline indent -------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require("indent_blankline").setup {
---     -- space_char_blankline = " ",
---     show_trailing_blankline_indent = false,
---     show_current_context = false,
---     show_current_context_start = false,
---     show_end_of_line = false,
---     use_treesitter = false,
---     filetype_exclude = { "help", "terminal", "packer", "NvimTree" },
---     buftype_exclude = { "terminal" },
--- }
+require("indent_blankline").setup {
+    -- space_char_blankline = " ",
+    -- show_trailing_blankline_indent = false,
+    show_current_context = true,
+    -- show_current_context_start = false,
+    -- show_end_of_line = false,
+    -- use_treesitter = false,
+    filetype_exclude = {
+      "help",
+      "terminal",
+      "packer",
+      "NvimTree",
+      "startify"
+    },
+    buftype_exclude = { "terminal" },
+}
 
+-- -------------------------------------------------------------------------- #
+--  ----------------- treesitter-context --------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'class',
+            'function',
+            'method',
+            'for', -- These won't appear in the context
+            'while',
+            'if',
+            'switch',
+            'case',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+    exact_patterns = {
+        -- Example for a specific filetype with Lua patterns
+        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+        -- exactly match "impl_item" only)
+        -- rust = true,
+    },
+
+    -- [!] The options below are exposed but shouldn't require your attention,
+    --     you can safely ignore them.
+
+    zindex = 20, -- The Z-index of the context window
+}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- kommentary -------------------------------------------- #
@@ -244,6 +289,125 @@ require('Comment').setup(
     --     block = 'gb',
     -- },
 )
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- lua snip ---------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+local function prequire(...)
+local status, lib = pcall(require, ...)
+if (status) then return lib end
+    return nil
+end
+
+local luasnip = prequire('luasnip')
+local cmp = prequire("cmp")
+
+local t = function(str)
+    return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+-- local check_back_space = function()
+--     local col = vim.fn.col('.') - 1
+--     if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+--         return true
+--     else
+--         return false
+--     end
+-- end
+
+-- _G.tab_complete = function()
+--     if cmp and cmp.visible() then
+--         cmp.select_next_item()
+--     elseif luasnip and luasnip.expand_or_jumpable() then
+--         return t("<Plug>luasnip-expand-or-jump")
+--     elseif check_back_space() then
+--         return t "<Tab>"
+--     else
+--         cmp.complete()
+--     end
+--     return ""
+-- end
+-- _G.s_tab_complete = function()
+--   if cmp and cmp.visible() then
+--       cmp.select_prev_item()
+--   elseif luasnip and luasnip.jumpable(-1) then
+--       return t("<Plug>luasnip-jump-prev")
+--   else
+--       return t "<S-Tab>"
+--   end
+--   return ""
+-- end
+
+-- _G.look = function()
+--   if ls.expand_or_jumpable() then
+--     ls.expand_or_jumpable()
+--   end
+-- end
+
+-- vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.look()", {silent = true})
+-- vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+-- vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+-- vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+-- vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+-- vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
+-- vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
+
+require("luasnip.loaders.from_vscode").lazy_load()
+
+local ls = require "luasnip"
+local types = require "luasnip.util.types"
+
+ls.config.set_config {
+  -- This tells LuaSnip to remember to keep around the last snippet.
+  -- You can jump back into it even if you move outside of the selection
+  history = false,
+
+  -- This one is cool cause if you have dynamic snippets, it updates as you type!
+  updateevents = "TextChanged,TextChangedI",
+
+  -- Autosnippets:
+  enable_autosnippets = false,
+
+  -- Crazy highlights!!
+  -- #vid3
+  -- ext_opts = nil,
+  -- ext_opts = {
+  --   [types.choiceNode] = {
+  --     active = {
+  --       virt_text = { { " <- Current Choice", "NonTest" } },
+  --     },
+  --   },
+  -- },
+}
+
+-- <c-k> is my expansion key
+-- this will expand the current item or jump to the next item within the snippet.
+vim.keymap.set({ "i", "s" }, "<c-k>", function()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  end
+end, { silent = true })
+
+-- <c-j> is my jump backwards key.
+-- this always moves to the previous item within the snippet
+vim.keymap.set({ "i", "s" }, "<c-j>", function()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  end
+end, { silent = true })
+
+-- <c-l> is selecting within a list of options.
+-- This is useful for choice nodes (introduced in the forthcoming episode 2)
+vim.keymap.set("i", "<c-l>", function()
+  if ls.choice_active() then
+    ls.change_choice(1)
+  end
+end)
+
+vim.keymap.set("i", "<c-u>", require "luasnip.extras.select_choice")
+
+-- shorcut to source my luasnips file again, which will reload my snippets
+vim.keymap.set("n", "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>")
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- nvim-cmp ---------------------------------------------- #
@@ -287,11 +451,11 @@ cmp.setup({
     --completeopt = 'menu,menuone,noinsert',
   },
 
- snippet = {
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body)
-      end,
-  },
+ -- snippet = {
+ --      expand = function(args)
+ --        require('luasnip').lsp_expand(args.body)
+ --      end,
+ --  },
 
   formatting = {
         format = function(entry, item)
@@ -299,7 +463,7 @@ cmp.setup({
             item.menu = ({
                 buffer = "[Buffer]",
                 nvim_lsp = "[LSP]",
-                luasnip = "[Snippet]",
+                -- luasnip = "[Snippet]",
                 neorg = "[Neorg]",
             })[entry.source.name]
 
@@ -327,16 +491,16 @@ local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
-local luasnip = require("luasnip")
+-- local luasnip = require("luasnip")
 
 
 cmp.setup({
-  documentation = {
-    -- border = "rounded",
-    winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
-    -- maxwidth = require('core.utils').fix_width(0, 0.9),
-    -- maxheight = require('core.utils').fix_height(0, 0.9)
-  },
+  -- documentation = {
+  --   -- border = "rounded",
+  --   winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder",
+  --   -- maxwidth = require('core.utils').fix_width(0, 0.9),
+  --   -- maxheight = require('core.utils').fix_height(0, 0.9)
+  -- },
   mapping = {
     -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
     -- ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
@@ -346,15 +510,13 @@ cmp.setup({
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
-    -- ['<CR>'] = cmp.mapping.confirm({
-    --   behavior = cmp.ConfirmBehavior.Replace,
-    --   select = true,
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 
    ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                   cmp.select_next_item()
-                elseif luasnip.expand_or_jumpable() then
-                  luasnip.expand_or_jump()
+                -- elseif luasnip.expand_or_jumpable() then
+                --   luasnip.expand_or_jump()
                 elseif has_words_before() then
                   cmp.complete()
                 else
@@ -382,35 +544,6 @@ cmp.setup({
 --  ----------------- gps --------------------------------------------------- "
 -- -------------------------------------------------------------------------- #
 require("nvim-gps").setup()
--- require("nvim-gps").setup({
--- 	icons = {
--- 		["class-name"] = ' ',      -- Classes and class-like objects
--- 		["function-name"] = ' ',   -- Functions
--- 		["method-name"] = ' ',     -- Methods (functions inside class-like objects)
--- 		["container-name"] = '⛶ ',  -- Containers (example: lua tables)
--- 		["tag-name"] = '炙'         -- Tags (example: html tags)
--- 	},
--- 	-- Add custom configuration per language or
--- 	-- Disable the plugin for a language
--- 	-- Any language not disabled here is enabled by default
--- 	languages = {
--- 		-- ["bash"] = false, -- disables nvim-gps for bash
--- 		-- ["go"] = false,   -- disables nvim-gps for golang
--- 		-- ["ruby"] = {
--- 		--	separator = '|', -- Overrides default separator with '|'
--- 		--	icons = {
--- 		--		-- Default icons not specified in the lang config
--- 		--		-- will fallback to the default value
--- 		--		-- "container-name" will fallback to default because it's not set
--- 		--		["function-name"] = '',    -- to ensure empty values, set an empty string
--- 		--		["tag-name"] = ''
--- 		--		["class-name"] = '::',
--- 		--		["method-name"] = '#',
--- 		--	}
--- 		--}
--- 	},
--- 	separator = ' > ',
--- })
 
 -- -------------------------------------------------------------------------- #
 -- -----------------< lsp >-------------------------------------------------- #
@@ -680,17 +813,6 @@ require("trouble").setup {
 -- -------------------------------------------------------------------------- #
 require('colorizer').setup()
 
----------------------------------------------------------------------------------
----- nvim-bufferline
----- ----------------------------------------------------------------------------
---require"bufferline".setup{
---	options = {
---			view = "multiwindow",
---			numbers = "buffer_id",
---			-- number_style = "superscript" | "" | { "none", "subscript" }, -- buffer_id at index 1, ordinal at index 2
---			mappings = true,
---			buffer_close_icon= "",
---			modified_icon = "●",
 
 -------------------------------------------------------------------------------
 -- LUA TREE
@@ -730,10 +852,29 @@ require'nvim-tree'.setup {
     enable      = true,
     -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
     -- only relevant when `update_focused_file.enable` is true
-    update_cwd  = false,
+    update_cwd  = ture,
     -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
     -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
-    -- ignore_list = {}
+    ignore_list = {
+      '.git',
+      'node_modules',
+      '.cache',
+      '.pyc',
+      '__pycache__',
+      '.DS_Store',
+      'tags',
+      '.idea',
+      '.sass-cache',
+      '.aux',
+      '.fls',
+      '.log',
+      '.nav',
+      '.out',
+      '.snm',
+      '.synctex.gz',
+      '.toc',
+      '.vrb'
+    }
   },
   -- configuration options for the system open command (`s` in the tree by default)
   -- system_open = {
@@ -799,43 +940,48 @@ local list = {
 -- -------------------------------------------------------------------------- #
 -- ----------------- ayu ---------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require('ayu').setup({
---   mirage=true,
---   overrides = {
---   Comment = {fg = '#707A8C'},
---   String = {fg = '#E6BA7E'},
---   LineNr = {fg = '#465742'},
---   CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
---   Search = {fg = '#7CB0E6', bg = '#33415E'},
---   -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
---   }
--- })
+require('ayu').setup({
+  mirage=true,
+  overrides = {
+    Comment = {fg = '#707A8C'},
+    String = {fg = '#E6BA7E'},
+    LineNr = {fg = '#465742'},
+    CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
+    -- Search = {fg = '#7CB0E6', bg = '#33415E'},
+    Search = {fg = '#0D1016', bg = '#707A8C'},
+    -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
+  }
+})
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- kanagawa ---------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('kanagawa').setup({
-    undercurl = true,           -- enable undercurls
-    -- commentStyle = "italic",
-    -- functionStyle = "NONE",
-    -- keywordStyle = "italic",
-    -- statementStyle = "bold",
-    -- typeStyle = "NONE",
-    variablebuiltinStyle = "italic",
-    specialReturn = true,       -- special highlight for the return keyword
-    specialException = true,    -- special highlight for exception handling keywords
-    transparent = true,        -- do not set background color
-    colors = {},
-    overrides = {
-      -- override existing hl-groups, the new keywords are merged with existing ones
-      VertSplit  = {
-        -- fg = '#2D4F67',
-        fg = '#2A2A37',
-        bg = "NONE"
-      },
-      Search = {fg = '#7CB0E6', bg = '#33415E'},
-    },
-})
+-- require('kanagawa').setup({
+--     undercurl = true,           -- enable undercurls
+--     -- commentStyle = "italic",
+--     -- functionStyle = "NONE",
+--     -- keywordStyle = "italic",
+--     -- statementStyle = "bold",
+--     -- typeStyle = "NONE",
+--     variablebuiltinStyle = "italic",
+--     specialReturn = true,       -- special highlight for the return keyword
+--     specialException = true,    -- special highlight for exception handling keywords
+--     transparent = true,        -- do not set background color
+--     colors = {},
+--     overrides = {
+--       -- override existing hl-groups, the new keywords are merged with existing ones
+--       VertSplit  = {
+--         -- fg = '#2D4F67',
+--         fg = '#2A2A37',
+--         bg = "NONE"
+--       },
+--       Search = {bg = '#33415E'},
+--       CursorLine = {bg = '#1F1F28'},
+--       ColorColumn = {bg = '#0F0F14'},
+--       StatusLine = {bg = '#0F0F14'},
+--     },
+-- })
+
 -- setup must be called before loading
 -- vim.cmd("colorscheme kanagawa")
 
@@ -953,8 +1099,6 @@ local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
 
 local hl_list = {
-    -- Black = { 'white', 'black' },
-    -- White = { 'black', 'white' },
     Inactive = { 'InactiveFg', 'InactiveBg' },
     Active = { 'ActiveFg', 'ActiveBg' },
 }
@@ -968,9 +1112,9 @@ basic.progress_inactive = { b_components.progress, hl_list.Inactive }
 basic.file = {
     name = 'file',
     hl_colors = {
-        sep_before = { 'NormalFg', 'NormalBg' },
-        sep_after = { 'NormalFg', 'NormalBg' },
-        text = { 'NormalBg', 'NormalFg' },
+        sep_before = { 'NormalFg', 'ActiveBg' },
+        sep_after = { 'NormalFg', 'ActiveBg' },
+        text = { 'ActiveBg', 'NormalFg' },
     },
     text = function()
         return {
@@ -987,7 +1131,7 @@ basic.file = {
 basic.file_inac = {
     name = 'file',
     hl_colors = {
-        text = { 'NormalFg', 'NormalBg' },
+        text = { 'NormalFg', 'ActiveBg' },
     },
     text = function()
         return {
@@ -999,9 +1143,9 @@ basic.file_inac = {
 basic.gps = {
     name = 'gps',
     hl_colors = {
-        sep_before = { 'magenta_light', 'black' },
-        sep_after = { 'magenta_light', 'black' },
-        text = { 'black', 'magenta_light' },
+        sep_before = { 'magenta_light', 'ActiveBg' },
+        sep_after = { 'magenta_light', 'ActiveBg' },
+        text = { 'ActiveBg', 'magenta_light' },
     },
     text = function()
       if require("nvim-gps").is_available() then
@@ -1022,9 +1166,9 @@ basic.gps = {
 basic.tabe = {
     name = 'gps',
     hl_colors = {
-        sep_before = { 'yellow', 'black' },
-        sep_after = { 'yellow', 'black' },
-        text = { 'black', 'yellow' },
+        sep_before = { 'yellow', 'ActiveBg' },
+        sep_after = { 'yellow', 'ActiveBg' },
+        text = { 'ActiveBg', 'yellow' },
     },
     text = function()
       return {
@@ -1037,11 +1181,11 @@ basic.tabe = {
 basic.git_branch = {
     name = 'gps',
     hl_colors = {
-        sep_after = { 'NormalFg', 'NormalBg' },
+        sep_after = { 'NormalFg', 'ActiveBg' },
     },
     text = function()
       return {
-        { git_comps.git_branch({ icon = '  ' }), { 'green', 'NormalBg' }, 90 },
+        { git_comps.git_branch({ icon = '  ' }), { 'green', 'ActiveBg' }, 90 },
       }
     end,
     width = 150,
@@ -1051,16 +1195,16 @@ basic.git_branch = {
 local default = {
     filetypes = { 'default' },
     active = {
-        { ' ', hl_list.NormalBg },
+        { ' ', 'ActiveBg' },
         basic.tabe,
-        { ' ', hl_list.NormalBg },
+        { ' ', 'ActiveBg' },
         basic.gps,
-        { ' ', hl_list.NormalBg },
+        { ' ', 'ActiveBg' },
         basic.divider,
         basic.file,
         basic.git_branch,
-        { ' ', hl_list.NormalBg },
-        { ' ', hl_list.NormalBg },
+        { ' ', 'ActiveBg' },
+        { ' ', 'ActiveBg' },
     },
     inactive = {
         basic.file_inac,
@@ -1071,17 +1215,17 @@ local default = {
 local quickfix = {
     filetypes = { 'qf', 'Trouble' },
     active = {
-        { ' Quickfix ', { 'NormalFg', 'NormalBg' } },
-        { sep.left_rounded, { 'NormalFg', 'NormalBg' } },
+        { ' Quickfix ', { 'NormalFg', 'ActiveBg' } },
+        { sep.left_rounded, { 'NormalFg', 'ActiveBg' } },
         {
             function()
                 return vim.fn.getqflist({ title = 0 }).title
             end,
-            { 'NormalBg', 'NormalFg' },
+            { 'ActiveBg', 'NormalFg' },
         },
-        { ' Total : %L ', { 'NormalBg', 'NormalFg' } },
-        { sep.right_rounded, { 'NormalFg', 'NormalBg' } },
-        { ' ', { 'NormalFg', 'NormalBg' } },
+        { ' Total : %L ', { 'ActiveBg', 'NormalFg' } },
+        { sep.right_rounded, { 'NormalFg', 'ActiveBg' } },
+        { ' ', { 'NormalFg', 'ActiveBg' } },
         basic.divider,
     },
     always_active = true,
@@ -1092,7 +1236,7 @@ local explorer = {
     filetypes = { 'fern', 'NvimTree', 'lir' },
     active = {
         { b_components.divider, '' },
-        { b_components.file_name(''), { 'NormalFg', 'NormalBg' } },
+        { b_components.file_name(''), { 'NormalFg', 'ActiveBg' } },
     },
     always_active = true,
     show_last_status = true
@@ -1128,8 +1272,10 @@ local get_hex = require('cokeline/utils').get_hex
 --
 require('cokeline').setup({
   default_hl = {
-    bg = get_hex('Normal', 'fg'),
-    fg = "#1F2430",
+    -- bg = get_hex('Normal', 'fg'),
+    -- bg = get_hex('Normal', 'fg'),
+    -- fg = "#0F0F14",
+    bg = "#1F2430",
 --    focused = {
 --    },
 --    unfocused = {
@@ -1150,14 +1296,14 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
       end,
       bg = function(buffer)
           if buffer.is_focused then
-              return "#1F2430"
+              return "#0F0F14"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
           if buffer.is_modified then
               return "#BAE67E"
@@ -1189,12 +1335,12 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#1F2430"
+              return "#0F0F14"
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1215,12 +1361,12 @@ require('cokeline').setup({
           elseif buffer.is_focused then
               return "#CBCCC6"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#1F2430"
+              return "#0F0F14"
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1245,12 +1391,12 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#1F2430"
+              return "#0F0F14"
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1281,12 +1427,12 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#1F2430"
+              return "#0F0F14"
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1314,14 +1460,14 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
       end,
       bg = function(buffer)
           if buffer.is_focused then
-              return "#1F2430"
+              return "#0F0F14"
           else
-              return "#1F2430"
+              return "#0F0F14"
           end
           if buffer.is_modified then
               return "#BAE67E"
@@ -1426,8 +1572,8 @@ require('cokeline').setup({
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-textobjects -------------------------------- #
 -- -------------------------------------------------------------------------- #
-require'nvim-treesitter.configs'.setup {
-
+require('nvim-treesitter.configs').setup {
+  ensure_installed = { "python", "lua"},
   ensure_installed = "maintained",
 
   highlight = {
@@ -1474,10 +1620,10 @@ require'nvim-treesitter.configs'.setup {
     --   },
     -- },
     select = {
-      enable = true,
+      -- enable = true,
 
       -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
+      -- lookahead = true,
 
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm

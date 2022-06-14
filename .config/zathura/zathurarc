@@ -3,7 +3,7 @@ set font "Fira Code 10"
 
 set statusbar-h-padding 0
 set statusbar-v-padding 0
-set page-padding 0
+set page-padding 1
 map u scroll half-up
 map v scroll half-down
 map D toggle_page_mode
@@ -53,7 +53,7 @@ set render-loading-fg           "#f5ac78" # fg
 # Recolor book content's color
 set recolor-lightcolor          "#1F2430" # bg
 set recolor-darkcolor           "#B0BEC5" # fg
-set recolor                     "true"
-# set recolor                     "false"
+# set recolor                     "true"
+set recolor                     "false"
 # set recolor-keephue             true      # keep original color
 set selection-clipboard clipboard
