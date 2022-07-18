@@ -86,7 +86,8 @@ xset r rate 120 150
 # hsetroot -solid "#ffffff" &
 # feh --bg-scale ~/Pictures/6cb7ca510f0bfd9f7e40d08b89a50fcc.jpg
 # feh --bg-center ~/Pictures/diabeloop-logo.png -B "#1F2430"
-feh --bg-center ~/Pictures/ascii_logo_5.png -B "#1F2430"
+# feh --bg-center ~/Pictures/ascii_logo_5.png -B "#1F2430"
+feh --bg-tile ~/Pictures/photo_chamonix/1656317311347.jpg -B "#1F2430"
 # hsetroot -solid "#E82424" &
 # hsetroot -solid "#000000" &
 
@@ -94,8 +95,9 @@ feh --bg-center ~/Pictures/ascii_logo_5.png -B "#1F2430"
 ~/.config/polybar/launch.sh &
 #network
 nm-applet &     #network
+
 # compositor
-# picom -b --experimental-backends &
+picom -b --experimental-backends &
 
 # conky
 # .config/scripts/launch_conky.sh

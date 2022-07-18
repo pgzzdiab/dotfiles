@@ -166,7 +166,7 @@ require('telescope').setup{
     -- },
     layout_config = {
       -- horizontal = {
-      --   prompt_position = "top",
+      --   prompt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_position = "top",
       --   preview_width = 0.55,
       --   results_width = 0.8,
       -- },
@@ -306,57 +306,11 @@ local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
--- local check_back_space = function()
---     local col = vim.fn.col('.') - 1
---     if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
---         return true
---     else
---         return false
---     end
--- end
-
--- _G.tab_complete = function()
---     if cmp and cmp.visible() then
---         cmp.select_next_item()
---     elseif luasnip and luasnip.expand_or_jumpable() then
---         return t("<Plug>luasnip-expand-or-jump")
---     elseif check_back_space() then
---         return t "<Tab>"
---     else
---         cmp.complete()
---     end
---     return ""
--- end
--- _G.s_tab_complete = function()
---   if cmp and cmp.visible() then
---       cmp.select_prev_item()
---   elseif luasnip and luasnip.jumpable(-1) then
---       return t("<Plug>luasnip-jump-prev")
---   else
---       return t "<S-Tab>"
---   end
---   return ""
--- end
-
--- _G.look = function()
---   if ls.expand_or_jumpable() then
---     ls.expand_or_jumpable()
---   end
--- end
-
--- vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.look()", {silent = true})
--- vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
--- vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
--- vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
--- vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
--- vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
--- vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
-
 require("luasnip.loaders.from_vscode").lazy_load()
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 local ls = require "luasnip"
 local types = require "luasnip.util.types"
-
 ls.config.set_config {
   -- This tells LuaSnip to remember to keep around the last snippet.
   -- You can jump back into it even if you move outside of the selection
@@ -408,6 +362,8 @@ vim.keymap.set("i", "<c-u>", require "luasnip.extras.select_choice")
 
 -- shorcut to source my luasnips file again, which will reload my snippets
 vim.keymap.set("n", "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>")
+
+
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- nvim-cmp ---------------------------------------------- #
@@ -764,6 +720,8 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 require'lightspeed'.setup {
   ignore_case = true,
   repeat_ft_with_target_char = true,
+  -- exit_after_idle_msecs = { unlabeled = 500, labeled = nil },
+
 }
 
 -- -------------------------------------------------------------------------- #
@@ -956,31 +914,31 @@ require('ayu').setup({
 -- -------------------------------------------------------------------------- #
 -- ----------------- kanagawa ---------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require('kanagawa').setup({
---     undercurl = true,           -- enable undercurls
---     -- commentStyle = "italic",
---     -- functionStyle = "NONE",
---     -- keywordStyle = "italic",
---     -- statementStyle = "bold",
---     -- typeStyle = "NONE",
---     variablebuiltinStyle = "italic",
---     specialReturn = true,       -- special highlight for the return keyword
---     specialException = true,    -- special highlight for exception handling keywords
---     transparent = true,        -- do not set background color
---     colors = {},
---     overrides = {
---       -- override existing hl-groups, the new keywords are merged with existing ones
---       VertSplit  = {
---         -- fg = '#2D4F67',
---         fg = '#2A2A37',
---         bg = "NONE"
---       },
---       Search = {bg = '#33415E'},
---       CursorLine = {bg = '#1F1F28'},
---       ColorColumn = {bg = '#0F0F14'},
---       StatusLine = {bg = '#0F0F14'},
---     },
--- })
+require('kanagawa').setup({
+    undercurl = true,           -- enable undercurls
+    -- commentStyle = "italic",
+    -- functionStyle = "NONE",
+    -- keywordStyle = "italic",
+    -- statementStyle = "bold",
+    -- typeStyle = "NONE",
+    -- variablebuiltinStyle = "italic",
+    specialReturn = true,       -- special highlight for the return keyword
+    specialException = true,    -- special highlight for exception handling keywords
+    transparent = true,        -- do not set background color
+    colors = {},
+    overrides = {
+      -- override existing hl-groups, the new keywords are merged with existing ones
+      VertSplit  = {
+        -- fg = '#2D4F67',
+        fg = '#2A2A37',
+        bg = "NONE"
+      },
+      Search = {bg = '#33415E'},
+      -- CursorLine = {bg = '#1F1F28'},
+      -- ColorColumn = {bg = '#0F0F14'},
+      -- StatusLine = {bg = '#0F0F14'},
+    },
+})
 
 -- setup must be called before loading
 -- vim.cmd("colorscheme kanagawa")
@@ -1577,7 +1535,7 @@ require('nvim-treesitter.configs').setup {
   ensure_installed = "maintained",
 
   highlight = {
-    enable = true,
+    enable = false,
     additional_vim_regex_highlighting = false,
   },
 
@@ -1629,7 +1587,7 @@ require('nvim-treesitter.configs').setup {
         -- You can use the capture groups defined in textobjects.scm
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",
-        -- ["ac"] = "@class.outer",
+        ["ac"] = "@class.outer",
         ["ic"] = "@class.inner",
         ["qa"] = "@conditional.outer",
         ["'a"] = "@loop.outer",

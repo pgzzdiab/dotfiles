@@ -59,10 +59,11 @@ set completeopt=menuone,noselect  " completion menu
 set softtabstop=4
 set shiftwidth=2             " spaces per tab (when shifting)
 set tabstop=4             " spaces per tab
-set smarttab         " <tab>/<BS> indent/dedent in leading whitespace
-" set autoindent          " maintain indent of current line
-set noexpandtab        " don't expand tabs into spaces
-set shiftround
+" set smarttab         " <tab>/<BS> indent/dedent in leading whitespace
+set autoindent          " maintain indent of current line
+set indentexpr
+" set noexpandtab        " don't expand tabs into spaces
+set shiftround           " Round indent to multiple of 'shiftwidth'
 
 set scrolloff=10                    " limit of line to scroll
 set showtabline=2                   " always show tab number
@@ -747,7 +748,7 @@ if has('nvim')
   Plug 'marko-cerovac/material.nvim'
 
   " Plug 'rktjmp/lush.nvim'
-  " Plug 'ellisonleao/gruvbox.nvim'                    " colorscheme
+  " Plug 'ellisonleao/gruvbox.nvim'
   Plug 'Shatur/neovim-ayu'
   Plug 'rebelot/kanagawa.nvim'
 
@@ -1819,7 +1820,8 @@ if has('nvim')
 
   " Map Rnvimr action
   let g:rnvimr_action = {
-	      \ '<C-t>': 'NvimEdit tabedit',
+	      \ 'i': 'NvimEdit edit',
+	      \ 'e': 'NvimEdit drop',
 	      \ '<C-x>': 'NvimEdit split',
 	      \ '<C-v>': 'NvimEdit vsplit',
 	      \ 'gw': 'JumpNvimCwd',
@@ -2197,8 +2199,8 @@ nnoremap <leader>sa g^f_l"aye/@property<CR>k:call Template_1()<CR>11k<10j....>10
 " ------------------------------------------------------------------------- "
 
 if has('nvim')
-    colorscheme ayu
-    " colorscheme kanagawa
+    " colorscheme ayu
+    colorscheme kanagawa
     " colorscheme night-owl
 else
     colorscheme material
@@ -2241,7 +2243,8 @@ endif
 " ------------------------------------------------------------------------- "
 " highlight ColorColumn guibg= #213B47
 " set colorcolumn=80
-set colorcolumn=90
+" set colorcolumn=90
+set colorcolumn=100
 
 " ------------------------------------------------------------------------- "
 " ------------------- folding --------------------------------------------- "
