@@ -4,6 +4,19 @@
 
 vim.opt.termguicolors = true
 
+
+-- When deleting empty line don't copy content
+local function delete_special()
+	local line_data = vim.api.nvim_win_get_cursor(0) -- returns {row, col}
+	local current_line = vim.api.nvim_buf_get_lines(0, line_data[1]-1, line_data[1], false)
+	if current_line[1] == "" then
+		return '"_dd'
+	else
+		return 'dd'
+	end
+end
+vim.keymap.set( "n", "dd", delete_special, { noremap = true, expr = true } )
+
 -- -------------------------------------------------------------------------- #
 -- --------------------- symbols ------------------------------------------- #
 -- -------------------------------------------------------------------------- #
@@ -1531,7 +1544,10 @@ require('cokeline').setup({
 --  ----------------- treesitter-textobjects -------------------------------- #
 -- -------------------------------------------------------------------------- #
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "python", "lua"},
+  ensure_installed = {
+    "python",
+    "lua"
+  },
   ensure_installed = "maintained",
 
   highlight = {
@@ -1578,7 +1594,7 @@ require('nvim-treesitter.configs').setup {
     --   },
     -- },
     select = {
-      -- enable = true,
+      enable = true,
 
       -- Automatically jump forward to textobj, similar to targets.vim
       -- lookahead = true,
