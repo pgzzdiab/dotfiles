@@ -27,7 +27,7 @@ set conceallevel=0                " manage conceal text
 set splitright                    " new windows appeard right vsplit
 set lazyredraw                   " don't draw screen while executing macro for speed
 
-set belloff                       " disable bell
+" set belloff                       " disable bell
 set noerrorbells visualbell t_vb=
 
 set spelllang=en                  " syntax check
@@ -389,7 +389,8 @@ endif
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> 'c "_
 noremap <Leader>R  :cdo %s//
-" noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
+noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
+noremap <leader>r yiwgniw:cdo %s/<C-r>"/<C-r>"/g
 " noremap <silent> <Leader>r :set ro<CR>             " set current buffer to readonly
 " noremap <silent> <Leader>R :set noreadonly<CR>     " set current buffer to noreadonly
 map Q <Nop>                                        " disable entring in ex mode
@@ -570,6 +571,7 @@ if has('nvim')
     Plug 'neovim/nvim-lspconfig'                     " lsp configuration
     Plug 'williamboman/nvim-lsp-installer'         " nvim-lspconfig companion
     Plug 'hrsh7th/nvim-cmp'                          " completion plugin
+    Plug 'glepnir/lspsaga.nvim', { 'branch': 'main' }  " UI usefull to find best definition
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-nvim-lua'
     Plug 'hrsh7th/cmp-buffer'
@@ -588,14 +590,15 @@ if has('nvim')
     " -------------------------------------------------------------------------- #
     " ------------------ theming ----------------------------------------------- #
     " -------------------------------------------------------------------------- #
+    " Plug 'glepnir/dashboard-nvim'
     " Plug 'rmagatti/igs.nvim'                               " git helper
     Plug 'Julpikar/night-owl.nvim'
     Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
+    Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
     Plug 'sindrets/diffview.nvim'                          " diffview
     Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
 
-    Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
     Plug 'nvim-lua/popup.nvim'                             " to install telescope
     Plug 'nvim-telescope/telescope.nvim'
     Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
@@ -609,6 +612,8 @@ if has('nvim')
     Plug 'vijaymarupudi/nvim-fzf'                          " fzf
     Plug 'ibhagwan/fzf-lua'
     Plug 'tiagovla/tokyodark.nvim'
+
+    Plug 'davidgranstrom/nvim-markdown-preview'
 
 else
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -752,12 +757,12 @@ if has('nvim')
   Plug 'Shatur/neovim-ayu'
   Plug 'rebelot/kanagawa.nvim'
 
-  " Plug 'Yggdroot/indentLine'                             " indent guide
-  " Plug 'hoob3rt/lualine.nvim'                          " statusbar
-  " Plug 'famiu/feline.nvim'                               " statusbar
-  " Plug 'romgrk/barbar.nvim'                              " bufferline
+" Plug 'Yggdroot/indentLine'                             " indent guide
+" Plug 'hoob3rt/lualine.nvim'                          " statusbar
+" Plug 'famiu/feline.nvim'                               " statusbar
+" Plug 'romgrk/barbar.nvim'                              " bufferline
 else
-  " Plug 'kaicataldo/material.vim', { 'branch': 'main' }
+" Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 endif
 
 Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
@@ -811,9 +816,9 @@ call plug#end()
 
 
 if has('nvim')
-	" some neovim packges are configured here
-	" lua require('$HOME/.vim/lua/lua_config')
-	lua require('lua_config')
+      " some neovim packges are configured here
+      " lua require('$HOME/.vim/lua/lua_config')
+      lua require('lua_config')
 
 endif
 
@@ -821,25 +826,25 @@ endif
 " blankline indent
 " --------------------------------------------------------------
 if has('nvim')
-  " let g:indentLine_char = "▎"
-  " let g:indentLine_conceallevel = 2
+" let g:indentLine_char = "▎"
+" let g:indentLine_conceallevel = 2
 endif
 
 " --------------------------------------------------------------
 " comment-box
 " --------------------------------------------------------------
 if has('nvim')
-  " left aligned fixed size box with left aligned text
-  " nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
-  " vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
+" left aligned fixed size box with left aligned text
+" nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
+" vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
 
-  " centered adapted box with centered text
-  nnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
-  vnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
+" centered adapted box with centered text
+nnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
+vnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
 
-  " centered line
-  nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
-  " inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
+" centered line
+nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
+" inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
 
 endif
 
@@ -902,6 +907,14 @@ nnoremap <silent> <leader>dp :call openbrowser#smart_search(expand('<cword>'), "
 nnoremap <silent> <leader>dw :call openbrowser#smart_search(expand('<cword>'), "web")<CR>
 
 " -------------------------------------------------------------
+" Fugitive Conflict Resolution
+" -------------------------------------------------------------
+nnoremap <leader>gd :Gvdiff<CR>
+nnoremap <leader>gdh :diffget //2<CR>
+nnoremap <leader>gdl :diffget //3<CR>
+
+
+" -------------------------------------------------------------
 "  fswitch
 "  ------------------------------------------------------------
 au BufEnter *.h  let b:fswitchdst = "c,cpp,cc,m"
@@ -923,6 +936,12 @@ let g:vindent_object_ii   = 'ii'
 let g:vindent_object_iI   = 'iI'
 let g:vindent_object_ai   = 'ai'
 let g:vindent_object_aI   = 'aI'
+
+" -------------------------------------------------------------
+"  markdown-preview
+"  ------------------------------------------------------------
+let g:nvim_markdown_preview_theme = 'solarized-dark'
+nnoremap <leader>mp <plug>(nvim-markdown-preview)
 
 " -------------------------------------------------------------
 "  scrollbar
@@ -1698,8 +1717,9 @@ nnoremap <leader>gc :Git checkout <C-r>+
 " nnoremap <silent> ga <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 " nnoremap <silent> gl <cmd>lua lua vim.lsp.diagnostic.set_loclist()<CR>
 " " nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
-nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.definition()<cr>
-nnoremap <silent> <space>s :split \| lua vim.lsp.buf.definition()<cr>
+nnoremap <silent> <space>k <cmd>lua vim.lsp.buf.declaration()<cr>
+nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.declaration()<cr>
+nnoremap <silent> <space>s :split \| lua vim.lsp.buf.declaration()<cr>
 nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
 
 " --------------------------------------------------------------------------
@@ -1707,7 +1727,7 @@ nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 " -- -----------------------------------------------------------------------
  if has('nvim')
 	" -- lsp provider to find the cursor word definition and reference
-	nnoremap <silent> cd <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
+	" nnoremap <silent> cd <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
 	" -- or use command LspSagaFinder
 	" nnoremap <silent> gy :lspsaga lsp_finder<CR>
 
@@ -1724,7 +1744,7 @@ nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 	" nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
 
 	" -- show signature help
-	" nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
+	nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 
 	" -- preview definition
 	" nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
@@ -2110,7 +2130,7 @@ else
 	nmap <silent> gb <Plug>(coc-diagnostic-prev)
 	nmap <silent> gn <Plug>(coc-diagnostic-next)
 	" nmap <silent> me <Plug>(coc-diagnostic-error)
-	nmap <silent> gd <Plug>(coc-action-jumpDefinition)
+	nmap <silent> gh <Plug>(coc-action-jumpDefinition)
 	nmap <silent> ge <Plug>(coc-action-jumpDeclaration)
 	" nnoremap <silent> gr :call :<C-u>show_documentation<CR> " show Documentation
 	nnoremap <silent><nowait> ga  :<C-u>CocList diagnostics<cr> " Show all diagnostics.

@@ -86,15 +86,15 @@ source $ZSH/oh-my-zsh.sh
 source $HOME/.oh-my-zsh/custom/plugins/zsh-completions/zsh-completions.plugin.zsh
 
 # The plugin will auto execute this zvm_after_lazy_keybindings function
-function zvm_after_lazy_keybindings() {
-  # Here we define the custom widget
-  zvm_define_widget my_custom_widget
-
-  # In normal mode, press Ctrl-E to invoke this widget
-    zvm_bindkey H ^
-    zvm_bindkey L $
-    zvm_bindkey <space> y
-}
+# function zvm_after_lazy_keybindings() {
+#   # Here we define the custom widget
+#   zvm_define_widget my_custom_widget
+#
+#   # In normal mode, press Ctrl-E to invoke this widget
+#     zvm_bindkey H ^
+#     zvm_bindkey L $
+#     zvm_bindkey <space> y
+# }
 
 
 # only aws command completion
@@ -143,7 +143,10 @@ alias red5="redshift -O 5000K"
 alias poly="./.config/polybar/launch.sh"
 alias ex="exec xset r rate 120 150"
 alias vpn="sudo openfortivpn"
+# script to create custom tmux session
 alias ta="~/.config/tmux/auto_setup.sh"
+# script to kill tmux session and create a new one
+alias tn="~/.config/tmux/new_tmux_session.sh"
 # alias back="hsetroot -solid '#000000'"
 # alias back="feh --bg-scale ~/Pictures/xUjtUYC.png"
 alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
@@ -158,6 +161,7 @@ alias icat="kitty +kitten icat"
 alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
 alias v="nvim"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
+alias sftest="pytest -x -v -rfEs --durations=0 --ignore=simulation_framework/com/virtual_patient_simulator/tests/vp_bin/ simulation_framework"
 
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -165,7 +169,9 @@ source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # icat --align=center Pictures/diabeloop-logo.png
 # icat --align=center ~/Pictures/ascii_logo_4.png
 # fm6000 -r
-neofetch --kitty ~/Pictures/me2.png --size 250px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
+neofetch --kitty ~/Pictures/me2.png --size 180px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
+tmux ls
 # neofetch --kitty ~/Pictures/diabeloop-logo.png --crop_mode fitt -x --size 250px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
 
 # complete -C "/home/pierre/.local/bin/aws_completer" aws
+# gsettings set org.gnome.desktop.background primary-color '#000000'

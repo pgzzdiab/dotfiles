@@ -8,10 +8,10 @@ configuration {
 * {
   transparency: "real";
 /* background-color: transparent; */
- background-color: #263238;
-  window-border: #263238;
+ background-color: #1F2430;
+  window-border: #1F2430;
   foreground: #B0BEC5;
-  selected-normal-background: #192227;
+  selected-normal-background: #1F2430;
   spacing: 5;
   text:       #B0BEC5;
   text-alt:   #C3E88D;

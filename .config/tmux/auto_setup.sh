@@ -1,6 +1,8 @@
 #!/bin/bash
 # Session Name
-session=$(git branch --show-current)
+dir_name=${PWD##*/}          # to assign to a variable
+git_branch=$(git branch --show-current)
+session=$dir_name/$git_branch
 SESSIONEXISTS=$(tmux list-sessions | grep $session)
 
 # Only create tmux session if it doesn't already exist
@@ -12,19 +14,24 @@ fi
 
 # Start New Session with our name
 tmux new-session -d -s $session
+commandvenv="source venv/bin/activate"
 
-tmux rename-window -t $session:1 -n 'neovim'
-tmux send-keys -t 'neovim' C-m '. venv/bin/activate' C-m
-tmux send-keys -t 'neovim' C-m 'v' C-m
+window=1
+tmux rename-window -t $session:$window 'neovim'
+tmux send-keys -t $session:$window 't'
+tmux send-keys -t $session:$window 'source' Space 'venv/bin/activate' C-m
+tmux send-keys -t $session:$window 'nvim' C-m Enter C-m Enter C-m
 
-# Create and setup pane
-tmux new-window -t $session:2 -n 'python'
-# tmux rename-window -t $session:1 -n 'python'
-tmux send-keys -t 'python' C-m '. venv/bin/activate' C-m
+window=2
+tmux new-window -t $session:$window -n 'run python'
+tmux send-keys -t $session:$window 't'
+tmux send-keys -t $session:$window 'source' Space 'venv/bin/activate' C-m
 
-# Setup an additional shell
-tmux new-window -t $session:3 -n 'ranger'
-tmux send-keys -t 'ranger' C-m "ranger" C-m
+window=3
+tmux new-window -t $session:$window -n 'ranger'
+tmux send-keys -t $session:$window 't'
+tmux send-keys -t $session:$window 'ranger' Enter C-m
+tmux send-keys -t $session:$window "'r" C-m
 
 
 # Attach Session, on the Main window

@@ -39,12 +39,10 @@ ls.add_snippets(nil, {
     },
 })
 ls.add_snippets("python", {
-      snip("fmt2", fmt([[
-		foo({1}, {3}) {{
-			return {2} * {4}
-		}}
-		]], {i(1, "x"), rep(1), i(2, "y"), rep(2)}
-		)
+      snip("join", fmt([[
+        os.path.abspath(os.path.join({1}))
+        ]], {i(1, "path")}
+        )
       ),
 
 

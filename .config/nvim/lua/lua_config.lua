@@ -74,43 +74,124 @@ vim.keymap.set( "n", "dd", delete_special, { noremap = true, expr = true } )
 -- -------------------------------------------------------------------------- #
 -- --------------------- Diffview ------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- Lua
--- local cb = require'diffview.config'.diffview_callback
--- require'diffview'.setup {
-  -- diff_binaries = false,    -- Show diffs for binaries
-  -- file_panel = {
-    -- width = 35,
-    -- -- use_icons = true        -- Requires nvim-web-devicons
-  -- },
-  -- key_bindings = {
-    -- disable_defaults = false,                   -- Disable the default key bindings
-    -- -- The `view` bindings are active in the diff buffers, only when the current
-    -- -- tabpage is a Diffview.
-    -- view = {
-      -- ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
-      -- ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
-      -- ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
-      -- ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
-    -- },
-    -- file_panel = {
-      -- -- ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
-      -- -- ["<down>"]        = cb("next_entry"),
-      --  ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
-      -- ["<up>"]          = cb("prev_entry"),
-      -- ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
-      -- ["o"]             = cb("select_entry"),
-      -- ["<2-LeftMouse>"] = cb("select_entry"),
-      -- ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
-      -- ["S"]             = cb("stage_all"),          -- Stage all entries.
-      -- ["U"]             = cb("unstage_all"),        -- Unstage all entries.
-      -- ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
-      -- ["<tab>"]         = cb("select_next_entry"),
-      -- ["<s-tab>"]       = cb("select_prev_entry"),
-      -- ["<leader>e"]     = cb("focus_files"),
-      -- ["<leader>b"]     = cb("toggle_files"),
-    -- }
-  -- }
--- }
+
+-- local actions = require("diffview.actions")
+
+require("diffview").setup()
+--   diff_binaries = false,    -- Show diffs for binaries
+--   enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
+--   git_cmd = { "git" },      -- The git executable followed by default args.
+--   use_icons = true,         -- Requires nvim-web-devicons
+--   icons = {                 -- Only applies when use_icons is true.
+--     folder_closed = "",
+--     folder_open = "",
+--   },
+--   signs = {
+--     fold_closed = "",
+--     fold_open = "",
+--   },
+--   file_panel = {
+--     listing_style = "tree",             -- One of 'list' or 'tree'
+--     tree_options = {                    -- Only applies when listing_style is 'tree'
+--       flatten_dirs = true,              -- Flatten dirs that only contain one single dir
+--       folder_statuses = "only_folded",  -- One of 'never', 'only_folded' or 'always'.
+--     },
+--     win_config = {                      -- See ':h diffview-config-win_config'
+--       position = "left",
+--       width = 35,
+--     },
+--   },
+--   file_history_panel = {
+--     log_options = {   -- See ':h diffview-config-log_options'
+--       single_file = {
+--         diff_merges = "combined",
+--       },
+--       multi_file = {
+--         diff_merges = "first-parent",
+--       },
+--     },
+--     win_config = {    -- See ':h diffview-config-win_config'
+--       position = "bottom",
+--       height = 16,
+--     },
+--   },
+--   commit_log_panel = {
+--     win_config = {},  -- See ':h diffview-config-win_config'
+--   },
+--   default_args = {    -- Default args prepended to the arg-list for the listed commands
+--     DiffviewOpen = {},
+--     DiffviewFileHistory = {},
+--   },
+--   hooks = {},         -- See ':h diffview-config-hooks'
+--   keymaps = {
+--     disable_defaults = false, -- Disable the default keymaps
+--     view = {
+--       -- The `view` bindings are active in the diff buffers, only when the current
+--       -- tabpage is a Diffview.
+--       ["<tab>"]      = actions.select_next_entry, -- Open the diff for the next file
+--       ["<s-tab>"]    = actions.select_prev_entry, -- Open the diff for the previous file
+--       ["gf"]         = actions.goto_file,         -- Open the file in a new split in the previous tabpage
+--       ["<C-w><C-f>"] = actions.goto_file_split,   -- Open the file in a new split
+--       ["<C-w>gf"]    = actions.goto_file_tab,     -- Open the file in a new tabpage
+--       ["<leader>e"]  = actions.focus_files,       -- Bring focus to the files panel
+--       ["<leader>b"]  = actions.toggle_files,      -- Toggle the files panel.
+--     },
+--     file_panel = {
+--       ["j"]             = actions.next_entry,         -- Bring the cursor to the next file entry
+--       ["<down>"]        = actions.next_entry,
+--       ["k"]             = actions.prev_entry,         -- Bring the cursor to the previous file entry.
+--       ["<up>"]          = actions.prev_entry,
+--       ["<cr>"]          = actions.select_entry,       -- Open the diff for the selected entry.
+--       ["o"]             = actions.select_entry,
+--       ["<2-LeftMouse>"] = actions.select_entry,
+--       ["-"]             = actions.toggle_stage_entry, -- Stage / unstage the selected entry.
+--       ["S"]             = actions.stage_all,          -- Stage all entries.
+--       ["U"]             = actions.unstage_all,        -- Unstage all entries.
+--       ["X"]             = actions.restore_entry,      -- Restore entry to the state on the left side.
+--       ["R"]             = actions.refresh_files,      -- Update stats and entries in the file list.
+--       ["L"]             = actions.open_commit_log,    -- Open the commit log panel.
+--       ["<c-b>"]         = actions.scroll_view(-0.25), -- Scroll the view up
+--       ["<c-f>"]         = actions.scroll_view(0.25),  -- Scroll the view down
+--       ["<tab>"]         = actions.select_next_entry,
+--       ["<s-tab>"]       = actions.select_prev_entry,
+--       ["gf"]            = actions.goto_file,
+--       ["<C-w><C-f>"]    = actions.goto_file_split,
+--       ["<C-w>gf"]       = actions.goto_file_tab,
+--       ["i"]             = actions.listing_style,        -- Toggle between 'list' and 'tree' views
+--       ["f"]             = actions.toggle_flatten_dirs,  -- Flatten empty subdirectories in tree listing style.
+--       ["<leader>e"]     = actions.focus_files,
+--       ["<leader>b"]     = actions.toggle_files,
+--     },
+--     file_history_panel = {
+--       ["g!"]            = actions.options,          -- Open the option panel
+--       ["<C-A-d>"]       = actions.open_in_diffview, -- Open the entry under the cursor in a diffview
+--       ["y"]             = actions.copy_hash,        -- Copy the commit hash of the entry under the cursor
+--       ["L"]             = actions.open_commit_log,
+--       ["zR"]            = actions.open_all_folds,
+--       ["zM"]            = actions.close_all_folds,
+--       ["j"]             = actions.next_entry,
+--       ["<down>"]        = actions.next_entry,
+--       ["k"]             = actions.prev_entry,
+--       ["<up>"]          = actions.prev_entry,
+--       ["<cr>"]          = actions.select_entry,
+--       ["o"]             = actions.select_entry,
+--       ["<2-LeftMouse>"] = actions.select_entry,
+--       ["<c-b>"]         = actions.scroll_view(-0.25),
+--       ["<c-f>"]         = actions.scroll_view(0.25),
+--       ["<tab>"]         = actions.select_next_entry,
+--       ["<s-tab>"]       = actions.select_prev_entry,
+--       ["gf"]            = actions.goto_file,
+--       ["<C-w><C-f>"]    = actions.goto_file_split,
+--       ["<C-w>gf"]       = actions.goto_file_tab,
+--       ["<leader>e"]     = actions.focus_files,
+--       ["<leader>b"]     = actions.toggle_files,
+--     },
+--     option_panel = {
+--       ["<tab>"] = actions.select_entry,
+--       ["q"]     = actions.close,
+--     },
+--   },
+-- })
 
 
 -- -------------------------------------------------------------------------- #
@@ -602,11 +683,11 @@ local On_attach = function(client, bufnr)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  -- buf_set_keymap('n', '<space>k', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  -- buf_set_keymap('n', '<space>k', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
@@ -724,6 +805,7 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 --
 -- }
 -- require'lsp_signature'.on_attach(cfg)
+
 
 
 -- -------------------------------------------------------------------------- #
@@ -1660,3 +1742,129 @@ require('nvim-autopairs').setup({
 --   Rule("$", "$", "lua")
 --     :with_pair(ts_conds.is_not_ts_node({'function'}))
 -- })
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- lspsaga ----------------------------------------- #
+-- -------------------------------------------------------------------------- #
+local saga = require 'lspsaga'
+
+-- change the lsp symbol kind
+local kind = require('lspsaga.lspkind')
+-- kind[type_number][2] = icon -- see lua/lspsaga/lspkind.lua
+
+-- use default config
+-- saga.init_lsp_saga()
+
+-- use custom config
+saga.init_lsp_saga({
+    -- put modified options in there
+  --
+  -- Options with default value
+  -- "single" | "double" | "rounded" | "bold" | "plus"
+  border_style = "rounded",
+  --the range of 0 for fully opaque window (disabled) to 100 for fully
+  --transparent background. Values between 0-30 are typically most useful.
+  saga_winblend = 0,
+  -- when cursor in saga window you config these to move
+  move_in_saga = { prev = '<C-p>',next = '<C-n>'},
+  -- Error, Warn, Info, Hint
+  -- use emoji like
+  -- { "🙀", "😿", "😾", "😺" }
+  -- or
+  -- { "😡", "😥", "😤", "😐" }
+  -- and diagnostic_header can be a function type
+  -- must return a string and when diagnostic_header
+  -- is function type it will have a param `entry`
+  -- entry is a table type has these filed
+  -- { bufnr, code, col, end_col, end_lnum, lnum, message, severity, source }
+  diagnostic_header = { " ", " ", " ", "ﴞ " },
+  -- show diagnostic source
+  show_diagnostic_source = true,
+  -- add bracket or something with diagnostic source, just have 2 elements
+  diagnostic_source_bracket = {},
+  -- preview lines of lsp_finder and definition preview
+  max_preview_lines = 10,
+  -- use emoji lightbulb in default
+  code_action_icon = "💡",
+  -- if true can press number to execute the codeaction in codeaction window
+  code_action_num_shortcut = true,
+  -- same as nvim-lightbulb but async
+  code_action_lightbulb = {
+      enable = true,
+      sign = true,
+      enable_in_insert = true,
+      sign_priority = 20,
+      virtual_text = true,
+  },
+  -- finder icons
+  finder_icons = {
+    def = '  ',
+    ref = '諭 ',
+    link = '  ',
+  },
+  -- finder do lsp request timeout
+  -- if your project big enough or your server very slow
+  -- you may need to increase this value
+  finder_request_timeout = 1500,
+  finder_action_keys = {
+      open = "o",
+      vsplit = "v",
+      split = "s",
+      tabe = "t",
+      quit = "q",
+      scroll_down = "<C-f>",
+      scroll_up = "<C-b>", -- quit can be a table
+  },
+  code_action_keys = {
+      quit = "q",
+      exec = "<CR>",
+  },
+  rename_action_quit = "<C-c>",
+  rename_in_select = true,
+  definition_preview_icon = "  ",
+  -- show symbols in winbar must nightly
+  symbol_in_winbar = {
+      in_custom = false,
+      enable = false,
+      separator = ' ',
+      show_file = true,
+      click_support = false,
+  },
+  -- show outline
+  show_outline = {
+    win_position = 'right',
+    --set special filetype win that outline window split.like NvimTree neotree
+    -- defx, db_ui
+    win_with = '',
+    win_width = 30,
+    auto_enter = true,
+    auto_preview = true,
+    virt_text = '┃',
+    jump_key = 'o',
+    -- auto refresh when change buffer
+    auto_refresh = true,
+  },
+  -- if you don't use nvim-lspconfig you must pass your server name and
+  -- the related filetypes into this table
+  -- like server_filetype_map = { metals = { "sbt", "scala" } }
+  -- server_filetype_map = {},
+})
+vim.keymap.set("n", "gs", "<Cmd>Lspsaga signature_help<CR>", { silent = true })
+vim.keymap.set("n", "gd", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
+
+-- or use command
+vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
+
+-- local action = require("lspsaga.action")
+-- scroll down hover doc or scroll in definition preview
+-- vim.keymap.set("n", "<C-f>", function()
+--     action.smart_scroll_with_saga(1)
+-- end, { silent = true })
+-- -- scroll up hover doc
+-- vim.keymap.set("n", "<C-b>", function()
+--     action.smart_scroll_with_saga(-1)
+-- end, { silent = true })
+
+vim.keymap.set("n", "<leader>gr", "<cmd>Lspsaga rename<CR>", { silent = true })
+-- close rename win use <C-c> in insert mode or `q` in normal mode or `:q`
+vim.keymap.set("n", "gp", "<cmd>Lspsaga preview_definition<CR>", { silent = true })
