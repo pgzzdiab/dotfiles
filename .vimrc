@@ -307,6 +307,20 @@ function! CheckPyFile()
 		endif
 endfunction
 
+fun! X()
+    let s:a = gitbranch#name()
+    echo s:a
+    let s:b = substitute(s:a, "\/", "-", "")
+    " /Hello
+    echo "search workspace: ".expand(s:b)
+    let @/ = s:b
+    " :normal /s:a
+
+endfun
+map <leader>n :call X()<CR>
+
+au VimEnter * call X() | normal! n
+
 " When closing the buffer the 'modified date' is updated
 " autocmd BufWinLeave *.py :call UpdateDatePyFile()
 " autocmd FileChangedShell *.py :call UpdateDatePyFile()
@@ -347,6 +361,19 @@ nnoremap <leader>ib gg/import<CR>)Ofrom beartype import beartype<Esc><C-o><C-o>
 nnoremap <leader>ic gg/import<CR>)Ofrom common.base import base<Esc><C-o><C-o>
 nnoremap <leader>it yiwgg/import<CR>ofrom typing import <C-r>"<Esc><C-o><C-o>
 
+" function! FindFiles()
+"     call inputsave()
+"     let l:dir = input("Find file in: ", expand("%:p:h"), "dir")
+"     call inputrestore()
+"     if l:dir != ""
+"         call inputsave()
+"         let l:file = input("File name: ")
+"         call inputrestore()
+"         let l:nf = 'find '.l:dir.' -type f -iname '.l:file.' -exec grep -nH -m 1 ".*" {} \;'
+"         lexpr system(l:nf)
+"     endif
+" endfunction
+" nnoremap <silent> <leader>fo :call FindFiles()<CR>
 
 " _____________________________________________________________________________ "
 " _____________________________________________________________________________ "
@@ -387,6 +414,9 @@ else
 	execute "set <M-'>=\e'"
 endif
 nnoremap <silent> vv <C-w>v
+" nnoremap <silent> vh <C-w>v<C-w>h
+" nnoremap <silent> vl <C-w>v<C-w>l
+" nnoremap <silent> sk <C-w>s<C-w>k
 nnoremap <silent> 'c "_
 noremap <Leader>R  :cdo %s//
 noremap R yiw:%s///gc<Left><Left><Left><Left><C-r>"<Right>
@@ -405,11 +435,12 @@ noremap ' "
 noremap go o
 noremap gO O
 
-noremap <leader>vu :find virtual_patient_simulator_utl.py<CR>
-noremap <leader>vv :find virtual_patient.py<CR>
+" noremap <space>u :find twinlico.py<CR>
+" noremap <space>c :find simulation_base_config.py<CR>
+" noremap <space>v :find virtual_patient_base.py<CR>
 
 " In insert mode insert the last searched with <\   /> surrounding
-inoremap <A-a> <c-r>=substitute(@/, '^\%(\\<lt>\)\=\(.\{-}\)\%(\\>\)\=$', '\1', '')<cr>
+" inoremap <A-a> <c-r>=substitute(@/, '^\%(\\<lt>\)\=\(.\{-}\)\%(\\>\)\=$', '\1', '')<cr>
 
 nnoremap <silent>* :<C-u>call Star()\|set hlsearch<CR>
 function! Star()
@@ -432,7 +463,7 @@ map c' i#<Esc> :call FillLine('-', '#')<CR>        " make a whole comment lie # 
 map cp :call FillLine('-', '")')<CR>               " fill rest of line with ---")
 
 " nnoremap <expr> fs ':%s/'.expand('<cword>').'//gn<CR>``' " search current word under cursor
-nnoremap fj *N
+" nnoremap fj *N
 nnoremap ck i" + \"<Esc>hK                           " cut too long string
 " nnoremap P i<cr><esc>                              " cut line
 :map H ^
@@ -548,7 +579,7 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
-    Plug 'nvim-treesitter/nvim-treesitter-context'
+    " Plug 'nvim-treesitter/nvim-treesitter-context'
     Plug 'kevinhwang91/rnvimr'                            " open ranger in nvim
     " Plug 'rcarriga/nvim-notify'
     Plug 'windwp/nvim-autopairs'
@@ -563,13 +594,19 @@ if has('nvim')
     Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
     Plug 'L3MON4D3/LuaSnip'
     Plug 'rafamadriz/friendly-snippets'                    " Snippets collection for a set of different programming languages for faster development.
+    " Plug 'kkharji/sqlite.lua'
+    " Plug 'AckslD/nvim-neoclip.lua'                         " Sis a clipboard manager for neovim
 
     " -------------------------------------------------------------------------- #
     " ------------------ LSP --------------------------------------------------- #
     " -------------------------------------------------------------------------- #
     Plug 'neovim/nvim-lsp'                           " lsp configuration
     Plug 'neovim/nvim-lspconfig'                     " lsp configuration
-    Plug 'williamboman/nvim-lsp-installer'         " nvim-lspconfig companion
+    " Plug 'williamboman/nvim-lsp-installer'         " nvim-lspconfig companion -> mason.nvim
+    Plug 'WhoIsSethDaniel/mason-tool-installer.nvim'
+    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'williamboman/mason.nvim'
     Plug 'hrsh7th/nvim-cmp'                          " completion plugin
     Plug 'glepnir/lspsaga.nvim', { 'branch': 'main' }  " UI usefull to find best definition
     Plug 'hrsh7th/cmp-nvim-lsp'
@@ -596,7 +633,7 @@ if has('nvim')
     Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
     Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
-    Plug 'sindrets/diffview.nvim'                          " diffview
+    " Plug 'sindrets/diffview.nvim'                          " diffview
     Plug 'kwkarlwang/bufresize.nvim'                       " keep buffer proportions
 
     Plug 'nvim-lua/popup.nvim'                             " to install telescope
@@ -614,6 +651,10 @@ if has('nvim')
     Plug 'tiagovla/tokyodark.nvim'
 
     Plug 'davidgranstrom/nvim-markdown-preview'
+    " Plug 'wuelnerdotexe/vim-enfocado'                      " colorschee
+    Plug 'artart222/nvim-enfocado'                      " colorschee
+    Plug 'folke/todo-comments.nvim'
+    Plug 'dstein64/nvim-scrollview'
 
 else
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -663,7 +704,7 @@ Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer wi
 " --------------------------------------------------------------------------- "
 Plug 'tpope/vim-sleuth'                                 " automatic indentation config
 " Plug 'brooth/far.vim'                                   " search and replace
-Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer
+Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer with :<range>NR
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
 Plug 'mhinz/vim-grepper'                                " Grep tool
 Plug 'svermeulen/vim-subversive'                        " substitution
@@ -724,7 +765,7 @@ Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 Plug 'tpope/vim-unimpaired'                            " exchange lines relatively
 Plug 'FooSoft/vim-argwrap'                             " wrap functions args
 Plug 'jeetsukumaran/vim-indentwise'                    " Move to indent
-" Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
+Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
 Plug 'kana/vim-textobj-user'                           " add new text objects
 " Plug 'glts/vim-textobj-comment'                        " comment text object
 Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
@@ -746,6 +787,7 @@ Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
 " Plug 'vim-airline/vim-airline'                         " tabline
 " Plug 'vim-airline/vim-airline-themes'
 if has('nvim')
+  Plug 'bluz71/vim-nightfly-colors'
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
   " Plug 'windwp/floatline.nvim'
@@ -814,13 +856,28 @@ call plug#end()
 " <<<<<<<<<<<<<<<<<<<< Plugin Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
 
+" --------------------------------------------------------------
+" TreesitterContext
+" --------------------------------------------------------------
+" highlight TreesitterContext guibg=#F07178
+" hi TreesitterContextBottom gui=underline guisp=Grey
+highlight! TreesitterContext guifg=#F07178 guibg=#000000 gui=NONE cterm=NONE
+
 
 if has('nvim')
       " some neovim packges are configured here
-      " lua require('$HOME/.vim/lua/lua_config')
+      " lua require('$HOME/.config/nvim/lua/lua_config.lua')
       lua require('lua_config')
 
 endif
+
+" --------------------------------------------------------------
+" scrollview
+" --------------------------------------------------------------
+highlight! ScrollView guifg=#F07178 gui=NONE cterm=NONE
+" highlight ScrollView ctermbg=159 guibg=LightCyan
+let g:scrollview_signs_on_startup = ['all']
+
 
 " --------------------------------------------------------------
 " blankline indent
@@ -909,9 +966,9 @@ nnoremap <silent> <leader>dw :call openbrowser#smart_search(expand('<cword>'), "
 " -------------------------------------------------------------
 " Fugitive Conflict Resolution
 " -------------------------------------------------------------
-nnoremap <leader>gd :Gvdiff<CR>
-nnoremap <leader>gdh :diffget //2<CR>
-nnoremap <leader>gdl :diffget //3<CR>
+nnoremap <leader>gm :Git mergetool<CR>
+nnoremap <leader>2 :diffget //2<CR>
+nnoremap <leader>3 :diffget //3<CR>
 
 
 " -------------------------------------------------------------
@@ -930,17 +987,16 @@ nnoremap <silent> <localleader>ol :FSSplitRight<cr>
 " -------------------------------------------------------------
 "  vindent
 "  ------------------------------------------------------------
-let g:vindent_motion_prev = '[l'
-let g:vindent_motion_next = ']l'
-let g:vindent_object_ii   = 'ii'
-let g:vindent_object_iI   = 'iI'
-let g:vindent_object_ai   = 'ai'
-let g:vindent_object_aI   = 'aI'
+" let g:vindent_motion_prev = '[l'
+" let g:vindent_motion_next = ']l'
+let g:vindent_object_XX_ii     = 'ii' " select current block.
+let g:vindent_object_XX_ai     = 'ai' " select current block + one extra line  at beginning.
+let g:vindent_object_XX_aI     = 'aI' " select current block + two extra lines at beginning and end.
 
 " -------------------------------------------------------------
 "  markdown-preview
 "  ------------------------------------------------------------
-let g:nvim_markdown_preview_theme = 'solarized-dark'
+" let g:nvim_markdown_preview_theme = 'solarized-dark'
 nnoremap <leader>mp <plug>(nvim-markdown-preview)
 
 " -------------------------------------------------------------
@@ -1048,8 +1104,7 @@ nnoremap <leader>gqa <cmd>lua require('igs').qf_all()<CR>
 " --------------------------------------------------------------
 " unstack
 " --------------------------------------------------------------
-nnoremap <A-a> :UnstackFromClipboard<CR>
-nnoremap <space>j :copen<CR><C-w>JG<CR>
+" nnoremap <A-a> :UnstackFromClipboard<CR>
 
 " nnoremap <A-d> :UnstackFromClipboard \| copen<CR><C-w>JG<CR>
 let g:unstack_populate_quickfix=1
@@ -1416,6 +1471,7 @@ autocmd VimLeavePre *             silent execute 'SSave! ' . GetUniqueSessionNam
 "                 \ |   wincmd w
 "                 \ | endif
 
+
 " --------------------------------------------------------------
 " quickrun
 " --------------------------------------------------------------
@@ -1707,25 +1763,14 @@ nnoremap <leader>gc :Git checkout <C-r>+
 " --------------------------------------------------------------------------
 " -- lsp
 " -- -----------------------------------------------------------------------
-" nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-" nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-" nnoremap <silent> gh <cmd>lua vim.lsp.buf.signature_help()<CR>
-" nnoremap <silent> gs <cmd>lua vim.lsp.buf.hover()<CR>
-" nnoremap <silent> gv <cmd>lua vim.lsp.buf.rename()<CR>
-" nnoremap <silent> ]d <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
-" nnoremap <silent> [d <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
-" nnoremap <silent> ga <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-" nnoremap <silent> gl <cmd>lua lua vim.lsp.diagnostic.set_loclist()<CR>
-" " nnoremap <silent> <space>d :vsplit | spleep 100m<cr>
-nnoremap <silent> <space>k <cmd>lua vim.lsp.buf.declaration()<cr>
-nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.declaration()<cr>
-nnoremap <silent> <space>s :split \| lua vim.lsp.buf.declaration()<cr>
+nnoremap <silent> <space>d :vsplit \| lua vim.lsp.buf.definition()<cr>
+nnoremap <silent> <space>s :split \| lua vim.lsp.buf.definition()<cr>
 nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
 
 " --------------------------------------------------------------------------
 " -- Lspsaga
 " -- -----------------------------------------------------------------------
- if has('nvim')
+ " if has('nvim')
 	" -- lsp provider to find the cursor word definition and reference
 	" nnoremap <silent> cd <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
 	" -- or use command LspSagaFinder
@@ -1744,7 +1789,7 @@ nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 	" nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
 
 	" -- show signature help
-	nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
+	" nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 
 	" -- preview definition
 	" nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
@@ -1755,9 +1800,9 @@ nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definitio
 	" nnoremap <silent> ga <Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
 	" -- jump diagnostic
-	nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
-	nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
-endif
+	" nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
+	" nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
+" endif
 
 " --------------------------------------------------------------------------
 " -- Grepper
@@ -1772,19 +1817,21 @@ xmap gn  <plug>(GrepperOperator)
  if has('nvim')
 	" Find files using Telescope command-line sugar.
 	" nnoremap <leader>t :Telescope <CR>
-	" nnoremap <space>n <cmd>Telescope find_files<cr>
-	nnoremap <space>n <cmd>Telescope git_files<cr>
+	" nnoremap fn <cmd>Telescope find_files<cr>
+	" nnoremap <space>n <cmd>Telescope git_files<cr>
 	" nnoremap fn <cmd>Telescope live_grep<cr>
 	nnoremap fn <cmd>Telescope grep_string<cr>
 	nnoremap <space>b <cmd>Telescope buffers<cr>
-	nnoremap <space>/ <cmd>lua require('telescope.builtin').search_history()<cr>
-	nnoremap <space>m <cmd>lua require('telescope.builtin').marks()<cr>
+	" nnoremap <space>/ <cmd>lua require('telescope.builtin').search_history()<cr>
+	" nnoremap <space>m <cmd>lua require('telescope.builtin').marks()<cr>
 	nnoremap x <cmd>lua require('telescope.builtin').treesitter()<cr>
+	nnoremap <C-l> <cmd>lua require('telescope.builtin').loclist()<cr>
 
 	" nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
 	" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-	nnoremap <leader>tf :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>
+	" nnoremap <space>n :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>
+	nnoremap <space>n :lua require'telescope.builtin'.find_files()<cr>
 endif
 
 " " --------------------------------------------------------------------------
@@ -2033,7 +2080,6 @@ nnoremap <silent> <M-;> :ArgWrap<CR><Esc>
 nmap o <plug>(SubversiveSubstitute)
 nmap oo <plug>(SubversiveSubstituteLine)
 nmap O <plug>(SubversiveSubstituteToEndOfLine)
-nnoremap fj "+oo
 " Substitute Over Range Motion
 nmap op <plug>(SubversiveSubstituteRange)
 xmap op <plug>(SubversiveSubstituteRange)
@@ -2049,7 +2095,7 @@ nmap <leader>co <plug>(SubversiveSubstituteWordRangeConfirm)
 map <C-s> :call Synctex()<cr>
 nnoremap <A-c> :VimtexCompile<cr>
 " :copen to see error
-" nnoremap <M-i> :copen<cr>
+nnoremap <A-a> :copen<cr>
 nnoremap <space>j :ccl<CR>
 nnoremap <A-s> <plug>(vimtex-cmd-create)
 
@@ -2219,9 +2265,19 @@ nnoremap <leader>sa g^f_l"aye/@property<CR>k:call Template_1()<CR>11k<10j....>10
 " ------------------------------------------------------------------------- "
 
 if has('nvim')
-    " colorscheme ayu
-    colorscheme kanagawa
+    " let g:enfocado_style = 'nature' " Available: `nature` or `neon`.
+    " let g:enfocado_plugins = [
+    "   \   'cmp',
+    "   \   'gitsigns',
+    "   \   'indent-blankline',
+    "   \   'lsp',
+    "   \   'telescope',
+    "   \ ]
+    " colorscheme enfocado
+    colorscheme ayu
     " colorscheme night-owl
+    " colorscheme kanagawa
+    " colorscheme nightfly
 else
     colorscheme material
     let $BAT_THEME='material'
@@ -2264,7 +2320,7 @@ endif
 " highlight ColorColumn guibg= #213B47
 " set colorcolumn=80
 " set colorcolumn=90
-set colorcolumn=100
+" set colorcolumn=100
 
 " ------------------------------------------------------------------------- "
 " ------------------- folding --------------------------------------------- "

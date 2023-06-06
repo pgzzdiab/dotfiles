@@ -76,8 +76,8 @@ plugins=(
     aws
     zsh-syntax-highlighting
     zsh-completions
-    zsh-vi-mode
 )
+# zsh-vi-mode
 
 autoload -U compinit && compinit
 
@@ -134,6 +134,9 @@ source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# butbucket ssh
+eval $(ssh-agent)
+
 alias pic="picom -b --experimental-backends"
 alias red="redshift -x"
 alias red2="redshift -O 2000K"
@@ -152,9 +155,8 @@ alias tn="~/.config/tmux/new_tmux_session.sh"
 alias back="feh --bg-scale ~/Pictures/Wallpapers/abstraaaaact.jpg"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias re="pkill -USR1 -x sxhkd"
-# alias ssh="kitty +kitten sshk"
+# alias ssh="kitty +kitten ssh"
 alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-38-118-253.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
-# alias getresult="scp -r -i .ssh/sims.pem ubuntu@ec2-13-38-128-204.eu-west-3.compute.amazonaws.com:git/results/simulation_framework/ dev/results/simulation_framework/aws"
 alias getresult="rsync -avz -e "ssh -i .ssh/sims.pem" ubuntu@ec2-35-180-181-239.eu-west-3.compute.amazonaws.com:/home/ubuntu/git/results/xpAnalysis ~/dev/results/xpAnalysis/aws"
 
 alias icat="kitty +kitten icat"
@@ -162,16 +164,20 @@ alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
 alias v="nvim"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias sftest="pytest -x -v -rfEs --durations=0 --ignore=simulation_framework/com/virtual_patient_simulator/tests/vp_bin/ simulation_framework"
+alias gs="git status"
+alias ga="git add -u"
+alias gm="git commit -m"
 
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # icat ~/Images/logo_diabeloop_bleu_rvb.png
-# icat --align=center Pictures/diabeloop-logo.png
+# icat --align=center Pictures/top.png
 # icat --align=center ~/Pictures/ascii_logo_4.png
 # fm6000 -r
-neofetch --kitty ~/Pictures/me2.png --size 180px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
-tmux ls
-# neofetch --kitty ~/Pictures/diabeloop-logo.png --crop_mode fitt -x --size 250px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
+# neofetch --kitty ~/Pictures/icon_fetch.png --size 300px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
+# neofetch --kitty ~/Pictures/top.png --size 500px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off
+# tmux ls
+neofetch --kitty ~/Pictures/icon_fetch.png --size 250px --disable host kernel resolution packages font cpu gpu memory color wm uptime --os_arch off  --color_blocks off --align_output right
 
 # complete -C "/home/pierre/.local/bin/aws_completer" aws
 # gsettings set org.gnome.desktop.background primary-color '#000000'

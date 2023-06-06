@@ -77,7 +77,7 @@ vim.keymap.set( "n", "dd", delete_special, { noremap = true, expr = true } )
 
 -- local actions = require("diffview.actions")
 
-require("diffview").setup()
+-- require("diffview").setup()
 --   diff_binaries = false,    -- Show diffs for binaries
 --   enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
 --   git_cmd = { "git" },      -- The git executable followed by default args.
@@ -195,6 +195,19 @@ require("diffview").setup()
 
 
 -- -------------------------------------------------------------------------- #
+-- ----------------- \<scrollview\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('scrollview').setup({
+  signs_on_startup = {'all'}
+  -- excluded_filetypes = {'nerdtree'},
+  -- current_only = true,
+  -- winblend = 75,
+  -- base = 'buffer',
+  -- column = 80
+})
+
+
+-- -------------------------------------------------------------------------- #
 -- ----------------- \<qf_helper\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require'qf_helper'.setup({
@@ -243,6 +256,7 @@ require('telescope').setup{
     mappings = {
       i = {
         ["<esc>"] = actions.close,
+        ['<C-q>'] = actions.smart_add_to_qflist + actions.open_qflist,
       }
     },
     prompt_prefix = "   ",
@@ -268,8 +282,8 @@ require('telescope').setup{
       --   mirror = false,
       -- },
       -- vertical = {width = 0.94},
-      width = 0.80,
-      height = 0.80,
+      width = 0.70,
+      height = 0.70,
       preview_cutoff = 120,
     },
     -- file_sorter = require'telescope.sorters'.get_fuzzy_file,
@@ -328,42 +342,46 @@ require("indent_blankline").setup {
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-context --------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require'treesitter-context'.setup{
-    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
-        -- For all filetypes
-        -- Note that setting an entry here replaces all other patterns for this entry.
-        -- By setting the 'default' entry below, you can control which nodes you want to
-        -- appear in the context window.
-        default = {
-            'class',
-            'function',
-            'method',
-            'for', -- These won't appear in the context
-            'while',
-            'if',
-            'switch',
-            'case',
-        },
-        -- Example for a specific filetype.
-        -- If a pattern is missing, *open a PR* so everyone can benefit.
-        --   rust = {
-        --       'impl_item',
-        --   },
-    },
-    exact_patterns = {
-        -- Example for a specific filetype with Lua patterns
-        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
-        -- exactly match "impl_item" only)
-        -- rust = true,
-    },
-
-    -- [!] The options below are exposed but shouldn't require your attention,
-    --     you can safely ignore them.
-
-    zindex = 20, -- The Z-index of the context window
-}
+-- require'treesitter-context'.setup{
+--     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+--     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+--     patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+--         -- For all filetypes
+--         -- Note that setting an entry here replaces all other patterns for this entry.
+--         -- By setting the 'default' entry below, you can control which nodes you want to
+--         -- appear in the context window.
+--         default = {
+--             'for', -- These won't appear in the context
+--             'while',
+--             'if',
+--             'switch',
+--             'case',
+--             'class',
+--             'function',
+--             'method',
+--         },
+--         -- Example for a specific filetype.
+--         -- If a pattern is missing, *open a PR* so everyone can benefit.
+--         --   rust = {
+--         --       'impl_item',
+--         --   },
+--     },
+--     exact_patterns = {
+--         -- Example for a specific filetype with Lua patterns
+--         -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+--         -- exactly match "impl_item" only)
+--         -- rust = true,
+--     },
+--
+--     -- [!] The options below are exposed but shouldn't require your attention,
+--     --     you can safely ignore them.
+--     mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+--     -- Separator between context and content. Should be a single character string, like '-'.
+--     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+--     separator = nil,
+--
+--     zindex = 20, -- The Z-index of the context window
+-- }
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- kommentary -------------------------------------------- #
@@ -598,141 +616,97 @@ require("nvim-gps").setup()
 -- -------------------------------------------------------------------------- #
 -- -----------------< lsp >-------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-local lsp_installer = require("nvim-lsp-installer")
 
--- Provide settings first!
-lsp_installer.settings {
+require("mason").setup({
     ui = {
         icons = {
-            server_installed = "✓",
-            server_pending = "➜",
-            server_uninstalled = "✗",
-        },
-    },
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+        }
+    }
+})
+require("mason-lspconfig").setup()
 
-    -- Limit for the maximum amount of servers to be installed at the same time. Once this limit is reached, any further
-    -- servers that are requested to be installed will be put in a queue.
-    max_concurrent_installers = 4,
-}
 
-local function make_server_ready(attach)
-  lsp_installer.on_server_ready(function(server)
-      local opts = {}
-      opts.on_attach = attach
 
-      -- for lua
-      if server.name == "sumneko_lua" then
-        -- only apply these settings for the "sumneko_lua" server
-          opts.settings = {
-            Lua = {
-              diagnostics = {
-                -- Get the language server to recognize the 'vim', 'use' global
-                globals = {'vim', 'use', 'require'},
-              },
-              workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true),
-              },
-              -- Do not send telemetry data containing a randomized but unique identifier
-              telemetry = {
-                enable = false,
-              },
-            },
-          }
-      end
+-- local lsp_installer = require("nvim-lsp-installer")
 
-      -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
-      server:setup(opts)
-      vim.cmd [[ do User LspAttachBuffers ]]
-  end)
-end
+-- Provide settings first!
+-- lsp_installer.settings {
+--     ui = {
+--         icons = {
+--             server_installed = "✓",
+--             server_pending = "➜",
+--             server_uninstalled = "✗",
+--         },
+--     },
+--
+--     -- Limit for the maximum amount of servers to be installed at the same time. Once this limit is reached, any further
+--     -- servers that are requested to be installed will be put in a queue.
+--     max_concurrent_installers = 4,
+-- }
+--
 
-local function install_server(server)
-  local lsp_installer_servers = require'nvim-lsp-installer.servers'
-  local ok, server_analyzer = lsp_installer_servers.get_server(server)
-  if ok then
-    if not server_analyzer:is_installed() then
-      server_analyzer:install(server)   -- will install in background
-      -- lsp_installer.install(server)     -- install window will popup
-    end
-  end
-end
+-- local servers = {
+--   "sumneko_lua",        -- for Lua
+--   "pyright",            -- for Python
+--   "pylsp",            -- for Python
+--   "vimls",            -- for Python
+--   "clangd",             -- for C/C++
+--   "bashls",             -- for Bash
+--   "jsonls",             -- for Bash
+--   "sqlls",             -- for Bash
+-- }
 
-local servers = {
-  "sumneko_lua",        -- for Lua
-  "pyright",            -- for Python
-  "pylsp",            -- for Python
-  "vimls",            -- for Python
-  "clangd",             -- for C/C++
-  "bashls",             -- for Bash
-  "jsonls",             -- for Bash
-  "sqlls",             -- for Bash
-}
+-- Setup language servers.
+local lspconfig = require('lspconfig')
+lspconfig.pyright.setup {}
+lspconfig.clangd.setup {}
+lspconfig.bashls.setup {}
+lspconfig.jsonls.setup {}
+lspconfig.sqlls.setup {}
 
-local On_attach = function(client, bufnr)
 
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+-- Global mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+-- vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+-- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+-- vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
-  -- Enable completion triggered by <c-x><c-o>
-  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+-- Use LspAttach autocommand to only map the following keys
+-- after the language server attaches to the current buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-  buf_set_keymap('n', 'ga', '<cmd>lua vim.diagnostic.open_float()<CR>',  opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  -- buf_set_keymap('n', '<space>k', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  -- buf_set_keymap('n', '<space>k', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  -- buf_set_keymap("n", "<space>f", '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-  -- code action is integrated with telescope, for more see "telescope.lua" file
-  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  -- buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workleader_folder()<CR>', opts)
-  -- buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workleader_folder()<CR>', opts)
-  -- buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workleader_folders()))<CR>', opts)
-end
-
--- setup the LS
-require "lspconfig"
-make_server_ready(On_attach)    -- LSP mappings
-
--- install the LS
-for _, server in ipairs(servers) do
-  install_server(server)
-end
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = ev.buf }
+    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'fj', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    -- vim.keymap.set('n', '<space>f', function()
+    --   vim.lsp.buf.format { async = true }
+    -- end, opts)
+  end,
+})
 
 -- local nvim_lsp=require('lspconfig')
-local on_attach=function(client, bufnr)
-	-- Enable completion triggered by <c-x><c-o>
-	-- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-	-- Mappings.
-	local opts={noremap=true, silent=true }
-	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-	-- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-	buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-	-- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-	buf_set_keymap('n', 'gv', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-	buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-	buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-	-- buf_set_keymap('n', 'gwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-	-- buf_set_keymap('n', 'gwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-	-- buf_set_keymap('n', 'gwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-	-- buf_set_keymap('n', 'gv', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-	-- buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-	-- buf_set_keymap('n', 'gra', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-	buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-	buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-	-- buf_set_keymap("n", "<Leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-end
-
 -- local coq = require("coq")
 -- nvim_lsp.pyright.setup(coq.lsp_ensure_capabilities())
 
@@ -749,11 +723,15 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     underline = false,
     signs = true,
     update_in_insert = false,
-    -- virtual_text = {true},
+    -- virtual_text = {false},
   }
 )
+
 vim.diagnostic.config({
+  underline = false,
+  signs = true,
   virtual_text = false,
+  update_in_insert = false,
 })
 
 -- show diagnostic on float window(like auto complete)
@@ -781,6 +759,69 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
    " highlight LspDiagnosticsUnderlineHint          guifg=#17EB7A gui=undercurl
 --]]
 
+
+-- -------------------------------------------------------------------------- #
+-- -----------------< mason-tool-installer >-------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('mason-tool-installer').setup {
+
+  -- a list of all tools you want to ensure are installed upon
+  -- start; they should be the names Mason uses for each tool
+  ensure_installed = {
+
+    -- you can turn off/on auto_update per tool
+    { 'bash-language-server', auto_update = true },
+
+    'lua-language-server',
+    'vim-language-server',
+    -- 'gopls',
+    -- 'stylua',
+    -- 'shellcheck',
+    'editorconfig-checker',
+    -- 'gofumpt',
+    -- 'golines',
+    -- 'gomodifytags',
+    -- 'gotests',
+    -- 'impl',
+    'json-to-struct',
+    -- 'luacheck',
+    -- 'misspell',
+    -- 'revive',
+    -- 'shellcheck',
+    -- 'shfmt',
+    -- 'staticcheck',
+    -- 'vint',
+  },
+
+  -- if set to true this will check each tool for updates. If updates
+  -- are available the tool will be updated. This setting does not
+  -- affect :MasonToolsUpdate or :MasonToolsInstall.
+  -- Default: false
+  auto_update = false,
+
+  -- automatically install / update on startup. If set to false nothing
+  -- will happen on startup. You can use :MasonToolsInstall or
+  -- :MasonToolsUpdate to install tools and check for updates.
+  -- Default: true
+  run_on_start = true,
+
+  -- set a delay (in ms) before the installation starts. This is only
+  -- effective if run_on_start is set to true.
+  -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
+  -- Default: 0
+  start_delay = 3000, -- 3 second delay
+
+  -- Only attempt to install if 'debounce_hours' number of hours has
+  -- elapsed since the last time Neovim was started. This stores a
+  -- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
+  -- This is only relevant when you are using 'run_on_start'. It has no
+  -- effect when running manually via ':MasonToolsInstall' etc....
+  -- Default: nil
+  debounce_hours = 5, -- at least 5 hours between attempts to install/update
+}
+
+
+
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp signature ----------------------------------------- #
 -- -------------------------------------------------------------------------- #
@@ -806,7 +847,84 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 -- }
 -- require'lsp_signature'.on_attach(cfg)
 
+-- -------------------------------------------------------------------------- #
+--  ----------------- neoclip -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+-- require('neoclip').setup({
+--       -- history = 1000,
+--       enable_persistent_history = true,
+--       -- length_limit = 1048576,
+--       -- continuous_sync = false,
+--       -- db_path = vim.fn.stdpath("data") .. "/databases/neoclip.sqlite3",
+--       -- filter = nil,
+--       preview = true,
+--       -- prompt = nil,
+--       -- default_register = '"',
+--       -- default_register_macros = 'q',
+--       enable_macro_history = true,
+--       content_spec_column = true,
+--       -- on_select = {
+--       --   move_to_front = false,
+--       -- },
+--       -- on_paste = {
+--       --   set_reg = false,
+--       --   move_to_front = false,
+--       -- },
+--       -- on_replay = {
+--       --   set_reg = false,
+--       --   move_to_front = false,
+--       -- },
+--       keys = {
+--         telescope = {
+--           i = {
+--             select = '<cr>',
+--             paste = '<c-p>',
+--             paste_behind = '<c-k>',
+--             replay = '<c-q>',  -- replay a macro
+--             delete = '<c-d>',  -- delete an entry
+--             custom = {},
+--           },
+--           n = {
+--             select = '<cr>',
+--             paste = 'p',
+--             --- It is possible to map to more than one key.
+--             -- paste = { 'p', '<c-p>' },
+--             paste_behind = 'P',
+--             replay = 'q',
+--             delete = 'd',
+--             custom = {},
+--           },
+--         },
+--         fzf = {
+--           select = 'default',
+--           paste = 'ctrl-p',
+--           paste_behind = 'ctrl-k',
+--           custom = {},
+--         },
+--       },
+--     })
+--
+-- ---------------------------------------------------- #
+--  ----------------- TODO comment -------------------------------------------- "
+-- -------------------------------------------------------------------------- #
+require("todo-comments").setup {
+  -- your configuration comes here
+  -- or leave it empty to use the default settings
+  -- refer to the configuration section below
+}
+vim.keymap.set("n", "]t", function()
+  require("todo-comments").jump_next()
+end, { desc = "Next todo comment" })
 
+vim.keymap.set("n", "[t", function()
+  require("todo-comments").jump_prev()
+end, { desc = "Previous todo comment" })
+
+-- You can also specify a list of valid jump keywords
+
+vim.keymap.set("n", "]t", function()
+  require("todo-comments").jump_next({keywords = { "ERROR", "WARNING" }})
+end, { desc = "Next error/warning todo comment" })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lightspeed -------------------------------------------- "
@@ -876,20 +994,11 @@ require'nvim-tree'.setup {
   -- hijack netrw window on startup
   hijack_netrw        = true,
   -- open the tree when running this setup function
-  open_on_setup       = false,
+  -- open_on_setup       = true,
   -- will not open on setup if the filetype is in this list
   ignore_ft_on_setup  = {},
-  -- closes neovim automatically when the tree is the last **WINDOW** in the view
-  auto_close          = false,
   -- opens the tree when changing/opening a new tab if the tree wasn't previously opened
   open_on_tab         = false,
-  -- hijacks new directory buffers when they are opened.
-  update_to_buf_dir   = {
-    -- enable the feature
-    enable = true,
-    -- allow to open the tree if it was previously closed
-    auto_open = true,
-  },
   -- hijack the cursor in the tree to put it at the start of the filename
   hijack_cursor       = false,
   -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
@@ -944,7 +1053,7 @@ require'nvim-tree'.setup {
     -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
     side = 'left',
     -- if true the tree will resize itself after opening a file
-    auto_resize = true,
+    -- auto_resize = true,
     -- mappings = {
       -- custom only false will merge the list with the default mappings
       -- if true, it will only use your list to set the mappings
@@ -1011,28 +1120,30 @@ require('ayu').setup({
 -- -------------------------------------------------------------------------- #
 require('kanagawa').setup({
     undercurl = true,           -- enable undercurls
-    -- commentStyle = "italic",
-    -- functionStyle = "NONE",
-    -- keywordStyle = "italic",
-    -- statementStyle = "bold",
+    functionStyle = {italic = true},
+    keywordStyle = {italic = true},
+    variablebuiltinStyle = { italic = true},
+    specialReturn = true,       -- special highlight for the return keyword
+    specialException = true,    -- special highlight for exception handling keywords
     -- typeStyle = "NONE",
     -- variablebuiltinStyle = "italic",
     specialReturn = true,       -- special highlight for the return keyword
     specialException = true,    -- special highlight for exception handling keywords
-    transparent = true,        -- do not set background color
+    transparent = false,        -- do not set background color
+    globalStatus = false,       -- adjust window separators highlight for laststatus=3
     colors = {},
-    overrides = {
-      -- override existing hl-groups, the new keywords are merged with existing ones
-      VertSplit  = {
-        -- fg = '#2D4F67',
-        fg = '#2A2A37',
-        bg = "NONE"
-      },
-      Search = {bg = '#33415E'},
-      -- CursorLine = {bg = '#1F1F28'},
-      -- ColorColumn = {bg = '#0F0F14'},
-      -- StatusLine = {bg = '#0F0F14'},
+    -- theme = "wave",              -- Load "wave" theme when 'background' option is not set
+    background = {               -- map the value of 'background' option to a theme
+        dark = "dragon",           -- try "dragon" !
+        light = "lotus"
     },
+    -- overrides = {
+    --   -- override existing hl-groups, the new keywords are merged with existing ones
+    --   VertSplit  = {
+    --     fg = '#2A2A37',
+    --     bg = "NONE"
+    --   },
+    -- },
 })
 
 -- setup must be called before loading
@@ -1633,7 +1744,7 @@ require('nvim-treesitter.configs').setup {
   ensure_installed = "maintained",
 
   highlight = {
-    enable = false,
+    enable = true,
     additional_vim_regex_highlighting = false,
   },
 
@@ -1700,7 +1811,7 @@ require('nvim-treesitter.configs').setup {
 
   -- rainbow = {
   --   enable = true,
-  --   extended_mode = false,
+  --   extended_mode = true,
   --   colors = {'#FFCC00', '#82AAFF', '#fe8019'},
   -- },
 
@@ -1746,125 +1857,88 @@ require('nvim-autopairs').setup({
 -- -------------------------------------------------------------------------- #
 --  ----------------- lspsaga ----------------------------------------- #
 -- -------------------------------------------------------------------------- #
-local saga = require 'lspsaga'
-
--- change the lsp symbol kind
-local kind = require('lspsaga.lspkind')
--- kind[type_number][2] = icon -- see lua/lspsaga/lspkind.lua
-
--- use default config
+-- local saga = require('lspsaga')
+require("lspsaga").setup({})
+local keymap = vim.keymap.set
 -- saga.init_lsp_saga()
 
--- use custom config
-saga.init_lsp_saga({
-    -- put modified options in there
-  --
-  -- Options with default value
-  -- "single" | "double" | "rounded" | "bold" | "plus"
-  border_style = "rounded",
-  --the range of 0 for fully opaque window (disabled) to 100 for fully
-  --transparent background. Values between 0-30 are typically most useful.
-  saga_winblend = 0,
-  -- when cursor in saga window you config these to move
-  move_in_saga = { prev = '<C-p>',next = '<C-n>'},
-  -- Error, Warn, Info, Hint
-  -- use emoji like
-  -- { "🙀", "😿", "😾", "😺" }
-  -- or
-  -- { "😡", "😥", "😤", "😐" }
-  -- and diagnostic_header can be a function type
-  -- must return a string and when diagnostic_header
-  -- is function type it will have a param `entry`
-  -- entry is a table type has these filed
-  -- { bufnr, code, col, end_col, end_lnum, lnum, message, severity, source }
-  diagnostic_header = { " ", " ", " ", "ﴞ " },
-  -- show diagnostic source
-  show_diagnostic_source = true,
-  -- add bracket or something with diagnostic source, just have 2 elements
-  diagnostic_source_bracket = {},
-  -- preview lines of lsp_finder and definition preview
-  max_preview_lines = 10,
-  -- use emoji lightbulb in default
-  code_action_icon = "💡",
-  -- if true can press number to execute the codeaction in codeaction window
-  code_action_num_shortcut = true,
-  -- same as nvim-lightbulb but async
-  code_action_lightbulb = {
-      enable = true,
-      sign = true,
-      enable_in_insert = true,
-      sign_priority = 20,
-      virtual_text = true,
-  },
-  -- finder icons
-  finder_icons = {
-    def = '  ',
-    ref = '諭 ',
-    link = '  ',
-  },
-  -- finder do lsp request timeout
-  -- if your project big enough or your server very slow
-  -- you may need to increase this value
-  finder_request_timeout = 1500,
-  finder_action_keys = {
-      open = "o",
-      vsplit = "v",
-      split = "s",
-      tabe = "t",
-      quit = "q",
-      scroll_down = "<C-f>",
-      scroll_up = "<C-b>", -- quit can be a table
-  },
-  code_action_keys = {
-      quit = "q",
-      exec = "<CR>",
-  },
-  rename_action_quit = "<C-c>",
-  rename_in_select = true,
-  definition_preview_icon = "  ",
-  -- show symbols in winbar must nightly
-  symbol_in_winbar = {
-      in_custom = false,
-      enable = false,
-      separator = ' ',
-      show_file = true,
-      click_support = false,
-  },
-  -- show outline
-  show_outline = {
-    win_position = 'right',
-    --set special filetype win that outline window split.like NvimTree neotree
-    -- defx, db_ui
-    win_with = '',
-    win_width = 30,
-    auto_enter = true,
-    auto_preview = true,
-    virt_text = '┃',
-    jump_key = 'o',
-    -- auto refresh when change buffer
-    auto_refresh = true,
-  },
-  -- if you don't use nvim-lspconfig you must pass your server name and
-  -- the related filetypes into this table
-  -- like server_filetype_map = { metals = { "sbt", "scala" } }
-  -- server_filetype_map = {},
+-- Lsp finder find the symbol definition implement reference
+-- if there is no implement it will hide
+-- when you use action in finder like open vsplit then you can
+-- use <C-t> to jump back
+keymap("n", "gd", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
+
+-- Code action
+keymap({"n","v"}, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = false })
+
+-- Rename
+keymap("n", "<leader>gr", "<cmd>Lspsaga rename<CR>", { silent = true })
+
+-- Peek Definition
+-- you can edit the definition file in this flaotwindow
+-- also support open/vsplit/etc operation check definition_action_keys
+-- support tagstack C-t jump back
+keymap("n", "<space>k", "<cmd>Lspsaga peek_definition<CR>", { silent = true })
+
+-- Show line diagnostics
+keymap("n", "ga", "<cmd>Lspsaga show_line_diagnostics<CR>", { silent = true })
+
+-- Show cursor diagnostic
+-- keymap("n", "ga", "<cmd>Lspsaga show_cursor_diagnostics<CR>", { silent = true })
+
+-- Diagnsotic jump can use `<c-o>` to jump back
+keymap("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
+keymap("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
+
+-- Only jump to error
+keymap("n", "[d", function()
+  require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { silent = true })
+keymap("n", "]d", function()
+  require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { silent = true })
+
+-- Outline
+-- keymap("n","<leader>o", "<cmd>LSoutlineToggle<CR>",{ silent = true })
+
+-- Hover Doc
+keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
+
+-- Float terminal
+-- keymap("n", "<A-d>", "<cmd>Lspsaga open_floaterm<CR>", { silent = true })
+-- if you want pass somc cli command into terminal you can do like this
+-- open lazygit in lspsaga float terminal
+-- keymap("n", "<A-d>", "<cmd>Lspsaga open_floaterm lazygit<CR>", { silent = true })
+-- close floaterm
+-- keymap("t", "<A-d>", [[<C-\><C-n><cmd>Lspsaga close_floaterm<CR>]], { silent = true })
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- nightfly -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+vim.g.nightflyNormalFloat = true
+ -- it is highly recommended to enable floating window borders to distinguish between the edit and floating windows in Neovim's LSP client
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+  vim.lsp.handlers.hover, {
+    border = "single"
+  }
+)
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+  vim.lsp.handlers.signatureHelp, {
+    border = "single"
+  }
+)
+vim.diagnostic.config({ float = { border = "single" } })
+-- bulb Likewise, nvim-cmp may be configured as follows for nicer display when g:nightflyNormalFloat is enabled:
+local winhighlight = {
+  winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+}
+require('cmp').setup({
+  window = {
+    completion = cmp.config.window.bordered(winhighlight),
+    documentation = cmp.config.window.bordered(winhighlight),
+  }
 })
-vim.keymap.set("n", "gs", "<Cmd>Lspsaga signature_help<CR>", { silent = true })
-vim.keymap.set("n", "gd", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
 
--- or use command
-vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
-
--- local action = require("lspsaga.action")
--- scroll down hover doc or scroll in definition preview
--- vim.keymap.set("n", "<C-f>", function()
---     action.smart_scroll_with_saga(1)
--- end, { silent = true })
--- -- scroll up hover doc
--- vim.keymap.set("n", "<C-b>", function()
---     action.smart_scroll_with_saga(-1)
--- end, { silent = true })
-
-vim.keymap.set("n", "<leader>gr", "<cmd>Lspsaga rename<CR>", { silent = true })
--- close rename win use <C-c> in insert mode or `q` in normal mode or `:q`
-vim.keymap.set("n", "gp", "<cmd>Lspsaga preview_definition<CR>", { silent = true })
+vim.g.nightflyWinSeparator = 2
+vim.opt.fillchars = { horiz = '━', horizup = '┻', horizdown = '┳', vert = '┃', vertleft = '┫', vertright = '┣', verthoriz = '╋', }
+vim.g.nightflyTransparent = true

@@ -14,18 +14,18 @@ fi
 
 # Start New Session with our name
 tmux new-session -d -s $session
-commandvenv="source venv/bin/activate"
+# commandvenv="source venv/bin/activate"
 
 window=1
 tmux rename-window -t $session:$window 'neovim'
 tmux send-keys -t $session:$window 't'
-tmux send-keys -t $session:$window 'source' Space 'venv/bin/activate' C-m
+# tmux send-keys -t $session:$window 'source' Space 'venv/bin/activate' C-m
 tmux send-keys -t $session:$window 'nvim' C-m Enter C-m Enter C-m
 
 window=2
 tmux new-window -t $session:$window -n 'run python'
 tmux send-keys -t $session:$window 't'
-tmux send-keys -t $session:$window 'source' Space 'venv/bin/activate' C-m
+# tmux send-keys -t $session:$window 'source' Space 'venv/bin/activate' C-m
 
 window=3
 tmux new-window -t $session:$window -n 'ranger'
