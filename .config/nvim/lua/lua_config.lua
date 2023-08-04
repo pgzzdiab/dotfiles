@@ -17,9 +17,9 @@ local function delete_special()
 end
 vim.keymap.set( "n", "dd", delete_special, { noremap = true, expr = true } )
 
--- -------------------------------------------------------------------------- #
--- --------------------- symbols ------------------------------------------- #
--- -------------------------------------------------------------------------- #
+-- -- -------------------------------------------------------------------------- #
+-- -- --------------------- symbols ------------------------------------------- #
+-- -- -------------------------------------------------------------------------- #
 -- vim.g.symbols_outline = {
 --     highlight_hovered_item = true,
 --     show_guides = true,
@@ -516,7 +516,7 @@ local cmp = require'cmp'
 cmp.setup({
 
   completion = {
-    --completeopt = 'menu,menuone,noinsert',
+    completeopt = 'menu,menuone,noinsert',
   },
 
  -- snippet = {
@@ -562,6 +562,14 @@ end
 -- local luasnip = require("luasnip")
 
 
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+require('lspconfig')['pylsp'].setup {
+  capabilities = capabilities
+}
+
+
 cmp.setup({
   -- documentation = {
   --   -- border = "rounded",
@@ -572,7 +580,7 @@ cmp.setup({
   mapping = {
     -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
     -- ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
-    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    -- ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -611,7 +619,7 @@ cmp.setup({
 -- -------------------------------------------------------------------------- #
 --  ----------------- gps --------------------------------------------------- "
 -- -------------------------------------------------------------------------- #
-require("nvim-gps").setup()
+-- require("nvim-gps").setup()
 
 -- -------------------------------------------------------------------------- #
 -- -----------------< lsp >-------------------------------------------------- #
@@ -661,11 +669,61 @@ require("mason-lspconfig").setup()
 
 -- Setup language servers.
 local lspconfig = require('lspconfig')
-lspconfig.pyright.setup {}
+
+
+
+
+
+local lsp_defaults = lspconfig.util.default_config
+
+lsp_defaults.capabilities = vim.tbl_deep_extend(
+  'force',
+  lsp_defaults.capabilities,
+  require('cmp_nvim_lsp').default_capabilities()
+)
+
+
+
+-- lspconfig.pyright.setup {}
 lspconfig.clangd.setup {}
 lspconfig.bashls.setup {}
-lspconfig.jsonls.setup {}
+require'lspconfig'.jsonls.setup{}
 lspconfig.sqlls.setup {}
+-- require'lspconfig'.jedi_language_server.setup{}
+require'lspconfig'.pylsp.setup{
+  settings = {
+    pylsp = {
+      plugins = {
+        -- pycodestyle = {
+        --   ignore = {'W391'},
+        --   maxLineLength = 100
+        -- }
+        autopep8 = {
+          enabled  = false
+        },
+        -- jedi_completion = {
+        --   fuzzy  = true
+        -- },
+        pyflakes = {
+          enabled  = false
+        },
+      }
+    }
+  }
+}
+
+-- require'lspconfig'.pyright.setup{
+--   settings = {
+--       python = {
+--         analysis = {
+--           autoSearchPaths = true,
+--           useLibraryCodeForTypes = true,
+--           diagnosticMode = 'openFilesOnly',
+--         },
+--       },
+--     },
+--   }
+
 
 
 -- Global mappings.
@@ -711,7 +769,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- nvim_lsp.pyright.setup(coq.lsp_ensure_capabilities())
 
 -- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
--- nvim_lsp.pyright.setup{
+-- nvim_lsp.pylsp.setup{
 --     capabilities = capabilities
 -- }
 -- nvim_lsp.cmake.setup{
@@ -763,64 +821,62 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 -- -------------------------------------------------------------------------- #
 -- -----------------< mason-tool-installer >-------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('mason-tool-installer').setup {
+require('mason-tool-installer').setup {}
 
-  -- a list of all tools you want to ensure are installed upon
-  -- start; they should be the names Mason uses for each tool
-  ensure_installed = {
+local DEFAULT_SETTINGS = {
+    -- A list of servers to automatically install if they're not already installed. Example: { "rust_analyzer@nightly", "lua_ls" }
+    -- This setting has no relation with the `automatic_installation` setting.
+    ---@type string[]
+    ensure_installed = {
+      -- you can turn off/on auto_update per tool
+      -- { 'pyright', auto_update = true },
+      -- { 'pylsp', auto_update = true },
+      -- { 'bash-language-server', auto_update = true },
 
-    -- you can turn off/on auto_update per tool
-    { 'bash-language-server', auto_update = true },
+      -- 'lua-language-server',
+      -- 'vim-language-server',
+      -- 'r-language-server',
+      -- 'gopls',
+      -- 'stylua',
+      -- 'shellcheck',
+      -- 'editorconfig-checker',
+      -- 'gofumpt',
+      -- 'golines',
+      -- 'gomodifytags',
+      -- 'gotests',
+      -- 'impl',
+      -- 'json-to-struct',
+      -- 'luacheck',
+      -- 'misspell',
+      -- 'revive',
+      -- 'shellcheck',
+      -- 'shfmt',
+      -- 'staticcheck',
+      -- 'vint',
+    },
 
-    'lua-language-server',
-    'vim-language-server',
-    -- 'gopls',
-    -- 'stylua',
-    -- 'shellcheck',
-    'editorconfig-checker',
-    -- 'gofumpt',
-    -- 'golines',
-    -- 'gomodifytags',
-    -- 'gotests',
-    -- 'impl',
-    'json-to-struct',
-    -- 'luacheck',
-    -- 'misspell',
-    -- 'revive',
-    -- 'shellcheck',
-    -- 'shfmt',
-    -- 'staticcheck',
-    -- 'vint',
-  },
+    -- Whether servers that are set up (via lspconfig) should be automatically installed if they're not already installed.
+    -- This setting has no relation with the `ensure_installed` setting.
+    -- Can either be:
+    --   - false: Servers are not automatically installed.
+    --   - true: All servers set up via lspconfig are automatically installed.
+    --   - { exclude: string[] }: All servers set up via lspconfig, except the ones provided in the list, are automatically installed.
+    --       Example: automatic_installation = { exclude = { "rust_analyzer", "solargraph" } }
+    ---@type boolean
+    -- automatic_installation = false,
 
-  -- if set to true this will check each tool for updates. If updates
-  -- are available the tool will be updated. This setting does not
-  -- affect :MasonToolsUpdate or :MasonToolsInstall.
-  -- Default: false
-  auto_update = false,
-
-  -- automatically install / update on startup. If set to false nothing
-  -- will happen on startup. You can use :MasonToolsInstall or
-  -- :MasonToolsUpdate to install tools and check for updates.
-  -- Default: true
-  run_on_start = true,
-
-  -- set a delay (in ms) before the installation starts. This is only
-  -- effective if run_on_start is set to true.
-  -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
-  -- Default: 0
-  start_delay = 3000, -- 3 second delay
-
-  -- Only attempt to install if 'debounce_hours' number of hours has
-  -- elapsed since the last time Neovim was started. This stores a
-  -- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
-  -- This is only relevant when you are using 'run_on_start'. It has no
-  -- effect when running manually via ':MasonToolsInstall' etc....
-  -- Default: nil
-  debounce_hours = 5, -- at least 5 hours between attempts to install/update
+    -- See `:h mason-lspconfig.setup_handlers()`
+    ---@type table<string, fun(server_name: string)>?
+    -- handlers = nil,
 }
 
 
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- lsp signature ----------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- Install without configuration
+-- use ({ 'projekt0n/github-nvim-theme' })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lsp signature ----------------------------------------- #
@@ -996,13 +1052,12 @@ require'nvim-tree'.setup {
   -- open the tree when running this setup function
   -- open_on_setup       = true,
   -- will not open on setup if the filetype is in this list
-  ignore_ft_on_setup  = {},
   -- opens the tree when changing/opening a new tab if the tree wasn't previously opened
   open_on_tab         = false,
   -- hijack the cursor in the tree to put it at the start of the filename
-  hijack_cursor       = false,
+  hijack_cursor       = true,
   -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
-  update_cwd          = false,
+  update_cwd          = true,
   -- show lsp diagnostics in the signcolumn
 
   diagnostics = {
@@ -1014,7 +1069,7 @@ require'nvim-tree'.setup {
     enable      = true,
     -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
     -- only relevant when `update_focused_file.enable` is true
-    update_cwd  = ture,
+    update_cwd  = true,
     -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
     -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
     ignore_list = {
@@ -1047,7 +1102,7 @@ require'nvim-tree'.setup {
   -- },
   view = {
     -- width of the window, can be either a number (columns) or a string in `%`, for left or right side placement
-    width = 30,
+    width = 50,
     -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
     -- height = 30,
     -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
@@ -1099,52 +1154,101 @@ local list = {
   { key = "g?",                           cb = tree_cb("toggle_help") },
 }
 
+
 -- -------------------------------------------------------------------------- #
 -- ----------------- ayu ---------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('ayu').setup({
-  mirage=true,
-  overrides = {
-    Comment = {fg = '#707A8C'},
-    String = {fg = '#E6BA7E'},
-    LineNr = {fg = '#465742'},
-    CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
-    -- Search = {fg = '#7CB0E6', bg = '#33415E'},
-    Search = {fg = '#0D1016', bg = '#707A8C'},
-    -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
-  }
-})
+-- require('ayu').setup({
+--   mirage=true,
+--   overrides = {
+--     Comment = {fg = '#707A8C'},
+--     String = {fg = '#E6BA7E'},
+--     LineNr = {fg = '#465742'},
+--     CursorLineNr = {fg = '#E6BA7E', bg = '#0D1016'},
+--     -- Search = {fg = '#7CB0E6', bg = '#33415E'},
+--     Search = {fg = '#0D1016', bg = '#707A8C'},
+--     -- IncSearch = {fg = '#E6BA7E', bg = '#0D1016'},
+--   }
+-- })
 
--- -------------------------------------------------------------------------- #
--- ----------------- kanagawa ---------------------------------------------------- #
--- -------------------------------------------------------------------------- #
-require('kanagawa').setup({
-    undercurl = true,           -- enable undercurls
-    functionStyle = {italic = true},
-    keywordStyle = {italic = true},
-    variablebuiltinStyle = { italic = true},
-    specialReturn = true,       -- special highlight for the return keyword
-    specialException = true,    -- special highlight for exception handling keywords
-    -- typeStyle = "NONE",
-    -- variablebuiltinStyle = "italic",
-    specialReturn = true,       -- special highlight for the return keyword
-    specialException = true,    -- special highlight for exception handling keywords
-    transparent = false,        -- do not set background color
-    globalStatus = false,       -- adjust window separators highlight for laststatus=3
-    colors = {},
-    -- theme = "wave",              -- Load "wave" theme when 'background' option is not set
-    background = {               -- map the value of 'background' option to a theme
-        dark = "dragon",           -- try "dragon" !
-        light = "lotus"
-    },
-    -- overrides = {
-    --   -- override existing hl-groups, the new keywords are merged with existing ones
-    --   VertSplit  = {
-    --     fg = '#2A2A37',
-    --     bg = "NONE"
-    --   },
-    -- },
-})
+-- -- -------------------------------------------------------------------------- #
+-- -- ----------------- catppuccin ---------------------------------------------------- #
+-- -- -------------------------------------------------------------------------- #
+-- require("catppuccin").setup({
+--     flavour = "latte", -- latte, frappe, macchiato, mocha
+--     background = { -- :h background
+--         light = "frappe",
+--         dark = "mocha",
+--     },
+--     transparent_background = true, -- disables setting the background color.
+--     show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+--     term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+--     dim_inactive = {
+--         enabled = false, -- dims the background color of inactive window
+--         shade = "dark",
+--         percentage = 0.15, -- percentage of the shade to apply to the inactive window
+--     },
+--     no_italic = false, -- Force no italic
+--     no_bold = false, -- Force no bold
+--     no_underline = false, -- Force no underline
+--     styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+--         comments = { "italic" }, -- Change the style of comments
+--         conditionals = { "italic" },
+--         loops = {},
+--         functions = {},
+--         keywords = {italic},
+--         strings = {},
+--         variables = {},
+--         numbers = {},
+--         booleans = {},
+--         properties = {},
+--         types = {},
+--         operators = {},
+--     },
+--     color_overrides = {},
+--     custom_highlights = {},
+--     integrations = {
+--         cmp = true,
+--         gitsigns = true,
+--         nvimtree = true,
+--         telescope = true,
+--         notify = false,
+--         mini = false,
+--         -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+--     },
+-- })
+
+
+-- -- -------------------------------------------------------------------------- #
+-- -- ----------------- kanagawa ---------------------------------------------------- #
+-- -- -------------------------------------------------------------------------- #
+-- require('kanagawa').setup({
+--     undercurl = true,           -- enable undercurls
+--     functionStyle = {italic = true},
+--     keywordStyle = {italic = true},
+--     variablebuiltinStyle = { italic = true},
+--     specialReturn = true,       -- special highlight for the return keyword
+--     specialException = true,    -- special highlight for exception handling keywords
+--     -- typeStyle = "NONE",
+--     -- variablebuiltinStyle = "italic",
+--     specialReturn = true,       -- special highlight for the return keyword
+--     specialException = true,    -- special highlight for exception handling keywords
+--     transparent = false,        -- do not set background color
+--     globalStatus = false,       -- adjust window separators highlight for laststatus=3
+--     colors = {},
+--     -- theme = "wave",              -- Load "wave" theme when 'background' option is not set
+--     background = {               -- map the value of 'background' option to a theme
+--         dark = "dragon",           -- try "dragon" !
+--         light = "lotus"
+--     },
+--     -- overrides = {
+--     --   -- override existing hl-groups, the new keywords are merged with existing ones
+--     --   VertSplit  = {
+--     --     fg = '#2A2A37',
+--     --     bg = "NONE"
+--     --   },
+--     -- },
+-- })
 
 -- setup must be called before loading
 -- vim.cmd("colorscheme kanagawa")
@@ -1304,31 +1408,31 @@ basic.file_inac = {
         }
     end,
 }
-basic.gps = {
-    name = 'gps',
-    hl_colors = {
-        sep_before = { 'magenta_light', 'ActiveBg' },
-        sep_after = { 'magenta_light', 'ActiveBg' },
-        text = { 'ActiveBg', 'magenta_light' },
-    },
-    text = function()
-      if require("nvim-gps").is_available() then
-        if (require("nvim-gps").get_location() == "") then
-          return { }
-        else
-          return {
-            { sep.left_rounded, 'sep_before' },
-            {require("nvim-gps").get_location(), 'text'},
-            { sep.right_rounded, 'sep_after'},
-          }
-        end
-      else
-        return { }
-      end
-    end
-}
+-- basic.gps = {
+--     name = 'gps',
+--     hl_colors = {
+--         sep_before = { 'magenta_light', 'ActiveBg' },
+--         sep_after = { 'magenta_light', 'ActiveBg' },
+--         text = { 'ActiveBg', 'magenta_light' },
+--     },
+--     text = function()
+--       if require("nvim-gps").is_available() then
+--         if (require("nvim-gps").get_location() == "") then
+--           return { }
+--         else
+--           return {
+--             { sep.left_rounded, 'sep_before' },
+--             {require("nvim-gps").get_location(), 'text'},
+--             { sep.right_rounded, 'sep_after'},
+--           }
+--         end
+--       else
+--         return { }
+--       end
+--     end
+-- }
 basic.tabe = {
-    name = 'gps',
+    name = 'tabe',
     hl_colors = {
         sep_before = { 'yellow', 'ActiveBg' },
         sep_after = { 'yellow', 'ActiveBg' },
@@ -1362,7 +1466,7 @@ local default = {
         { ' ', 'ActiveBg' },
         basic.tabe,
         { ' ', 'ActiveBg' },
-        basic.gps,
+        -- basic.gps,
         { ' ', 'ActiveBg' },
         basic.divider,
         basic.file,
@@ -1433,13 +1537,16 @@ require('comment-box').setup({
 --  ----------------- cokeline -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
 local get_hex = require('cokeline/utils').get_hex
---
+
+theme_bg = get_hex('Normal', 'guibg')
+-- cokeline_bg = get_hex('Normal', 'fg')
+cokeline_bg = "#c8d3f5"
+-- cokeline_fg = get_hex('Normal', 'fg')
+cokeline_fg = "#000000"
 require('cokeline').setup({
   default_hl = {
     -- bg = get_hex('Normal', 'fg'),
-    -- bg = get_hex('Normal', 'fg'),
-    -- fg = "#0F0F14",
-    bg = "#1F2430",
+    -- bg = get_hex('Normal', 'bg'),
 --    focused = {
 --    },
 --    unfocused = {
@@ -1460,17 +1567,19 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#0F0F14"
+              return cokeline_bg
           end
       end,
       bg = function(buffer)
           if buffer.is_focused then
-              return "#0F0F14"
+              return theme_bg
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return theme_bg
           else
-              return "#0F0F14"
+              return theme_bg
           end
           if buffer.is_modified then
-              return "#BAE67E"
+              return theme_bg
           end
       end,
       -- },
@@ -1499,12 +1608,12 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#0F0F14"
+              return cokeline_bg
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#0F0F14"
+              return cokeline_fg
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1525,12 +1634,12 @@ require('cokeline').setup({
           elseif buffer.is_focused then
               return "#CBCCC6"
           else
-              return "#0F0F14"
+              return cokeline_bg
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#0F0F14"
+              return cokeline_fg
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1555,12 +1664,12 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#0F0F14"
+              return cokeline_bg
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#0F0F14"
+              return cokeline_fg
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1591,12 +1700,12 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#0F0F14"
+              return cokeline_bg
           end
       end,
       fg = function(buffer)
           if buffer.is_focused then
-              return "#0F0F14"
+              return cokeline_fg
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
           else
@@ -1610,12 +1719,7 @@ require('cokeline').setup({
     },
     {
       text = '',
-      -- text = '',
       -- content = "%{T3}%{T-}"
-      -- content = "%{T3}%{T-}"
-      -- content = "%{T3}%{T-}"
-      -- content = "%{T3}%{T-}"
-      -- hl = {
       fg = function(buffer)
           if (buffer.is_focused and buffer.is_modified) then
               return "#BAE67E"
@@ -1624,17 +1728,19 @@ require('cokeline').setup({
           elseif (not buffer.is_focused and buffer.is_modified) then
               return "#575F66"
           else
-              return "#0F0F14"
+              return cokeline_bg
           end
       end,
       bg = function(buffer)
           if buffer.is_focused then
-              return "#0F0F14"
+              return theme_bg
+          elseif (not buffer.is_focused and buffer.is_modified) then
+              return theme_bg
           else
-              return "#0F0F14"
+              return theme_bg
           end
           if buffer.is_modified then
-              return "#BAE67E"
+              return theme_bg
           end
       end,
       -- },
@@ -1742,12 +1848,10 @@ require('nvim-treesitter.configs').setup {
     "lua"
   },
   ensure_installed = "maintained",
-
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-
   textobjects = {
     move = {
       enable = true,
@@ -1777,21 +1881,10 @@ require('nvim-treesitter.configs').setup {
         -- ["cK"] = "@comment.outer",
       },
     },
-    -- swap = {
-    --   enable = true,
-    --   swap_next = {
-    --     ["<leader>a"] = "@parameter.inner",
-    --   },
-    --   swap_previous = {
-    --     ["<leader>A"] = "@parameter.inner",
-    --   },
-    -- },
     select = {
       enable = true,
-
       -- Automatically jump forward to textobj, similar to targets.vim
       -- lookahead = true,
-
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm
         ["af"] = "@function.outer",
@@ -1804,17 +1897,6 @@ require('nvim-treesitter.configs').setup {
       },
     },
   },
-
-  -- indent = {
-  --   enable = true
-  -- },
-
-  -- rainbow = {
-  --   enable = true,
-  --   extended_mode = true,
-  --   colors = {'#FFCC00', '#82AAFF', '#fe8019'},
-  -- },
-
 }
 
 
@@ -1855,30 +1937,81 @@ require('nvim-autopairs').setup({
 -- })
 
 -- -------------------------------------------------------------------------- #
+--  ----------------- tokyonight ----------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require("tokyonight").setup({
+  -- your configuration comes here
+  -- or leave it empty to use the default settings
+  style = "moon", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+  light_style = "day", -- The theme is used when the background is set to light
+  transparent = false, -- Enable this to disable setting the background color
+  terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
+  styles = {
+    -- Style to be applied to different syntax groups
+    -- Value is any valid attr-list value for `:help nvim_set_hl`
+    comments = { italic = true },
+    keywords = { italic = true },
+    functions = {},
+    variables = {},
+    -- Background styles. Can be "dark", "transparent" or "normal"
+    sidebars = "day", -- style for sidebars, see below
+    floats = "day", -- style for floating windows
+  },
+  -- sidebars = { "qf", "help" }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
+  day_brightness = 0.2, -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
+  hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
+  dim_inactive = true, -- dims inactive windows
+  lualine_bold = false, -- When `true`, section headers in the lualine theme will be bold
+  --- You can override specific color groups to use other groups or a hex color
+  --- function will be called with a ColorScheme table
+  ---@param colors ColorScheme
+  on_colors = function(colors) end,
+
+  --- You can override specific highlights to use other groups or a hex color
+  --- function will be called with a Highlights and ColorScheme table
+  ---@param highlights Highlights
+  ---@param colors ColorScheme
+  -- on_highlights = function(highlights, colors) end,
+})
+
+
+-- -------------------------------------------------------------------------- #
 --  ----------------- lspsaga ----------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- local saga = require('lspsaga')
-require("lspsaga").setup({})
+  -- ft = {'c','cpp', 'py', 'python'},
+  -- symbols_in_winbar.enable = false,
+  -- lines = { '┗', '┣', '┃', '━', '┏' },
+  -- borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+require("lspsaga").setup({
+  -- border = "round",
+  -- border_style = "rounded",
+  ui = {
+    border = 'rounded',
+    colors = {normal_bg = 'NONE'},
+    title = false
+  },
+  definition = {
+    keys = {
+        edit = 'o',
+        vsplit = 'v',
+        split = 'i',
+        tabe = 't',
+    }
+  }
+})
 local keymap = vim.keymap.set
--- saga.init_lsp_saga()
-
 -- Lsp finder find the symbol definition implement reference
 -- if there is no implement it will hide
 -- when you use action in finder like open vsplit then you can
 -- use <C-t> to jump back
-keymap("n", "gd", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
+keymap("n", "gd", "<cmd>Lspsaga finder def<CR>", { silent = true })
+keymap("n", "gsr", "<cmd>Lspsaga finder def+ref+imp<CR>", { silent = true })
 
 -- Code action
-keymap({"n","v"}, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = false })
+-- keymap({"n","v"}, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = false })
 
 -- Rename
 keymap("n", "<leader>gr", "<cmd>Lspsaga rename<CR>", { silent = true })
-
--- Peek Definition
--- you can edit the definition file in this flaotwindow
--- also support open/vsplit/etc operation check definition_action_keys
--- support tagstack C-t jump back
-keymap("n", "<space>k", "<cmd>Lspsaga peek_definition<CR>", { silent = true })
 
 -- Show line diagnostics
 keymap("n", "ga", "<cmd>Lspsaga show_line_diagnostics<CR>", { silent = true })
@@ -1898,19 +2031,9 @@ keymap("n", "]d", function()
   require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { silent = true })
 
--- Outline
--- keymap("n","<leader>o", "<cmd>LSoutlineToggle<CR>",{ silent = true })
-
 -- Hover Doc
 keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
-
--- Float terminal
--- keymap("n", "<A-d>", "<cmd>Lspsaga open_floaterm<CR>", { silent = true })
--- if you want pass somc cli command into terminal you can do like this
--- open lazygit in lspsaga float terminal
--- keymap("n", "<A-d>", "<cmd>Lspsaga open_floaterm lazygit<CR>", { silent = true })
--- close floaterm
--- keymap("t", "<A-d>", [[<C-\><C-n><cmd>Lspsaga close_floaterm<CR>]], { silent = true })
+keymap("n", "gK", "<cmd>Lspsaga hover_doc ++keep<CR>", { silent = true })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- nightfly -------------------------------------------- #
@@ -1919,15 +2042,15 @@ vim.g.nightflyNormalFloat = true
  -- it is highly recommended to enable floating window borders to distinguish between the edit and floating windows in Neovim's LSP client
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
   vim.lsp.handlers.hover, {
-    border = "single"
+    border = "rounded",
   }
 )
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
   vim.lsp.handlers.signatureHelp, {
-    border = "single"
+    border = "rounded"
   }
 )
-vim.diagnostic.config({ float = { border = "single" } })
+vim.diagnostic.config({ float = { border = "rounded" } })
 -- bulb Likewise, nvim-cmp may be configured as follows for nicer display when g:nightflyNormalFloat is enabled:
 local winhighlight = {
   winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
@@ -1940,5 +2063,5 @@ require('cmp').setup({
 })
 
 vim.g.nightflyWinSeparator = 2
-vim.opt.fillchars = { horiz = '━', horizup = '┻', horizdown = '┳', vert = '┃', vertleft = '┫', vertright = '┣', verthoriz = '╋', }
+-- vim.opt.fillchars = { horiz = '━', horizup = '┻', horizdown = '┳', vert = '┃', vertleft = '┫', vertright = '┣', verthoriz = '╋', }
 vim.g.nightflyTransparent = true

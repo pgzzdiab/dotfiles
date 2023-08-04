@@ -307,19 +307,17 @@ function! CheckPyFile()
 		endif
 endfunction
 
-fun! X()
-    let s:a = gitbranch#name()
-    echo s:a
-    let s:b = substitute(s:a, "\/", "-", "")
-    " /Hello
-    echo "search workspace: ".expand(s:b)
-    let @/ = s:b
-    " :normal /s:a
-
-endfun
-map <leader>n :call X()<CR>
-
-au VimEnter * call X() | normal! n
+" fun! X()
+"     let s:a = gitbranch#name()
+"     echo s:a
+"     let s:b = substitute(s:a, "\/", "-", "")
+"     " /Hello
+"     echo "search workspace: ".expand(s:b)
+"     let @/ = s:b
+"     " :normal /s:a
+" endfun
+" map <leader>n :call X()<CR>
+" au VimEnter * call X() | normal! n
 
 " When closing the buffer the 'modified date' is updated
 " autocmd BufWinLeave *.py :call UpdateDatePyFile()
@@ -579,7 +577,6 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " Plug 'dominikduda/vim_current_word'
 if has('nvim')
-    " Plug 'nvim-treesitter/nvim-treesitter-context'
     Plug 'kevinhwang91/rnvimr'                            " open ranger in nvim
     " Plug 'rcarriga/nvim-notify'
     Plug 'windwp/nvim-autopairs'
@@ -589,6 +586,7 @@ if has('nvim')
     Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+    Plug 'nvim-treesitter/nvim-treesitter-context'
     Plug 'kyazdani42/nvim-tree.lua'                        " file tree
     Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
     Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
@@ -602,13 +600,11 @@ if has('nvim')
     " -------------------------------------------------------------------------- #
     Plug 'neovim/nvim-lsp'                           " lsp configuration
     Plug 'neovim/nvim-lspconfig'                     " lsp configuration
-    " Plug 'williamboman/nvim-lsp-installer'         " nvim-lspconfig companion -> mason.nvim
     Plug 'WhoIsSethDaniel/mason-tool-installer.nvim'
     Plug 'williamboman/mason.nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
-    Plug 'williamboman/mason.nvim'
     Plug 'hrsh7th/nvim-cmp'                          " completion plugin
-    Plug 'glepnir/lspsaga.nvim', { 'branch': 'main' }  " UI usefull to find best definition
+    Plug 'nvimdev/lspsaga.nvim', { 'branch': 'main' }  " UI usefull to find best definition
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-nvim-lua'
     Plug 'hrsh7th/cmp-buffer'
@@ -620,7 +616,7 @@ if has('nvim')
 
     Plug 'hrsh7th/cmp-cmdline'
     Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
-    Plug 'SmiteshP/nvim-gps'
+    " Plug 'SmiteshP/nvim-gps'
     Plug 'ggandor/lightspeed.nvim'
     Plug 'numToStr/Comment.nvim'
 
@@ -629,7 +625,6 @@ if has('nvim')
     " -------------------------------------------------------------------------- #
     " Plug 'glepnir/dashboard-nvim'
     " Plug 'rmagatti/igs.nvim'                               " git helper
-    Plug 'Julpikar/night-owl.nvim'
     Plug 'lewis6991/gitsigns.nvim'                         " show git diff
     Plug 'norcalli/nvim-colorizer.lua'                     " show colors from hex code
     Plug 'nvim-lua/plenary.nvim'                           " neovim outside function
@@ -648,13 +643,11 @@ if has('nvim')
     Plug 'ncm2/float-preview.nvim/'
     Plug 'vijaymarupudi/nvim-fzf'                          " fzf
     Plug 'ibhagwan/fzf-lua'
-    Plug 'tiagovla/tokyodark.nvim'
 
     Plug 'davidgranstrom/nvim-markdown-preview'
-    " Plug 'wuelnerdotexe/vim-enfocado'                      " colorschee
-    Plug 'artart222/nvim-enfocado'                      " colorschee
     Plug 'folke/todo-comments.nvim'
     Plug 'dstein64/nvim-scrollview'
+    " Plug 'artart222/nvim-enfocado'                      " colorschee
 
 else
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -787,17 +780,20 @@ Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
 " Plug 'vim-airline/vim-airline'                         " tabline
 " Plug 'vim-airline/vim-airline-themes'
 if has('nvim')
-  Plug 'bluz71/vim-nightfly-colors'
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
   " Plug 'windwp/floatline.nvim'
   Plug 'lukas-reineke/indent-blankline.nvim'
-  Plug 'marko-cerovac/material.nvim'
 
+  Plug 'folke/tokyonight.nvim'
+  " Plug 'bluz71/vim-nightfly-colors'
+  " Plug 'marko-cerovac/material.nvim'
+  " Plug 'projekt0n/github-nvim-theme'
   " Plug 'rktjmp/lush.nvim'
   " Plug 'ellisonleao/gruvbox.nvim'
-  Plug 'Shatur/neovim-ayu'
-  Plug 'rebelot/kanagawa.nvim'
+  " Plug 'Shatur/neovim-ayu'
+  " Plug 'rebelot/kanagawa.nvim'
+  " Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " Plug 'Yggdroot/indentLine'                             " indent guide
 " Plug 'hoob3rt/lualine.nvim'                          " statusbar
@@ -861,7 +857,7 @@ call plug#end()
 " --------------------------------------------------------------
 " highlight TreesitterContext guibg=#F07178
 " hi TreesitterContextBottom gui=underline guisp=Grey
-highlight! TreesitterContext guifg=#F07178 guibg=#000000 gui=NONE cterm=NONE
+" highlight! TreesitterContext guifg=#F07178 guibg=#000000 gui=NONE cterm=NONE
 
 
 if has('nvim')
@@ -874,7 +870,7 @@ endif
 " --------------------------------------------------------------
 " scrollview
 " --------------------------------------------------------------
-highlight! ScrollView guifg=#F07178 gui=NONE cterm=NONE
+" highlight! ScrollView guifg=#F07178 gui=NONE cterm=NONE
 " highlight ScrollView ctermbg=159 guibg=LightCyan
 let g:scrollview_signs_on_startup = ['all']
 
@@ -1112,26 +1108,26 @@ let g:unstack_open_tab=0
 let g:unstack_showsigns=0
 " let g:unstack_extractors=0
 
-" --------------------------------------------------------------
-" qf_helper
-" --------------------------------------------------------------
-if has('nvim')
-  " use <C-N> and <C-P> for next/prev.
-  nnoremap <silent> <C-N> <cmd>QNext<CR>
-  nnoremap <silent> <C-P> <cmd>QPrev<CR>
-  " toggle the quickfix open/closed without jumping to it
-  " nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
-  nnoremap <silent> <leader>q <cmd>copen<CR>
-  nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
-  " <C-t>	open in a new tab
-  " <C-s>	open in a horizontal split
-  " <C-v>	open in a vertical split
-  " <C-p>	open the entry but keep the cursor in the quickfix window
-  " <C-k>	scroll up and open entry while keeping the cursor in the quickfix window
-  " <C-j>	scroll down and open entry while keeping the cursor in the quickfix window
-  " {	scroll up to the previous file
-  " }	scroll down to the next file
-endif
+" " -------------------------------------------------------------- ---------- #
+" " qf_helper
+" " --------------------------------------------------------------
+" if has('nvim')
+"   " use <C-N> and <C-P> for next/prev.
+"   nnoremap <silent> <C-N> <cmd>QNext<CR>
+"   nnoremap <silent> <C-P> <cmd>QPrev<CR>
+"   " toggle the quickfix open/closed without jumping to it
+"   " nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
+"   nnoremap <silent> <leader>q <cmd>copen<CR>
+"   nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
+"   " <C-t>	open in a new tab
+"   " <C-s>	open in a horizontal split
+"   " <C-v>	open in a vertical split
+"   " <C-p>	open the entry but keep the cursor in the quickfix window
+"   " <C-k>	scroll up and open entry while keeping the cursor in the quickfix window
+"   " <C-j>	scroll down and open entry while keeping the cursor in the quickfix window
+"   " {	scroll up to the previous file
+"   " }	scroll down to the next file
+" endif
 
 " --------------------------------------------------------------
 " echo doc
@@ -1169,9 +1165,9 @@ let g:doge_mapping = '<Leader>do'
 if has("nvim")
 else
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-let g:rainbow_conf = {
-		\ 'guifgs': ['#FFCC00', '#82AAFF', '#fe8019']
-\}
+" let g:rainbow_conf = {
+" 		\ 'guifgs': ['#FFCC00', '#82AAFF', '#fe8019']
+" \}
 endif
 
 " --------------------------------------------------------------
@@ -1768,43 +1764,6 @@ nnoremap <silent> <space>s :split \| lua vim.lsp.buf.definition()<cr>
 nnoremap <silent> <space>g <cmd>tabnew%<cr> <C-o> <cmd>lua vim.lsp.buf.definition()<cr>
 
 " --------------------------------------------------------------------------
-" -- Lspsaga
-" -- -----------------------------------------------------------------------
- " if has('nvim')
-	" -- lsp provider to find the cursor word definition and reference
-	" nnoremap <silent> cd <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
-	" -- or use command LspSagaFinder
-	" nnoremap <silent> gy :lspsaga lsp_finder<CR>
-
-	" -- code action
-	" nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
-	" vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
-
-	" -- show hover hover
-	" nnoremap <silent>gh :Lspsaga hover_doc<CR>
-
-	" -- scroll down hover doc or scroll in definition preview
-	" nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
-	" -- scroll up hover doc
-	" nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
-
-	" -- show signature help
-	" nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
-
-	" -- preview definition
-	" nnoremap <silent> gl <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
-
-	" -- show diagnostic
-	" nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
-	" autocmd BufReadPost * map ga :Lspsaga show_line_diagnostics<CR>
-	" nnoremap <silent> ga <Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-
-	" -- jump diagnostic
-	" nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
-	" nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
-" endif
-
-" --------------------------------------------------------------------------
 " -- Grepper
 " -- -----------------------------------------------------------------------
 nnoremap <A-g> :Grepper<CR>
@@ -2274,20 +2233,24 @@ if has('nvim')
     "   \   'telescope',
     "   \ ]
     " colorscheme enfocado
-    colorscheme ayu
+    " colorscheme ayu
     " colorscheme night-owl
     " colorscheme kanagawa
+    colorscheme tokyonight-day
     " colorscheme nightfly
+    " colorscheme github_light
+    " colorscheme catppuccin-latte
+    " let $BAT_THEME='github_light'
 else
-    colorscheme material
-    let $BAT_THEME='material'
+    colorscheme github_light
+    let $BAT_THEME='github_light'
 
     " colorscheme ayu
     " let ayucolor="mirage"   " for dark version of theme
 endif
 
 
-set background=dark
+" set background=dark
 
 set cursorline                               " Highlight current line
 " hi CursorLine guibg=#0D1016
@@ -2359,4 +2322,4 @@ endif
 " -------------------------------------------------------------------------- #
 "  ----------------- treesitter-context --------------------------------------- #
 " -------------------------------------------------------------------------- #
-highlight! TreesitterContext guibg=#383E4C
+" highlight! TreesitterContext guibg=#383E4C

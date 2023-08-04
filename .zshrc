@@ -157,7 +157,7 @@ alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias re="pkill -USR1 -x sxhkd"
 # alias ssh="kitty +kitten ssh"
 alias senddata="scp -r -i .ssh/sims.pem dev/data/dalla_man_optimization/** ubuntu@ec2-13-38-118-253.eu-west-3.compute.amazonaws.com:git/data/dalla_man_optimization"
-alias getresult="rsync -avz -e "ssh -i .ssh/sims.pem" ubuntu@ec2-35-180-181-239.eu-west-3.compute.amazonaws.com:/home/ubuntu/git/results/xpAnalysis ~/dev/results/xpAnalysis/aws"
+alias getresult="rsync -avz -e 'ssh -i .ssh/sims.pem' ubuntu@ec2-35-180-181-239.eu-west-3.compute.amazonaws.com:/home/ubuntu/git/results/xpAnalysis ~/dev/results/xpAnalysis/aws"
 
 alias icat="kitty +kitten icat"
 alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
@@ -166,18 +166,20 @@ alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias sftest="pytest -x -v -rfEs --durations=0 --ignore=simulation_framework/com/virtual_patient_simulator/tests/vp_bin/ simulation_framework"
 alias gs="git status"
 alias ga="git add -u"
-alias gm="git commit -m"
+alias gm="poetry run git commit -m"
+alias pp="poetry run python"
 
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # icat ~/Images/logo_diabeloop_bleu_rvb.png
 # icat --align=center Pictures/top.png
 # icat --align=center ~/Pictures/ascii_logo_4.png
-# fm6000 -r
+fm6000 -r
 # neofetch --kitty ~/Pictures/icon_fetch.png --size 300px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
 # neofetch --kitty ~/Pictures/top.png --size 500px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off
 # tmux ls
-neofetch --kitty ~/Pictures/icon_fetch.png --size 250px --disable host kernel resolution packages font cpu gpu memory color wm uptime --os_arch off  --color_blocks off --align_output right
+# neofetch --kitty ~/Pictures/icon_fetch.png --size 250px --disable host kernel resolution packages font cpu gpu memory color wm uptime --os_arch off  --color_blocks off --align_output right
+# neofetch --disable host kernel resolution packages font cpu gpu memory color wm uptime --os_arch off  --color_blocks off --align_output right
 
 # complete -C "/home/pierre/.local/bin/aws_completer" aws
 # gsettings set org.gnome.desktop.background primary-color '#000000'
