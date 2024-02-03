@@ -195,26 +195,13 @@ vim.keymap.set( "n", "dd", delete_special, { noremap = true, expr = true } )
 
 
 -- -------------------------------------------------------------------------- #
--- ----------------- \<scrollview\> -------------------------------------------- #
--- -------------------------------------------------------------------------- #
-require('scrollview').setup({
-  signs_on_startup = {'all'}
-  -- excluded_filetypes = {'nerdtree'},
-  -- current_only = true,
-  -- winblend = 75,
-  -- base = 'buffer',
-  -- column = 80
-})
-
-
--- -------------------------------------------------------------------------- #
 -- ----------------- \<qf_helper\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
 require'qf_helper'.setup({
   -- prefer_loclist = true,       -- Used for QNext/QPrev (see Commands below)
   -- sort_lsp_diagnostics = true, -- Sort LSP diagnostic results
   -- quickfix = {
-  --   autoclose = true,          -- Autoclose qf if it's the only open window
+    autoclose = true,          -- Autoclose qf if it's the only open window
   --   default_bindings = true,   -- Set up recommended bindings in qf window
   --   default_options = true,    -- Set recommended buffer and window options
   --   max_height = 10,           -- Max qf height when using open() or toggle()
@@ -234,11 +221,6 @@ require'qf_helper'.setup({
 
 
 -- -------------------------------------------------------------------------- #
--- ----------------- spellsitter -------------------------------------------- #
--- -------------------------------------------------------------------------- #
--- require('spellsitter').setup()
-
----------------------------------------------------------------------------------
 ---- TELESCOPE
 ---- ----------------------------------------------------------------------------
 local actions = require("telescope.actions")
@@ -322,66 +304,179 @@ require('telescope').setup{
 -- -------------------------------------------------------------------------- #
 --  ----------------- blankline indent -------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require("indent_blankline").setup {
-    -- space_char_blankline = " ",
-    -- show_trailing_blankline_indent = false,
-    show_current_context = true,
-    -- show_current_context_start = false,
-    -- show_end_of_line = false,
-    -- use_treesitter = false,
-    filetype_exclude = {
-      "help",
-      "terminal",
-      "packer",
-      "NvimTree",
-      "startify"
-    },
-    buftype_exclude = { "terminal" },
+-- require("indent_blankline").setup {
+--     -- space_char_blankline = " ",
+--     -- show_trailing_blankline_indent = false,
+--     show_current_context = true,
+--     -- show_current_context_start = false,
+--     -- show_end_of_line = false,
+--     -- use_treesitter = false,
+--     filetype_exclude = {
+--       "help",
+--       "terminal",
+--       "packer",
+--       "NvimTree",
+--       "startify"
+--     },
+--     buftype_exclude = { "terminal" },
+-- }
+local highlight = {
+  "RainbowRed",
+  "RainbowYellow",
+  "RainbowBlue",
+  "RainbowOrange",
+  "RainbowGreen",
+  "RainbowViolet",
+  "RainbowCyan",
 }
+
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+  end)
+
+require("ibl").setup{
+  indent = { highlight = highlight }
+  -- filetype_exclude = {
+  --   "help",
+  --   "terminal",
+  --   "packer",
+  --   "NvimTree",
+  --   "startify"
+  -- },
+  -- buftype_exclude = { "terminal" },
+}
+
+
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- rgflow ------------------------------------------------ #
+-- -------------------------------------------------------------------------- #
+require('rgflow').setup(
+    {
+      -- Set the default rip grep flags and options for when running a search via
+      -- RgFlow. Once changed via the UI, the previous search flags are used for
+      -- each subsequent search (until Neovim restarts).
+      cmd_flags = "--smart-case --fixed-strings --ignore --max-columns 200",
+
+      -- Mappings to trigger RgFlow functions
+      default_trigger_mappings = true,
+      -- These mappings are only active when the RgFlow UI (panel) is open
+      default_ui_mappings = true,
+      -- QuickFix window only mapping
+      default_quickfix_mappings = true,
+
+      --[[
+      mappings = {
+        trigger = {
+            -- Normal mode maps
+            n = {
+                ["<leader>rG"] = "open_blank", -- open UI - search pattern = blank
+                ["<leader>rg"] = "open_cword", -- open UI - search pattern = <cword>
+                ["<leader>rp"] = "open_paste", -- open UI - search pattern = First line of unnamed register as the search pattern
+                ["<leader>ra"] = "open_again", -- open UI - search pattern = Previous search pattern
+                ["<leader>rx"] = "abort",      -- close UI / abort searching / abortadding results
+                ["<leader>rc"] = "print_cmd",  -- Print a version of last run rip grep that can be pasted into a shell
+                ["<leader>r?"] = "print_status",  -- Print info about the current state of rgflow (mostly useful for deving on rgflow)
+            },
+            -- Visual/select mode maps
+            x = {
+                ["<leader>rg"] = "open_visual", -- open UI - search pattern = current visual selection
+            },
+        },
+        -- Mappings that are local only to the RgFlow UI
+        ui = {
+            -- Normal mode maps
+            n = {
+                ["<CR>"]  = "start", -- With the ui open, start a search with the current parameters
+                ["<ESC>"] = "close", -- With the ui open, discard and close the UI window
+                ["?"]     = "show_rg_help", -- Show the rg help in a floating window, which can be closed with q or <ESC> or the usual <C-W><C-C>
+                ["<BS>"]  = "nop",   -- No operation
+                ["<C-^>"] = "nop",   -- No operation
+                ["<C-6>"] = "nop",   -- No operation
+            },
+            -- Insert mode maps i = {
+                ["<CR>"]  = "start", -- With the ui open, start a search with the current parameters (from insert mode)
+                ["<TAB>"] = "auto_complete", -- start autocomplete if PUM not visible, if visible use own hotkeys to select an option
+                ["<C-N>"] = "auto_complete", -- start autocomplete if PUM not visible, if visible use own hotkeys to select an option
+                ["<C-P>"] = "auto_complete", -- start autocomplete if PUM not visible, if visible use own hotkeys to select an option
+            },
+        },
+        -- Mapping that are local only to the QuickFix window
+        quickfix = {
+            -- Normal
+            n = {
+                ["d"] = "qf_delete",        -- QuickFix normal mode delete operator
+                ["dd"] = "qf_delete_line",  -- QuickFix delete a line from quickfix
+                ["<TAB>"] = "qf_mark",      -- QuickFix mark a line in the quickfix
+                ["<S-TAB>"] = "qf_unmark",  -- QuickFix unmark a line in the quickfix window
+                ["<BS>"]  = "nop", -- No operation
+                ["<C-^>"] = "nop", -- No operation - Probably don't want to switch to a buffer in the little quickfix window
+                ["<C-6>"] = "nop", -- No operation
+            },
+            -- Visual/select mode maps
+            x = {
+                ["d"] = "qf_delete_visual",       -- QuickFix visual mode delete operator
+                ["<TAB>"] = "qf_mark_visual",     -- QuickFix visual mode mark operator
+                ["<S-TAB>"] = "qf_unmark_visual", -- QuickFix visual mode unmark operator
+            }
+        },
+      --]]
+
+    }
+)
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-context --------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require'treesitter-context'.setup{
---     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
---     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
---     patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
---         -- For all filetypes
---         -- Note that setting an entry here replaces all other patterns for this entry.
---         -- By setting the 'default' entry below, you can control which nodes you want to
---         -- appear in the context window.
---         default = {
---             'for', -- These won't appear in the context
---             'while',
---             'if',
---             'switch',
---             'case',
---             'class',
---             'function',
---             'method',
---         },
---         -- Example for a specific filetype.
---         -- If a pattern is missing, *open a PR* so everyone can benefit.
---         --   rust = {
---         --       'impl_item',
---         --   },
---     },
---     exact_patterns = {
---         -- Example for a specific filetype with Lua patterns
---         -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
---         -- exactly match "impl_item" only)
---         -- rust = true,
---     },
---
---     -- [!] The options below are exposed but shouldn't require your attention,
---     --     you can safely ignore them.
---     mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
---     -- Separator between context and content. Should be a single character string, like '-'.
---     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
---     separator = nil,
---
---     zindex = 20, -- The Z-index of the context window
--- }
+require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 5, -- How many lines the window should span. Values <= 0 mean no limit.
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'for', -- These won't appear in the context
+            'while',
+            'if',
+            'switch',
+            'case',
+            'class',
+            'function',
+            'method',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+    exact_patterns = {
+        -- Example for a specific filetype with Lua patterns
+        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+        -- exactly match "impl_item" only)
+        -- rust = true,
+    },
+
+    -- [!] The options below are exposed but shouldn't require your attention,
+    --     you can safely ignore them.
+    mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+    -- Separator between context and content. Should be a single character string, like '-'.
+    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+    separator = nil,
+
+    zindex = 20, -- The Z-index of the context window
+}
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- kommentary -------------------------------------------- #
@@ -474,6 +569,46 @@ vim.keymap.set("i", "<c-u>", require "luasnip.extras.select_choice")
 
 -- shorcut to source my luasnips file again, which will reload my snippets
 vim.keymap.set("n", "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>")
+
+
+
+-- -------------------------------------------------------------------------- #
+--  ----------------- nvim-cmp ---------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- See: https://github.com/neovim/nvim-lspconfig/tree/54eb2a070a4f389b1be0f98070f81d23e2b1a715#suggested-configuration
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, bufopts)
+  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+end
+
+
 
 
 
@@ -685,32 +820,33 @@ lsp_defaults.capabilities = vim.tbl_deep_extend(
 
 
 -- lspconfig.pyright.setup {}
-lspconfig.clangd.setup {}
-lspconfig.bashls.setup {}
-require'lspconfig'.jsonls.setup{}
-lspconfig.sqlls.setup {}
+-- lspconfig.clangd.setup {}
+-- lspconfig.bashls.setup {}
+-- require'lspconfig'.jsonls.setup{}
+-- lspconfig.sqlls.setup {}
 -- require'lspconfig'.jedi_language_server.setup{}
-require'lspconfig'.pylsp.setup{
-  settings = {
-    pylsp = {
-      plugins = {
-        -- pycodestyle = {
-        --   ignore = {'W391'},
-        --   maxLineLength = 100
-        -- }
-        autopep8 = {
-          enabled  = false
-        },
-        -- jedi_completion = {
-        --   fuzzy  = true
+-- require'lspconfig'.pylsp.setup{
+-- require'lspconfig'.pylsp.setup{
+-- settings = {
+    -- pylsp = {
+      -- plugins = {
+        -- -- pycodestyle = {
+        -- --   ignore = {'W391'},
+        -- --   maxLineLength = 100
+        -- -- }
+        -- autopep8 = {
+          -- enabled  = false
         -- },
-        pyflakes = {
-          enabled  = false
-        },
-      }
-    }
-  }
-}
+        -- -- jedi_completion = {
+        -- --   fuzzy  = true
+        -- -- },
+        -- pyflakes = {
+          -- enabled  = false
+        -- },
+      -- }
+    -- }
+  -- }
+-- }
 
 -- require'lspconfig'.pyright.setup{
 --   settings = {
@@ -724,6 +860,19 @@ require'lspconfig'.pylsp.setup{
 --     },
 --   }
 
+
+-- Configure `ruff-lsp`.
+-- See: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#ruff_lsp
+-- For the default config, along with instructions on how to customize the settings
+require('lspconfig').ruff_lsp.setup {
+   on_attach = on_attach,
+   init_options = {
+     settings = {
+       -- Any extra CLI arguments for `ruff` go here.
+       args = {},
+    }
+  }
+}
 
 
 -- Global mappings.
@@ -788,8 +937,8 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 vim.diagnostic.config({
   underline = false,
   signs = true,
-  virtual_text = false,
-  update_in_insert = false,
+  virtual_text = true,
+  update_in_insert = true,
 })
 
 -- show diagnostic on float window(like auto complete)
@@ -878,30 +1027,30 @@ local DEFAULT_SETTINGS = {
 -- Install without configuration
 -- use ({ 'projekt0n/github-nvim-theme' })
 
--- -------------------------------------------------------------------------- #
---  ----------------- lsp signature ----------------------------------------- #
--- -------------------------------------------------------------------------- #
--- cfg = {
---   bind = true, -- This is mandatory, otherwise border config won't get registered.
---                -- If you want to hook lspsaga or other signature handler, pls set to false
---   doc_lines = 2, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
---                  -- set to 0 if you do not want any API comments be shown
---                  -- This setting only take effect in insert mode, it does not affect signature help in normal
---                  -- mode
---
---   hint_enable = true, -- virtual hint enable
---   hint_prefix = "",  -- Panda for parameter
---   hint_scheme = "String",
---   use_lspsaga = true,  -- set to true if you want to use lspsaga popup
---   handler_opts = {
---     border = "shadow"   -- double, single, shadow, none
---   },
---   decorator = {"`", "`"}  -- decoractor can be `decorator = {"***", "***"}`  `decorator = {"**", "**"}` `decorator = {"**_", "_**"}`
---                           -- `decorator = {"*", "*"} see markdown help for more details
---                           -- <u></u> ~ ~ does not supported by nvim
---
--- }
--- require'lsp_signature'.on_attach(cfg)
+-------------------------------------------------------------------------- #
+ ----------------- lsp signature ----------------------------------------- #
+-------------------------------------------------------------------------- #
+cfg = {
+  bind = true, -- This is mandatory, otherwise border config won't get registered.
+               -- If you want to hook lspsaga or other signature handler, pls set to false
+  doc_lines = 2, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
+                 -- set to 0 if you do not want any API comments be shown
+                 -- This setting only take effect in insert mode, it does not affect signature help in normal
+                 -- mode
+
+  hint_enable = true, -- virtual hint enable
+  hint_prefix = "",  -- Panda for parameter
+  hint_scheme = "String",
+  use_lspsaga = true,  -- set to true if you want to use lspsaga popup
+  handler_opts = {
+    border = "shadow"   -- double, single, shadow, none
+  },
+  decorator = {"`", "`"}  -- decoractor can be `decorator = {"***", "***"}`  `decorator = {"**", "**"}` `decorator = {"**_", "_**"}`
+                          -- `decorator = {"*", "*"} see markdown help for more details
+                          -- <u></u> ~ ~ does not supported by nvim
+
+}
+require'lsp_signature'.on_attach(cfg)
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- neoclip -------------------------------------------- "
@@ -993,47 +1142,13 @@ require'lightspeed'.setup {
 
 }
 
--- -------------------------------------------------------------------------- #
--- trouble ------------------------------------------------------------------ #
--- -------------------------------------------------------------------------- #
-require("trouble").setup {
-	-- position = 'right',
-	-- keymaps = {
-		-- position = "bottom", -- position of the list can be: bottom, top, left, right
-		-- height = 10, -- height of the trouble list when position is top or bottom
-    -- width = 50, -- width of the list when position is left or right
-    -- icons = true, -- use devicons for filenames
-    -- mode = "lsp_workspace_diagnostics", -- "lsp_workspace_diagnostics", "lsp_document_diagnostics", "quickfix", "lsp_references", "loclist"
-    -- fold_open = "", -- icon used for open folds
-    -- fold_closed = "", -- icon used for closed folds
-    -- action_keys = { -- key mappings for actions in the trouble list
-    --     close = "q", -- close the list
-    --     cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
-    --     refresh = "r", -- manually refresh
-    --     jump = {"<cr>", "<tab>"}, -- jump to the diagnostic or open / close folds
-    --     open_split = { "x" }, -- open buffer in new split
-    --     open_vsplit = { "v" }, -- open buffer in new vsplit
-    --     open_tab = { "t" }, -- open buffer in new tab
-    --     jump_close = {"o"}, -- jump to the diagnostic and close the list
-    --     toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-    --     toggle_preview = "P", -- toggle auto_preview
-    --     hover = "K", -- opens a small poup with the full multiline message
-    --     preview = "p", -- preview the diagnostic location
-    --     close_folds = {"zM", "zm"}, -- close all folds
-    --     open_folds = {"zR", "zr"}, -- open all folds
-    --     toggle_fold = {"zA", "za"}, -- toggle fold of current file
-    --     previous = "k", -- preview item
-    --     next = "j" -- next item
-    -- },
-    -- indent_lines = true, -- add an indent guide below the fold icons
-    -- auto_open = false, -- automatically open the list when you have diagnostics
-    -- auto_close = false, -- automatically close the list when you have no diagnostics
-    auto_preview = false, -- automatyically preview the location of the diagnostic. <esc> to close preview and go back to last window
-    auto_fold = true, -- automatically fold a file trouble list at creation
-    -- use_lsp_diagnostic_signs = true -- enabling this will use the signs defined in your lsp client
-	-- },
-    -- lsp_blacklist = {}
-}
+-- -- -------------------------------------------------------------------------- #
+-- -- trouble ------------------------------------------------------------------ #
+-- -- -------------------------------------------------------------------------- #
+-- require("trouble").setup {
+--     auto_preview = false, -- automatyically preview the location of the diagnostic. <esc> to close preview and go back to last window
+--     auto_fold = true, -- automatically fold a file trouble list at creation
+-- }
 
 -- -------------------------------------------------------------------------- #
 -- ---------------- colorizer ----------------------------------------------- #
@@ -1118,41 +1233,41 @@ require'nvim-tree'.setup {
     }
 }
 
-local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-local list = {
-  { key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("edit") },
-  { key = {"<2-RightMouse>", "<C-]>"},    cb = tree_cb("cd") },
-  { key = "v",                        cb = tree_cb("vsplit") },
-  { key = "i",                        cb = tree_cb("split") },
-  { key = "t",                        cb = tree_cb("tabnew") },
-  { key = "<",                            cb = tree_cb("prev_sibling") },
-  { key = ">",                            cb = tree_cb("next_sibling") },
-  { key = "P",                            cb = tree_cb("parent_node") },
-  { key = "<BS>",                         cb = tree_cb("close_node") },
-  { key = "<S-CR>",                       cb = tree_cb("close_node") },
-  { key = "<Tab>",                        cb = tree_cb("preview") },
-  { key = "K",                            cb = tree_cb("first_sibling") },
-  { key = "J",                            cb = tree_cb("last_sibling") },
-  { key = "I",                            cb = tree_cb("toggle_ignored") },
-  { key = "H",                            cb = tree_cb("toggle_dotfiles") },
-  { key = "R",                            cb = tree_cb("refresh") },
-  { key = "a",                            cb = tree_cb("create") },
-  { key = "d",                            cb = tree_cb("remove") },
-  { key = "r",                            cb = tree_cb("rename") },
-  { key = "<C-r>",                        cb = tree_cb("full_rename") },
-  { key = "x",                            cb = tree_cb("cut") },
-  { key = "c",                            cb = tree_cb("copy") },
-  { key = "p",                            cb = tree_cb("paste") },
-  { key = "y",                            cb = tree_cb("copy_name") },
-  { key = "Y",                            cb = tree_cb("copy_path") },
-  { key = "gy",                           cb = tree_cb("copy_absolute_path") },
-  { key = "[c",                           cb = tree_cb("prev_git_item") },
-  { key = "]c",                           cb = tree_cb("next_git_item") },
-  { key = "-",                            cb = tree_cb("dir_up") },
-  { key = "s",                            cb = tree_cb("system_open") },
-  { key = "q",                            cb = tree_cb("close") },
-  { key = "g?",                           cb = tree_cb("toggle_help") },
-}
+-- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+-- local list = {
+--   { key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("edit") },
+--   { key = {"<2-RightMouse>", "<C-]>"},    cb = tree_cb("cd") },
+--   { key = "v",                        cb = tree_cb("vsplit") },
+--   { key = "i",                        cb = tree_cb("split") },
+--   { key = "t",                        cb = tree_cb("tabnew") },
+--   { key = "<",                            cb = tree_cb("prev_sibling") },
+--   { key = ">",                            cb = tree_cb("next_sibling") },
+--   { key = "P",                            cb = tree_cb("parent_node") },
+--   { key = "<BS>",                         cb = tree_cb("close_node") },
+--   { key = "<S-CR>",                       cb = tree_cb("close_node") },
+--   { key = "<Tab>",                        cb = tree_cb("preview") },
+--   { key = "K",                            cb = tree_cb("first_sibling") },
+--   { key = "J",                            cb = tree_cb("last_sibling") },
+--   { key = "I",                            cb = tree_cb("toggle_ignored") },
+--   { key = "H",                            cb = tree_cb("toggle_dotfiles") },
+--   { key = "R",                            cb = tree_cb("refresh") },
+--   { key = "a",                            cb = tree_cb("create") },
+--   { key = "d",                            cb = tree_cb("remove") },
+--   { key = "r",                            cb = tree_cb("rename") },
+--   { key = "<C-r>",                        cb = tree_cb("full_rename") },
+--   { key = "x",                            cb = tree_cb("cut") },
+--   { key = "c",                            cb = tree_cb("copy") },
+--   { key = "p",                            cb = tree_cb("paste") },
+--   { key = "y",                            cb = tree_cb("copy_name") },
+--   { key = "Y",                            cb = tree_cb("copy_path") },
+--   { key = "gy",                           cb = tree_cb("copy_absolute_path") },
+--   { key = "[c",                           cb = tree_cb("prev_git_item") },
+--   { key = "]c",                           cb = tree_cb("next_git_item") },
+--   { key = "-",                            cb = tree_cb("dir_up") },
+--   { key = "s",                            cb = tree_cb("system_open") },
+--   { key = "q",                            cb = tree_cb("close") },
+--   { key = "g?",                           cb = tree_cb("toggle_help") },
+-- }
 
 
 -- -------------------------------------------------------------------------- #
@@ -1222,36 +1337,36 @@ local list = {
 -- -- -------------------------------------------------------------------------- #
 -- -- ----------------- kanagawa ---------------------------------------------------- #
 -- -- -------------------------------------------------------------------------- #
--- require('kanagawa').setup({
---     undercurl = true,           -- enable undercurls
---     functionStyle = {italic = true},
---     keywordStyle = {italic = true},
---     variablebuiltinStyle = { italic = true},
---     specialReturn = true,       -- special highlight for the return keyword
---     specialException = true,    -- special highlight for exception handling keywords
---     -- typeStyle = "NONE",
---     -- variablebuiltinStyle = "italic",
---     specialReturn = true,       -- special highlight for the return keyword
---     specialException = true,    -- special highlight for exception handling keywords
---     transparent = false,        -- do not set background color
---     globalStatus = false,       -- adjust window separators highlight for laststatus=3
---     colors = {},
---     -- theme = "wave",              -- Load "wave" theme when 'background' option is not set
---     background = {               -- map the value of 'background' option to a theme
---         dark = "dragon",           -- try "dragon" !
---         light = "lotus"
---     },
---     -- overrides = {
---     --   -- override existing hl-groups, the new keywords are merged with existing ones
---     --   VertSplit  = {
---     --     fg = '#2A2A37',
---     --     bg = "NONE"
---     --   },
---     -- },
--- })
+require('kanagawa').setup({
+    undercurl = true,           -- enable undercurls
+    functionStyle = {italic = true},
+    keywordStyle = {italic = true},
+    variablebuiltinStyle = { italic = true},
+    specialReturn = true,       -- special highlight for the return keyword
+    specialException = true,    -- special highlight for exception handling keywords
+    -- typeStyle = "NONE",
+    -- variablebuiltinStyle = "italic",
+    specialReturn = true,       -- special highlight for the return keyword
+    specialException = true,    -- special highlight for exception handling keywords
+    transparent = false,        -- do not set background color
+    globalStatus = false,       -- adjust window separators highlight for laststatus=3
+    colors = {},
+    -- theme = "wave",              -- Load "wave" theme when 'background' option is not set
+    background = {               -- map the value of 'background' option to a theme
+        dark = "dragon",           -- try "dragon" !
+        light = "lotus"
+    },
+    -- overrides = {
+    --   -- override existing hl-groups, the new keywords are merged with existing ones
+    --   VertSplit  = {
+    --     fg = '#2A2A37',
+    --     bg = "NONE"
+    --   },
+    -- },
+})
 
 -- setup must be called before loading
--- vim.cmd("colorscheme kanagawa")
+vim.cmd("colorscheme kanagawa")
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- material ----------------------------------------------- #
@@ -1353,8 +1468,8 @@ require('gitsigns').setup()
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require('wlsample.mybubble')
--- require('wlsample.bubble')
+-- require('wlsample.vscode')
+
 local windline = require('windline')
 local helper = require('windline.helpers')
 local sep = helper.separators
@@ -1366,13 +1481,41 @@ local state = _G.WindLine.state
 local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
 
+
+local colors = {
+  -- black         = "",  -- terminal_color_0,
+  -- red           = "",  -- terminal_color_1,
+  -- green         = "",  -- terminal_color_2,
+  -- yellow        = "",  -- terminal_color_3,
+  -- blue          = "",  -- terminal_color_4,
+  -- magenta       = "",  -- terminal_color_5,
+  -- cyan          = "",  -- terminal_color_6,
+  -- white         = "",  -- terminal_color_7,
+  -- black_light   = "",  -- terminal_color_8,
+  -- red_light     = "",  -- terminal_color_9,
+  -- green_light   = "",  -- terminal_color_10,
+  -- yellow_light  = "",  -- terminal_color_11,
+  -- blue_light    = "",  -- terminal_color_12,
+  -- magenta_light = "",  -- terminal_color_13,
+  -- cyan_light    = "",  -- terminal_color_14,
+  -- white_light   = "",  -- terminal_color_15,
+  -- NormalFg      = "",  -- hightlight Normal fg
+  NormalBg      = "#000000",  -- hightlight Normal bg
+  -- ActiveFg      = "",  -- hightlight StatusLine fg
+  ActiveBg      = "#000000",  -- hightlight StatusLine bg
+  -- InactiveFg    = "",  -- hightlight StatusLineNc fg
+  InactiveBg    = "#000000",  -- hightlight StatusLineNc bg
+}
+
+
 local hl_list = {
-    Inactive = { 'InactiveFg', 'InactiveBg' },
+    Inactive = { 'NormalFg', 'NormalBg' },
     Active = { 'ActiveFg', 'ActiveBg' },
 }
+
 local basic = {}
 
-basic.divider = { b_components.divider, '' }
+basic.divider = { b_components.divider, hl_list.Inactive  }
 basic.file_name_inactive = { b_components.full_file_name, hl_list.Inactive }
 basic.line_col_inactive = { b_components.line_col, hl_list.Inactive }
 basic.progress_inactive = { b_components.progress, hl_list.Inactive }
@@ -1380,9 +1523,9 @@ basic.progress_inactive = { b_components.progress, hl_list.Inactive }
 basic.file = {
     name = 'file',
     hl_colors = {
-        sep_before = { 'NormalFg', 'ActiveBg' },
-        sep_after = { 'NormalFg', 'ActiveBg' },
-        text = { 'ActiveBg', 'NormalFg' },
+        sep_before = { 'NormalFg', 'ActiveFg' },
+        sep_after = { 'NormalFg', 'ActiveFg' },
+        text = { 'ActiveFg', 'NormalFg' },
     },
     text = function()
         return {
@@ -1394,49 +1537,67 @@ basic.file = {
             { sep.right_rounded, 'sep_after'},
         }
     end,
-    width = 150,
+    width = 50,
 }
 basic.file_inac = {
     name = 'file',
     hl_colors = {
-        text = { 'NormalFg', 'ActiveBg' },
+        sep_before = { 'InactiveBg', 'ActiveFg' },
+        sep_after = { 'InactiveBg', 'ActiveFg' },
+        text = { 'NormalFg', 'InactiveBg' },
     },
     text = function()
         return {
+            { sep.left_rounded, 'sep_before' },
+            {b_components.cache_file_icon({ default = '' }), 'text'},
             { b_components.cache_file_name('[No Name]', 'text') },
             { b_components.file_modified(' ')},
+            { sep.right_rounded, 'sep_after'},
         }
     end,
 }
--- basic.gps = {
---     name = 'gps',
---     hl_colors = {
---         sep_before = { 'magenta_light', 'ActiveBg' },
---         sep_after = { 'magenta_light', 'ActiveBg' },
---         text = { 'ActiveBg', 'magenta_light' },
---     },
---     text = function()
---       if require("nvim-gps").is_available() then
---         if (require("nvim-gps").get_location() == "") then
---           return { }
---         else
---           return {
---             { sep.left_rounded, 'sep_before' },
---             {require("nvim-gps").get_location(), 'text'},
---             { sep.right_rounded, 'sep_after'},
---           }
---         end
---       else
---         return { }
---       end
---     end
--- }
+
+
+basic.git_inac = {
+    name = 'git',
+    text = function()
+      return {
+        { git_comps.git_branch({ icon = '  ' }), { 'NormalFg', 'ActiveFg' }, 90 },
+      }
+    end,
+    width = 20,
+}
+
+
+basic.gps = {
+    name = 'gaaaps',
+    hl_colors = {
+        sep_before = { 'tabe', 'ActiveFg' },
+        sep_after = { 'tabe', 'ActiveFg' },
+        text = { 'ActiveBg', 'tabe' },
+    },
+    text = function()
+      if require("nvim-gps").is_available() then
+        if (require("nvim-gps").get_location() == "") then
+          return { }
+        else
+          return {
+            { sep.left_rounded, 'sep_before' },
+            {require("nvim-gps").get_location(), 'text'},
+            { sep.right_rounded, 'sep_after'},
+          }
+        end
+      else
+        return { }
+      end
+    end
+}
 basic.tabe = {
     name = 'tabe',
     hl_colors = {
-        sep_before = { 'yellow', 'ActiveBg' },
-        sep_after = { 'yellow', 'ActiveBg' },
-        text = { 'ActiveBg', 'yellow' },
+        sep_before = { 'black', 'ActiveFg' },
+        sep_after = { 'black', 'ActiveFg' },
+        text = { 'ActiveFg', 'black' },
     },
     text = function()
       return {
@@ -1447,96 +1608,108 @@ basic.tabe = {
     end
 }
 basic.git_branch = {
-    name = 'gps',
+    name = 'git',
     hl_colors = {
-        sep_after = { 'NormalFg', 'ActiveBg' },
+        sep_after = { 'black', 'ActiveFg' },
     },
     text = function()
       return {
-        { git_comps.git_branch({ icon = '  ' }), { 'green', 'ActiveBg' }, 90 },
+        { git_comps.git_branch({ icon = '  ' }), { 'black', 'ActiveFg' }, 90 },
       }
     end,
-    width = 150,
+    width = 20,
 }
 
 
 local default = {
     filetypes = { 'default' },
     active = {
-        { ' ', 'ActiveBg' },
-        basic.tabe,
-        { ' ', 'ActiveBg' },
-        -- basic.gps,
-        { ' ', 'ActiveBg' },
-        basic.divider,
-        basic.file,
-        basic.git_branch,
-        { ' ', 'ActiveBg' },
-        { ' ', 'ActiveBg' },
-    },
-    inactive = {
-        basic.file_inac,
-        basic.divider,
-    },
+      {' ', hl_list.Inactive},
+      basic.tabe,
+      { ' ', hl_list.Inactive},
+      basic.gps,
+      { ' ', hl_list.Inactive},
+      -- basic.divider,
+      basic.file,
+      basic.git_branch,
+      {' ', hl_list.Inactive},
+      -- {' ', hl_list.Inactive},
+  },
+  inactive = {
+      basic.file_inac,
+      basic.git_inac,
+      basic.divider,
+  },
 }
 
 local quickfix = {
-    filetypes = { 'qf', 'Trouble' },
-    active = {
-        { ' Quickfix ', { 'NormalFg', 'ActiveBg' } },
-        { sep.left_rounded, { 'NormalFg', 'ActiveBg' } },
-        {
-            function()
-                return vim.fn.getqflist({ title = 0 }).title
-            end,
-            { 'ActiveBg', 'NormalFg' },
-        },
-        { ' Total : %L ', { 'ActiveBg', 'NormalFg' } },
-        { sep.right_rounded, { 'NormalFg', 'ActiveBg' } },
-        { ' ', { 'NormalFg', 'ActiveBg' } },
-        basic.divider,
-    },
-    always_active = true,
-    show_last_status = true
+  filetypes = { 'qf', 'Trouble' },
+  active = {
+      { ' Quickfix ', { 'NormalFg', 'ActiveFg' } },
+      { sep.left_rounded, { 'NormalFg', 'ActiveFg' } },
+      {
+          function()
+              return vim.fn.getqflist({ title = 0 }).title
+          end,
+          { 'black_light', 'NormalFg' },
+      },
+      { ' Total : %L ', { 'black_light', 'NormalFg' } },
+      { sep.right_rounded, { 'NormalFg', 'ActiveFg' } },
+      { ' ', { 'NormalFg', 'ActiveFg' } },
+      basic.divider,
+  },
+  always_active = true,
+  show_last_status = true
 }
-
-local explorer = {
-    filetypes = { 'fern', 'NvimTree', 'lir' },
+local explorer = { filetypes = { 'fern', 'NvimTree', 'lir' },
     active = {
         { b_components.divider, '' },
-        { b_components.file_name(''), { 'NormalFg', 'ActiveBg' } },
+        { b_components.file_name(''), { 'NormalFg', 'ActiveFg' } },
     },
     always_active = true,
     show_last_status = true
 }
 
 windline.setup({
-    colors_name = function(colors)
-        -- ADD MORE COLOR HERE ----
-        return colors
-    end,
-    statuslines = {
+  colors_name = function(colors)
+      colors.NormalBg = colors.NormalBg
+      colors.ActiveBg = colors.ActiveBg
+      colors.InactiveBg = colors.InactiveBg
+
+      -- this color will not update if you change a colorscheme
+      -- colors.gray = "#fefefe"
+
+      -- dynamically get color from colorscheme hightlight group
+      -- local searchFg, searchBg = require('windline.themes').get_hl_color('Search')
+      -- colors.SearchFg = searchFg or colors.white
+      -- colors.SearchBg = searchBg or colors.yellow
+
+      return colors
+  end,
+  statuslines = {
         default,
         explorer,
         quickfix,
-    },
+  },
 })
 
 
--- -------------------------------------------------------------------------- #
---  ----------------- comment box -------------------------------------------- "
--- -------------------------------------------------------------------------- #
-require('comment-box').setup({
-	-- doc_width = 80, -- width of the document
-	-- box_width = 60, -- width of the boxes
-  outer_blank_lines = true, -- insert a blank line above and below the box
-  inner_blank_lines = false, -- insert a blank line above and below the text
-})
+-- -- -------------------------------------------------------------------------- #
+-- --  ----------------- comment box -------------------------------------------- "
+-- -- -------------------------------------------------------------------------- #
+-- require('comment-box').setup({
+-- 	-- doc_width = 80, -- width of the document
+-- 	-- box_width = 60, -- width of the boxes
+--   outer_blank_lines = true, -- insert a blank line above and below the box
+--   inner_blank_lines = false, -- insert a blank line above and below the text
+-- })
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- cokeline -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
-local get_hex = require('cokeline/utils').get_hex
+-- local get_hex = require('cokeline/utils').get_hex
+local get_hex = require('cokeline.hlgroups').get_hl_attr
+
 
 theme_bg = get_hex('Normal', 'guibg')
 -- cokeline_bg = get_hex('Normal', 'fg')
@@ -1900,80 +2073,50 @@ require('nvim-treesitter.configs').setup {
 }
 
 
--- -------------------------------------------------------------------------- #
---  ----------------- nvim-autopair ----------------------------------------- #
--- -------------------------------------------------------------------------- #
-require('nvim-autopairs').setup({
-  disable_filetype = { "TelescopePrompt" , "vim" },
-})
--- local Rule = require('nvim-autopairs.rule')
--- local npairs = require('nvim-autopairs')
---
--- npairs.add_rule(Rule("$$","$$","tex"))
---
--- -- you can use some built-in conditions
---
--- local cond = require('nvim-autopairs.conds')
--- print(vim.inspect(cond))
---
--- npairs.setup({
---     check_ts = true,
---     ts_config = {
---         lua = {'string'},-- it will not add a pair on that treesitter node
---         javascript = {'template_string'},
---         java = false,-- don't check treesitter on java
---     }
--- })
---
--- local ts_conds = require('nvim-autopairs.ts-conds')
---
---
--- -- press % => %% only while inside a comment or string
--- npairs.add_rules({
---   Rule("%", "%", "lua")
---     :with_pair(ts_conds.is_ts_node({'string','comment'})),
---   Rule("$", "$", "lua")
---     :with_pair(ts_conds.is_not_ts_node({'function'}))
+-- -- -------------------------------------------------------------------------- #
+-- --  ----------------- nvim-autopair ----------------------------------------- #
+-- -- -------------------------------------------------------------------------- #
+-- require('nvim-autopairs').setup({
+--   disable_filetype = { "TelescopePrompt" , "vim" },
 -- })
 
--- -------------------------------------------------------------------------- #
---  ----------------- tokyonight ----------------------------------------- #
--- -------------------------------------------------------------------------- #
-require("tokyonight").setup({
-  -- your configuration comes here
-  -- or leave it empty to use the default settings
-  style = "moon", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-  light_style = "day", -- The theme is used when the background is set to light
-  transparent = false, -- Enable this to disable setting the background color
-  terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
-  styles = {
-    -- Style to be applied to different syntax groups
-    -- Value is any valid attr-list value for `:help nvim_set_hl`
-    comments = { italic = true },
-    keywords = { italic = true },
-    functions = {},
-    variables = {},
-    -- Background styles. Can be "dark", "transparent" or "normal"
-    sidebars = "day", -- style for sidebars, see below
-    floats = "day", -- style for floating windows
-  },
-  -- sidebars = { "qf", "help" }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
-  day_brightness = 0.2, -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
-  hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
-  dim_inactive = true, -- dims inactive windows
-  lualine_bold = false, -- When `true`, section headers in the lualine theme will be bold
-  --- You can override specific color groups to use other groups or a hex color
-  --- function will be called with a ColorScheme table
-  ---@param colors ColorScheme
-  on_colors = function(colors) end,
+-- -- -------------------------------------------------------------------------- #
+-- --  ----------------- tokyonight ----------------------------------------- #
+-- -- -------------------------------------------------------------------------- #
+-- require("tokyonight").setup({
+--   -- your configuration comes here
+--   -- or leave it empty to use the default settings
+--   style = "moon", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+--   light_style = "day", -- The theme is used when the background is set to light
+--   transparent = false, -- Enable this to disable setting the background color
+--   terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
+--   styles = {
+--     -- Style to be applied to different syntax groups
+--     -- Value is any valid attr-list value for `:help nvim_set_hl`
+--     comments = { italic = true },
+--     keywords = { italic = true },
+--     functions = {},
+--     variables = {},
+--     -- Background styles. Can be "dark", "transparent" or "normal"
+--     sidebars = "day", -- style for sidebars, see below
+--     floats = "day", -- style for floating windows
+--   },
+--   -- sidebars = { "qf", "help" }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
+--   day_brightness = 0.2, -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
+--   hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
+--   dim_inactive = true, -- dims inactive windows
+--   lualine_bold = false, -- When `true`, section headers in the lualine theme will be bold
+--   --- You can override specific color groups to use other groups or a hex color
+--   --- function will be called with a ColorScheme table
+--   ---@param colors ColorScheme
+--   on_colors = function(colors) end,
+-- })
 
-  --- You can override specific highlights to use other groups or a hex color
-  --- function will be called with a Highlights and ColorScheme table
-  ---@param highlights Highlights
-  ---@param colors ColorScheme
-  -- on_highlights = function(highlights, colors) end,
-})
 
+-- -------------------------------------------------------------------------- #
+--  ----------------- lsp-notify ----------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- require("lsp-notify").setup({})
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- lspsaga ----------------------------------------- #

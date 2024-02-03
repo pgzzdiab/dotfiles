@@ -433,6 +433,8 @@ noremap ' "
 noremap go o
 noremap gO O
 
+noremap + /
+
 " noremap <space>u :find twinlico.py<CR>
 " noremap <space>c :find simulation_base_config.py<CR>
 " noremap <space>v :find virtual_patient_base.py<CR>
@@ -550,9 +552,13 @@ noremap <silent> <C-Right> :vertical resize -3<CR>
 noremap <silent> <C-Up>  :resize +3<CR>
 noremap <silent> <C-Down> :resize -3<CR>
 
-" _____________________________________________________________________________ "
-" _____________________________________________________________________________ "
-" _____________________________________________________________________________ "
+
+
+"if has('nvim')
+"autocmd VimEnter * call system("pip install sldjflsdjfsljf")
+"endif
+
+" _____________________________________________________________________________ " _____________________________________________________________________________ "
 "                ______  _      _   _  _____  _____  _   _  _____
 "                | ___ \| |    | | | ||  __ \|_   _|| \ | |/  ___|
 "                | |_/ /| |    | | | || |  \/  | |  |  \| |\ `--.
@@ -575,21 +581,23 @@ call plug#begin(g:plug_install_files)
 " --------------------------------------------------------------
 " ------------------ Neovim plugins  ---------------------------
 " --------------------------------------------------------------
-" Plug 'dominikduda/vim_current_word'
 if has('nvim')
+    Plug 'wfxr/code-minimap'
+    " Plug 'mrded/nvim-lsp-notify'
     Plug 'kevinhwang91/rnvimr'                            " open ranger in nvim
-    " Plug 'rcarriga/nvim-notify'
-    Plug 'windwp/nvim-autopairs'
-    Plug 'LudoPinelli/comment-box.nvim'
+    " Plug 'windwp/nvim-autopairs'
     Plug 'mcauley-penney/tidy.nvim'
     Plug 'ojroques/nvim-bufdel'
     Plug 'kyazdani42/nvim-web-devicons'                    " additionnal icons for neovim
+
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     Plug 'nvim-treesitter/nvim-treesitter-context'
     Plug 'kyazdani42/nvim-tree.lua'                        " file tree
+
     Plug 'stevearc/qf_helper.nvim'                         " better quickfix list
     Plug 'kevinhwang91/nvim-bqf'                           " better quickfix list
+
     Plug 'L3MON4D3/LuaSnip'
     Plug 'rafamadriz/friendly-snippets'                    " Snippets collection for a set of different programming languages for faster development.
     " Plug 'kkharji/sqlite.lua'
@@ -615,10 +623,11 @@ if has('nvim')
     Plug 'MunifTanjim/nui.nvim'
 
     Plug 'hrsh7th/cmp-cmdline'
-    Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
-    " Plug 'SmiteshP/nvim-gps'
+    " Plug 'folke/trouble.nvim'                              " pretty list for diagnostic, reference, quickfix, ..
+    Plug 'SmiteshP/nvim-gps'
     Plug 'ggandor/lightspeed.nvim'
     Plug 'numToStr/Comment.nvim'
+    " Plug 'LudoPinelli/comment-box.nvim'
 
     " -------------------------------------------------------------------------- #
     " ------------------ theming ----------------------------------------------- #
@@ -634,20 +643,20 @@ if has('nvim')
     Plug 'nvim-lua/popup.nvim'                             " to install telescope
     Plug 'nvim-telescope/telescope.nvim'
     Plug 'p00f/nvim-ts-rainbow'                             " rainbow parenthesis
-
-    Plug 'lewis6991/spellsitter.nvim'                    " spell checker
+    Plug 'echasnovski/mini.map'
 
     " ----------------------------------------------------------------------- "
     " Plug 'glepnir/indent-guides.nvim'                      " indent line
-    Plug 'Shougo/denite.nvim'                              " file , buffers manager
+    " Plug 'Shougo/denite.nvim'                              " file , buffers manager
     Plug 'ncm2/float-preview.nvim/'
     Plug 'vijaymarupudi/nvim-fzf'                          " fzf
     Plug 'ibhagwan/fzf-lua'
 
-    Plug 'davidgranstrom/nvim-markdown-preview'
+    " Plug 'davidgranstrom/nvim-markdown-preview'
     Plug 'folke/todo-comments.nvim'
-    Plug 'dstein64/nvim-scrollview'
+    " Plug 'dstein64/nvim-scrollview'
     " Plug 'artart222/nvim-enfocado'                      " colorschee
+    Plug 'mangelozzi/rgflow.nvim'                                " Grep tool
 
 else
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -664,6 +673,7 @@ endif
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
+Plug 'wfxr/minimap.vim'
 Plug 'jessekelighine/vindent.vim'
 Plug 'itchyny/vim-gitbranch'                         " get current branch name
 Plug 'Matt-A-Bennett/surround-funk.vim'
@@ -685,7 +695,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " --------------------------------------------------------------
 " ---------------------- C++ ------------------------------------
 " --------------------------------------------------------------
-Plug 'derekwyatt/vim-fswitch'
+" Plug 'derekwyatt/vim-fswitch'
 
 " --------------------------------------------------------------------------- "
 " ---------------------- tmux ----------------------------------------------- "
@@ -695,11 +705,11 @@ Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer wi
 " --------------------------------------------------------------------------- "
 " ---------------------- IDE ------------------------------------------------ #
 " --------------------------------------------------------------------------- "
+Plug 'mhinz/vim-grepper'                                " Grep tool
 Plug 'tpope/vim-sleuth'                                 " automatic indentation config
 " Plug 'brooth/far.vim'                                   " search and replace
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer with :<range>NR
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
-Plug 'mhinz/vim-grepper'                                " Grep tool
 Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'tpope/vim-surround'                              " surround oparator
@@ -755,7 +765,6 @@ Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " --------------------------------------------------------------
 " ---------------------- Objects -------------------------------
 " --------------------------------------------------------------
-Plug 'tpope/vim-unimpaired'                            " exchange lines relatively
 Plug 'FooSoft/vim-argwrap'                             " wrap functions args
 Plug 'jeetsukumaran/vim-indentwise'                    " Move to indent
 Plug 'michaeljsmith/vim-indent-object'                 " text object based on indentation levels.
@@ -782,17 +791,17 @@ Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
 if has('nvim')
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
-  " Plug 'windwp/floatline.nvim'
   Plug 'lukas-reineke/indent-blankline.nvim'
 
-  Plug 'folke/tokyonight.nvim'
+  Plug 'projekt0n/caret.nvim'
+  " Plug 'folke/tokyonight.nvim'
   " Plug 'bluz71/vim-nightfly-colors'
   " Plug 'marko-cerovac/material.nvim'
   " Plug 'projekt0n/github-nvim-theme'
   " Plug 'rktjmp/lush.nvim'
   " Plug 'ellisonleao/gruvbox.nvim'
   " Plug 'Shatur/neovim-ayu'
-  " Plug 'rebelot/kanagawa.nvim'
+  Plug 'rebelot/kanagawa.nvim'
   " Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " Plug 'Yggdroot/indentLine'                             " indent guide
@@ -807,6 +816,7 @@ Plug 'MTDL9/vim-log-highlighting'                      " highlight .log files
 Plug 'camspiers/animate.vim'                           " windows move animation
 " Plug 'psliwka/vim-smoothie'                            " Better scroll
 Plug 'mhinz/vim-startify'                              " add start page to vim
+Plug 'astral-sh/ruff-lsp'                              " add start page to vim
 " Plug 'kshenoy/vim-signature'                           " show marks in signcolumn
 
 " Plug 'vim/killersheep'                               " absolutely essential
@@ -868,6 +878,13 @@ if has('nvim')
 endif
 
 " --------------------------------------------------------------
+" minimap
+" --------------------------------------------------------------
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+
+" --------------------------------------------------------------
 " scrollview
 " --------------------------------------------------------------
 " highlight! ScrollView guifg=#F07178 gui=NONE cterm=NONE
@@ -888,16 +905,14 @@ endif
 " --------------------------------------------------------------
 if has('nvim')
 " left aligned fixed size box with left aligned text
-" nnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
-" vnoremap <Leader>bb <Cmd>lua require('comment-box').lbox()<CR>
-
 " centered adapted box with centered text
 nnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
 vnoremap c<space> <Cmd>lua require('comment-box').accbox()<CR>
-
 " centered line
 nnoremap <Leader>bl <Cmd>lua require('comment-box').cline()<CR>
 " inoremap <M-l> <Cmd>lua require('comment-box').cline()<CR>
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+vnoremap ++ y/\V<C-r>=escape(@",'/\')<CR><CR>
 
 endif
 
@@ -1065,19 +1080,6 @@ let g:clever_f_chars_match_any_signs=';'
 " -------------------------------------------------------------
 "  Grepper
 "  ------------------------------------------------------------
-if has('nvim')
-  " vim.g.kommentary_create_default_mappings = true
-  " vim.api.nvim_set_keymap("n", "<leader>cic", "<Plug>kommentary_line_increase", {})
-  " vim.api.nvim_set_keymap("n", "<leader>ci", "<Plug>kommentary_motion_increase", {})
-  " vim.api.nvim_set_keymap("x", "<leader>ci", "<Plug>kommentary_visual_increase", {})
-  " vim.api.nvim_set_keymap("n", "<leader>cdc", "<Plug>kommentary_line_decrease", {})
-  " vim.api.nvim_set_keymap("n", "<leader>cd", "<Plug>kommentary_motion_decrease", {})
-  " vim.api.nvim_set_keymap("x", "<leader>cd", "<Plug>kommentary_visual_decrease", {})
-endif
-
-" -------------------------------------------------------------
-"  Grepper
-"  ------------------------------------------------------------
 let g:grepper_quickfix=0             " use location list
 let g:grepper_open=1
 let g:grepper_switch=1              " Go into the location list after a search
@@ -1108,26 +1110,26 @@ let g:unstack_open_tab=0
 let g:unstack_showsigns=0
 " let g:unstack_extractors=0
 
-" " -------------------------------------------------------------- ---------- #
-" " qf_helper
-" " --------------------------------------------------------------
-" if has('nvim')
-"   " use <C-N> and <C-P> for next/prev.
-"   nnoremap <silent> <C-N> <cmd>QNext<CR>
-"   nnoremap <silent> <C-P> <cmd>QPrev<CR>
-"   " toggle the quickfix open/closed without jumping to it
-"   " nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
-"   nnoremap <silent> <leader>q <cmd>copen<CR>
-"   nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
-"   " <C-t>	open in a new tab
-"   " <C-s>	open in a horizontal split
-"   " <C-v>	open in a vertical split
-"   " <C-p>	open the entry but keep the cursor in the quickfix window
-"   " <C-k>	scroll up and open entry while keeping the cursor in the quickfix window
-"   " <C-j>	scroll down and open entry while keeping the cursor in the quickfix window
-"   " {	scroll up to the previous file
-"   " }	scroll down to the next file
-" endif
+" -------------------------------------------------------------- ---------- #
+" qf_helper
+" --------------------------------------------------------------
+if has('nvim')
+  " use <C-N> and <C-P> for next/prev.
+  nnoremap <silent> <C-N> <cmd>QNext<CR>
+  nnoremap <silent> <C-P> <cmd>QPrev<CR>
+  " toggle the quickfix open/closed without jumping to it
+  " nnoremap <silent> <leader>q <cmd>QFToggle!<CR>
+  nnoremap <silent> <leader>q <cmd>copen<CR>
+  nnoremap <silent> <leader>l <cmd>LLToggle!<CR>
+  " <C-t>	open in a new tab
+  " <C-s>	open in a horizontal split
+  " <C-v>	open in a vertical split
+  " <C-p>	open the entry but keep the cursor in the quickfix window
+  " <C-k>	scroll up and open entry while keeping the cursor in the quickfix window
+  " <C-j>	scroll down and open entry while keeping the cursor in the quickfix window
+  " {	scroll up to the previous file
+  " }	scroll down to the next file
+endif
 
 " --------------------------------------------------------------
 " echo doc
@@ -1412,29 +1414,32 @@ let g:startify_change_to_dir = 0
 let g:startify_session_autoload = 1
 let g:startify_custom_header = 'startify#center(startify#fortune#cowsay())'
 
+  " \ '                                                                ╭╮╭┬─╮╭─╮┬  ┬┬╭┬╮                    ',
+  " \ '                                                                │││├┤ │ │╰┐┌╯││││                    ',
+  " \ '                                                                ╯╰╯╰─╯╰─╯ ╰╯ ┴┴ ┴                    ',
+  " \ ]
 let g:startify_custom_header = [
-      \ '                                                                ╭╮╭┬─╮╭─╮┬  ┬┬╭┬╮                    ',
-      \ '                                                                │││├┤ │ │╰┐┌╯││││                    ',
-      \ '                                                                ╯╰╯╰─╯╰─╯ ╰╯ ┴┴ ┴                    ',
+      \ '                      ▄              ▄                                                                                                                    ▄              ▄      ',
+      \ '                     ▌▒█           ▄▀▒▌           ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓                ▌▒█           ▄▀▒▌     ',
+      \ '                     ▌▒▒▀        ▄▀▒▒▒▐           ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒                ▌▒▒▀        ▄▀▒▒▒▐     ',
+      \ '                    ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐          ▓██  ▀█ ██▒▒███   ▒██░  ██▒ ▓██  █▒░▒██▒▓██    ▓██░               ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐     ',
+      \ '                  ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐          ▓██▒  ▐▌██▒▒▓█  ▄ ▒██   ██░  ▒██ █░░░██░▒██    ▒██              ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐     ',
+      \ '                ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌          ▒██░   ▓██░░▒████▒░ ████▓▒░   ▒▀█░  ░██░▒██▒   ░██▒           ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌     ',
+      \ '               ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌         ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░▓  ░ ▒░   ░  ░          ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌    ',
+      \ '               ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐         ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░          ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐    ',
+      \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌           ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░            ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌   ',
+      \ '              ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌                                                                    ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
+      \ '              ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐                                                                    ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
+      \ '             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌                                                                  ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌  ',
+      \ '             ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐                                                                   ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
+      \ '              ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌                                                                    ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
+      \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐                                                                     ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐    ',
+      \ '               ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                                                                      ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌    ',
+      \ '                 ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                                                                         ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀     ',
+      \ '                ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                                                                          ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀       ',
       \ ]
-      " \ '                      ▄              ▄                                                                                                                    ▄              ▄      ',
-      " \ '                     ▌▒█           ▄▀▒▌         _____   ______        ______           _____     ____      ____  ____      ______  _______              ▌▒█           ▄▀▒▌     ',
-      " \ '                     ▌▒▒▀        ▄▀▒▒▒▐        |\    \ |\     \   ___|\     \     ____|\    \   |    |    |    ||    |    |      \/       \             ▌▒▒▀        ▄▀▒▒▒▐     ',
-      " \ '                    ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐        \\    \| \     \ |     \     \   /     /\    \  |    |    |    ||    |   /          /\     \            ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐     ',
-      " \ '                  ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐        \|    \  \     ||     ,_____/| /     /  \    \ |    |    |    ||    |  /     /\   / /\     |          ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐     ',
-      " \ '                ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌        |     \  |    ||     \--"\_|/|     |    |    ||    |    |    ||    | /     /\ \_/ / /    /|         ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌     ',
-      " \ '               ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌       |      \ |    ||     /___/|  |     |    |    ||    |    |    ||    ||     |  \|_|/ /    / |        ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌    ',
-      " \ '               ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐       |    |\ \|    ||     \____|\ |\     \  /    /||\    \  /    /||    ||     |       |    |  |        ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐    ',
-      " \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌      |____||\_____/||____ "     /|| \_____\/____/ || \ ___\/___ / ||____||\____\       |____|  /       ▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌   ',
-      " \ '              ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌      |    |/ \|   |||    /_____/ | \ |    ||    | / \ |   ||   | / |    || |    |      |    | /        ▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
-      " \ '              ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐      |____|   |___|/|____|     | /  \|____||____|/   \|___||___|/  |____| \|____|      |____|/         ▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
-      " \ '             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌     \(       )/    \( |_____|/      \(    )/        \(    )/      \(      \(          )/             ▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▒▌  ',
-      " \ '             ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐                                                                                                       ▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▒▐   ',
-      " \ '              ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌                                                                                                        ▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌   ',
-      " \ '              ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐       go  brr   brrrrrrrrrrr   brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr       ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐    ',
-      " \ '               ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌                                                                                                          ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌    ',
-      " \ '                 ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀                                                                                                             ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀     ',
-      " \ '                ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀                                                                                                              ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀       ',
+
+
       " \ '           ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓                      ',
       " \ '           ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒                      ',
       " \ '          ▓██  ▀█ ██▒▒███   ▒██░  ██▒ ▓██  █▒░▒██▒▓██    ▓██░                      ',
@@ -1443,8 +1448,6 @@ let g:startify_custom_header = [
       " \ '          ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░▓  ░ ▒░   ░  ░                      ',
       " \ '          ░ ░░   ░ ▒░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ▒ ░░  ░      ░                      ',
       " \ '             ░   ░ ░    ░   ░ ░ ░ ▒       ░░   ▒ ░░      ░                         ',
-
-
 
 " save session from current branch name
 function! GetUniqueSessionName()
@@ -2235,8 +2238,9 @@ if has('nvim')
     " colorscheme enfocado
     " colorscheme ayu
     " colorscheme night-owl
-    " colorscheme kanagawa
-    colorscheme tokyonight-day
+    colorscheme kanagawa
+    " colorscheme tokyonight-day
+    " colorscheme caret
     " colorscheme nightfly
     " colorscheme github_light
     " colorscheme catppuccin-latte
@@ -2251,6 +2255,7 @@ endif
 
 
 " set background=dark
+set background=light
 
 set cursorline                               " Highlight current line
 " hi CursorLine guibg=#0D1016

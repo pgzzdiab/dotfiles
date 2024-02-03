@@ -65,6 +65,7 @@ export DISABLE_AUTO_TITLE="true"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
@@ -72,10 +73,11 @@ export DISABLE_AUTO_TITLE="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
     git
-    zsh-autosuggestions
     aws
     zsh-syntax-highlighting
+    zsh-autosuggestions
     zsh-completions
+    zsh-fzf-history-search
 )
 # zsh-vi-mode
 
@@ -83,18 +85,23 @@ autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
 
+source ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-fzf-history-search
+
 source $HOME/.oh-my-zsh/custom/plugins/zsh-completions/zsh-completions.plugin.zsh
 
-# The plugin will auto execute this zvm_after_lazy_keybindings function
-# function zvm_after_lazy_keybindings() {
-#   # Here we define the custom widget
-#   zvm_define_widget my_custom_widget
-#
-#   # In normal mode, press Ctrl-E to invoke this widget
-#     zvm_bindkey H ^
-#     zvm_bindkey L $
-#     zvm_bindkey <space> y
-# }
+source /home/pierre/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# preview directory's content with exa when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+# switch group using `,` and `.`
+zstyle ':fzf-tab:*' switch-group ',' '.'
 
 
 # only aws command completion
@@ -162,12 +169,14 @@ alias getresult="rsync -avz -e 'ssh -i .ssh/sims.pem' ubuntu@ec2-35-180-181-239.
 alias icat="kitty +kitten icat"
 alias gittree="git log --graph --abbrev-commit --decorate --date=relative --all"
 alias v="nvim"
+alias pv="poetry run nvim"
 alias radio="pyradio --stations .config/pyradio/stations.csv"
 alias sftest="pytest -x -v -rfEs --durations=0 --ignore=simulation_framework/com/virtual_patient_simulator/tests/vp_bin/ simulation_framework"
 alias gs="git status"
 alias ga="git add -u"
 alias gm="poetry run git commit -m"
 alias pp="poetry run python"
+alias mouse="sudo udevadm trigger"
 
 source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -183,3 +192,6 @@ fm6000 -r
 
 # complete -C "/home/pierre/.local/bin/aws_completer" aws
 # gsettings set org.gnome.desktop.background primary-color '#000000'
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/terraform terraform
