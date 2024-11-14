@@ -18,3 +18,8 @@
 	editor = nvim
 [push]
 	autoSetupRemote = true
+[safe]
+	directory = folder
+	directory = regsim
+	directory = simulation_framework
+	directory = common

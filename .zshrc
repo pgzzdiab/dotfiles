@@ -1,5 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="/home/pierre/.local/bin:$PATH"
+
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/pierre/.oh-my-zsh"
@@ -141,8 +143,6 @@ source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# butbucket ssh
-eval $(ssh-agent)
 
 alias pic="picom -b --experimental-backends"
 alias red="redshift -x"
@@ -183,7 +183,7 @@ source /home/pierre/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # icat ~/Images/logo_diabeloop_bleu_rvb.png
 # icat --align=center Pictures/top.png
 # icat --align=center ~/Pictures/ascii_logo_4.png
-fm6000 -r
+# fm6000 -r
 # neofetch --kitty ~/Pictures/icon_fetch.png --size 300px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off --align_output left
 # neofetch --kitty ~/Pictures/top.png --size 500px --disable host kernel resolution packages font cpu gpu memory color --os_arch off  --color_blocks off
 # tmux ls
@@ -195,3 +195,5 @@ fm6000 -r
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/terraform terraform
+
+

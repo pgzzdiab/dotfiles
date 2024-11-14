@@ -304,57 +304,110 @@ require('telescope').setup{
 -- -------------------------------------------------------------------------- #
 --  ----------------- blankline indent -------------------------------------- #
 -- -------------------------------------------------------------------------- #
--- require("indent_blankline").setup {
---     -- space_char_blankline = " ",
---     -- show_trailing_blankline_indent = false,
---     show_current_context = true,
---     -- show_current_context_start = false,
---     -- show_end_of_line = false,
---     -- use_treesitter = false,
---     filetype_exclude = {
---       "help",
---       "terminal",
---       "packer",
---       "NvimTree",
---       "startify"
---     },
---     buftype_exclude = { "terminal" },
+
+local status_ok, hlchunk = pcall(require, "hlchunk")
+if not status_ok then
+  return
+end
+
+hlchunk.setup({})
+--require('hlchunk').setup({
+    --chunk = {
+         --enable = true
+    --},
+    --indent = {
+        --enable = false
+    --}
+--})
+require('hlchunk').setup({
+ chunk = {
+      enable = true,
+    --use_treesitter = false,
+    --notify = true, -- notify if some situation(like disable chunk mod double time)
+    --exclude_filetypes = {
+    --  aerial = true,
+    --  dashboard = true,
+    --},
+    -- support_filetypes = {
+    --   "*.lua",
+    --   "*.js",
+    -- },
+    -- chars = {
+    --   horizontal_line = "─",
+    --   vertical_line = "│",
+    --   left_top = "╭",
+    --   left_bottom = "╰",
+    --   right_arrow = ">",
+    -- },
+    -- style = {
+    --   { fg = "#806d9c" },
+    -- },
+    },
+
+    indent = {
+      enable = false,
+      use_treesitter = false,
+      chars = {
+        "│",
+      },
+      -- style = {
+      --   { fg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Whitespace")), "fg", "gui") },
+      -- },
+    },
+
+    line_num = {
+      enable = false,
+      use_treesitter = false,
+      style = "#806d9c",
+    },
+
+    blank = {
+      enable = false,
+      chars = {
+        "․",
+      },
+      -- style = {
+      --   vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Whitespace")), "fg", "gui"),
+      -- },
+    },
+  })
+
+-- Add this to load the config on the specified events
+vim.api.nvim_create_autocmd({"BufReadPre", "BufNewFile"}, {
+  callback = function()
+    require("hlchunk").setup({})
+  end
+})
+
+
+-- local highlight = {
+--     "RainbowRed",
+--     "RainbowYellow",
+--     "RainbowBlue",
+--     "RainbowOrange",
+--     "RainbowGreen",
+--     "RainbowViolet",
+--     "RainbowCyan",
 -- }
-local highlight = {
-  "RainbowRed",
-  "RainbowYellow",
-  "RainbowBlue",
-  "RainbowOrange",
-  "RainbowGreen",
-  "RainbowViolet",
-  "RainbowCyan",
-}
-
-local hooks = require "ibl.hooks"
--- create the highlight groups in the highlight setup hook, so they are reset
--- every time the colorscheme changes
-hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
-    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
-    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
-    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
-    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
-  end)
-
-require("ibl").setup{
-  indent = { highlight = highlight }
-  -- filetype_exclude = {
-  --   "help",
-  --   "terminal",
-  --   "packer",
-  --   "NvimTree",
-  --   "startify"
-  -- },
-  -- buftype_exclude = { "terminal" },
-}
-
+-- local hooks = require "ibl.hooks"
+-- -- create the highlight groups in the highlight setup hook, so they are reset
+-- -- every time the colorscheme changes
+-- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+--     vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#696969" })
+--     vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#2F4F4F" })
+--     vim.api.nvim_set_hl(0, "RainbowBlue", { fg =   "#808080" })
+--     vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#A9A9A9" })
+--     vim.api.nvim_set_hl(0, "RainbowGreen", { fg =  "#C0C0C0" })
+--     vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#DCDCDC" })
+--     vim.api.nvim_set_hl(0, "RainbowCyan", { fg =   "#D3D3D3" })
+-- end)
+-- 
+-- vim.g.rainbow_delimiters = { highlight = highlight }
+-- hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+-- require("ibl").setup {
+--   indent = { highlight = highlight },
+-- }
+-- require("ibl").setup()
 
 
 -- -------------------------------------------------------------------------- #
@@ -437,6 +490,14 @@ require('rgflow').setup(
 -- -------------------------------------------------------------------------- #
 --  ----------------- treesitter-context --------------------------------------- #
 -- -------------------------------------------------------------------------- #
+
+require'nvim-treesitter.configs'.setup {
+  matchup = {
+      enable = true,              -- mandatory, false will disable the whole extension
+      disable = { "c", "ruby" },  -- optional, list of language that will be disabled
+      -- [options]
+    },
+}
 require'treesitter-context'.setup{
     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 5, -- How many lines the window should span. Values <= 0 mean no limit.
@@ -568,7 +629,7 @@ end)
 vim.keymap.set("i", "<c-u>", require "luasnip.extras.select_choice")
 
 -- shorcut to source my luasnips file again, which will reload my snippets
-vim.keymap.set("n", "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>")
+-- vim.keymap.set("n", "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<CR>")
 
 
 
@@ -900,9 +961,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
     -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
     -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, opts)
+    -- vim.keymap.set('n', '<space>wl', function()
+      -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    -- end, opts)
     -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
@@ -967,10 +1028,96 @@ vim.api.nvim_command [[ sign define DiagnosticSignHint  text= texthl=Diagnost
 --]]
 
 
+
+-- -------------------------------------------------------------------------- #
+-- -----------------<substitute>-------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+require('substitute').setup{}
+
+require('substitute').operator({
+  modifiers = function(state)
+      return { 'reindent' }
+  end,
+})
+
+-- require('substitute').operator({
+    -- count = 1,       -- number of substitutions
+    -- yank_substituted_text = true,  -- subsiture text is yanked
+    -- register = "a",  -- register used for substitution
+    -- motion = "iw",   -- only available for `operator`, this will automatically use this motion for substitution instead of waiting for.
+    -- preserve_cursor_position = true,
+--})
+-- 
+--  on_substitute = nil,
+--  preserve_cursor_position = false,
+--  highlight_substituted_text = {
+--    enabled = true,
+--    timer = 500,
+--  },
+--  range = {
+--    prefix = "s",
+--    prompt_current_text = false,
+--    confirm = false,
+--    complete_word = false,
+--    subject = nil,
+--    range = nil,
+--    suffix = "",
+--    auto_apply = false,
+--    cursor_position = "end",
+--  },
+--  exchange = {
+--    motion = false,
+--    use_esc_to_cancel = true,
+--    preserve_cursor_position = false,
+--  },
+
+vim.keymap.set("n", "o", function ()
+ require('substitute').operator({modifiers = {'reindent'}})
+end, { noremap = true })
+
+-- vim.keymap.set("n", "o", require('substitute').operator, { noremap = true })
+
+vim.keymap.set("n", "ol", function ()
+  require('substitute').operator({modifiers = {yank_substituted_text = false, 'reindent'}})
+end, { noremap = true })
+
+vim.keymap.set("n", "oo", function ()
+  require('substitute').line({modifiers = {yank_syank_substituted_text = false, 'reindent'}})
+end, { noremap = true })
+vim.keymap.set("n", "O", require('substitute').eol, { noremap = true })
+vim.keymap.set("x", "o", function ()
+  require('substitute').visual({yank_substituted_text = false, modifiers = {'reindent'}})
+end, { noremap = true })
+
+vim.keymap.set( "n", "op", function ()
+  require('substitute.range').operator({modifiers = {'reindent'}})
+end, { noremap = true })
+
+vim.keymap.set(
+  "x",
+  "op", function ()
+  require('substitute.range').visual({modifiers = {'reindent'}})
+end, { noremap = true })
+
+vim.keymap.set(
+  "n",
+  "opw", function ()
+  require('substitute.range').word({modifiers = {'reindent'}})
+end, { noremap = true })
+
+
+
+
+-- -------------------------------------------------------------------------- #
+-- -----------------<telepath>-------------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- require('telepath').setup {}
+require('telepath').use_default_mappings()
+
 -- -------------------------------------------------------------------------- #
 -- -----------------< mason-tool-installer >-------------------------------------------------- #
 -- -------------------------------------------------------------------------- #
-require('mason-tool-installer').setup {}
+require('mason-tool-installer').setup{}
 
 local DEFAULT_SETTINGS = {
     -- A list of servers to automatically install if they're not already installed. Example: { "rust_analyzer@nightly", "lua_ls" }
@@ -1050,7 +1197,7 @@ cfg = {
                           -- <u></u> ~ ~ does not supported by nvim
 
 }
-require'lsp_signature'.on_attach(cfg)
+-- require'lsp_signature'.on_attach(cfg)
 
 -- -------------------------------------------------------------------------- #
 --  ----------------- neoclip -------------------------------------------- "
@@ -1373,32 +1520,81 @@ vim.cmd("colorscheme kanagawa")
 -- -------------------------------------------------------------------------- #
 
 -- -- ----------------- theme -------------------------------------------------- #
--- require('material').setup({
-        -- contrast = true, -- Enable contrast for sidebars, floating windows and popup menus like Nvim-Tree
-        -- borders = true, -- Enable borders between verticaly split windows
-        -- popup_menu = "dark", -- Popup menu style ( can be: 'dark', 'light', 'colorful' or 'stealth' )
-        -- italics = {
-                -- comments = false, -- Enable italic comments
-                -- keywords = true, -- Enable italic keywords
-                -- functions = false, -- Enable italic functions
-                -- strings = false, -- Enable italic strings
-                -- variables = false -- Enable italic variables
-        -- },
-        -- text_contrast = {
-                -- lighter = true, -- Enable higher contrast text for lighter style
-                -- darker = true -- Enable higher contrast text for darker style
-        -- },
-        -- disable = {
-                -- background = true, -- Prevent the theme from setting the background (NeoVim then uses your teminal background)
-                -- term_colors = false, -- Prevent the theme from setting terminal colors
-                -- eob_lines = false -- Hide the end-of-buffer lines
-        -- },
-        -- custom_highlights = {
-                -- CursorLine = '#0000FF',
-                -- LineNr = '#0000FF'
-            -- line_numbers = '#0000FF'
-        -- }
--- })
+vim.g.material_style = "lighter"
+require('material').setup({
+
+    contrast = {
+        terminal = false, -- Enable contrast for the built-in terminal
+        sidebars = false, -- Enable contrast for sidebar-like windows ( for example Nvim-Tree )
+        floating_windows = false, -- Enable contrast for floating windows
+        cursor_line = false, -- Enable darker background for the cursor line
+        non_current_windows = false, -- Enable contrasted background for non-current windows
+        filetypes = {}, -- Specify which filetypes get the contrasted (darker) background
+    },
+
+    styles = { -- Give comments style such as bold, italic, underline etc.
+        comments = { italic = true },
+        strings = { --[[ bold = true ]] },
+        keywords = {underline = true,  italic = true },
+        functions = { --[[ bold = true, undercurl = true ]] },
+        variables = {},
+        operators = {},
+        types = {},
+    },
+
+    plugins = { -- Uncomment the plugins that you use to highlight them
+        -- Available plugins:
+        -- "dap",
+        -- "dashboard",
+        -- "eyeliner",
+        -- "fidget",
+        -- "flash",
+        -- "gitsigns",
+        -- "harpoon",
+        -- "hop",
+        -- "illuminate",
+        -- "indent-blankline",
+        -- "lspsaga",
+        -- "mini",
+        -- "neogit",
+        -- "neotest",
+        -- "neo-tree",
+        -- "neorg",
+        -- "noice",
+        "nvim-cmp",
+        -- "nvim-navic",
+        "nvim-tree",
+        "nvim-web-devicons",
+        "rainbow-delimiters",
+        -- "sneak",
+        "telescope",
+        --"trouble",
+        -- "which-key",
+        "--nvim-notify",
+    },
+
+    disable = {
+        colored_cursor = false, -- Disable the colored cursor
+        borders = false, -- Disable borders between verticaly split windows
+        background = false, -- Prevent the theme from setting the background (NeoVim then uses your terminal background)
+        term_colors = false, -- Prevent the theme from setting terminal colors
+        eob_lines = false -- Hide the end-of-buffer lines
+    },
+
+    high_visibility = {
+        lighter = true, -- Enable higher contrast text for lighter style
+        darker = false -- Enable higher contrast text for darker style
+    },
+
+    -- lualine_style = "default", -- Lualine style ( can be 'stealth' or 'default' )
+
+    async_loading = true, -- Load parts of the theme asyncronously for faster startup (turned on by default)
+
+    -- custom_colors = nil, -- If you want to override the default colors, set this to a function
+
+    -- custom_highlights = {}, -- Overwrite highlights with your own
+})
+--Lua:
 
 -- ----------------- git-worktree ------------------------------------------- #
 -- require("git-worktree").setup({
@@ -1464,6 +1660,68 @@ require('gitsigns').setup()
 --   run_copen = true, -- run copen after qf commands
 --   default_mappings = false, -- set default mappings
 -- }
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- \<gen\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+-- require('gen').setup({
+--  opts = {
+--      -- model = "mistral", -- The default model to use.
+--      model = "codellama", -- The default model to use.
+--      host = "localhost", -- The host running the Ollama service.
+--      port = "11434", -- The port on which the Ollama service is listening.
+--      display_mode = "split", -- The display mode. Can be "float" or "split".
+--      show_prompt = false, -- Shows the Prompt submitted to Ollama.
+--      show_model = false, -- Displays which model you are using at the beginning of your chat session.
+--      no_auto_close = false, -- Never closes the window automatically.
+--      init = function(options) pcall(io.popen, "ollama serve > /dev/null 2>&1 &") end,
+--      -- Function to initialize Ollama
+--      command = function(options)
+--          return "curl --silent --no-buffer -X POST http://" .. options.host .. ":" .. options.port .. "/api/chat -d $body"
+--      end,
+--      -- The command for the Ollama service. You can use placeholders $prompt, $model and $body (shellescaped).
+--      -- This can also be a command string.
+--      -- The executed command must return a JSON object with { response, context }
+--      -- (context property is optional).
+--      -- list_models = '<omitted lua function>', -- Retrieves a list of model names
+--      debug = false -- Prints errors and the command which is run.
+--  }
+-- })
+-- require('gen').prompts['Change Code'] = {
+  -- prompt = "Do not explain anything. You are an expert developer with good coding practice. You asnwer directly the question without introduction or explaning anythin. You make indent with 4 spaces if python. Add doctrings to the function. Add types annotations to funtions parameters.",
+  -- replace = true
+-- }
+
+
+-- -------------------------------------------------------------------------- #
+-- ----------------- \<ollama\> -------------------------------------------- #
+-- -------------------------------------------------------------------------- #
+
+require('ollama').setup({
+  on_start = true,
+  model = "tinydolphin",
+  url = "http://127.0.0.1:11434",
+  serve = {
+    on_start = true,
+    command = "ollama",
+    args = { "serve" },
+    stop_command = "pkill",
+    stop_args = { "-SIGTERM", "ollama" },
+  },
+  -- View the actual default prompts in ./lua/ollama/prompts.lua
+  prompts = {
+    replace_python_code = {
+      prompt = "Here is what I need: $input\n Here is the code I have written so far:\n```$ftype\n$buf\n```\nYour code will be inserted at line $lnum. Please format your response like this: \n```$ftype\n<your code here>\n```\n",
+      system = "You are a pair programming AI assistant. The human has written a file, and needs you to write a snippet code for a specific task or purpose.  Your code will be inserted at the line number specified.  Respond only with the code you would write, not the entire file. Do not include extra explanations, and do not repeat the code the human has already written.  You are a python expert. One ident is 4 spaces. You add docstring to functions and types annotations to function arguments. Don't make explanation on the generated code",
+      input_label = "> ",
+      model = "tinydolphin",
+      action = "display_replace",
+      window = "split"
+    },
+  }
+
+})
+
 
 -- -------------------------------------------------------------------------- #
 -- ----------------- \<windline\> -------------------------------------------- #
@@ -1707,14 +1965,11 @@ windline.setup({
 -- -------------------------------------------------------------------------- #
 --  ----------------- cokeline -------------------------------------------- "
 -- -------------------------------------------------------------------------- #
--- local get_hex = require('cokeline/utils').get_hex
 local get_hex = require('cokeline.hlgroups').get_hl_attr
 
 
 theme_bg = get_hex('Normal', 'guibg')
--- cokeline_bg = get_hex('Normal', 'fg')
 cokeline_bg = "#c8d3f5"
--- cokeline_fg = get_hex('Normal', 'fg')
 cokeline_fg = "#000000"
 require('cokeline').setup({
   default_hl = {

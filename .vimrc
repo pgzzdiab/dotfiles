@@ -20,7 +20,7 @@ if has('win32')
 	set fileformat=dos              " change end-of-line for windows files
 endif
 
-set termguicolors                 " Use gui color for terminal
+" set termguicolors                 " Use gui color for terminal
 set conceallevel=0                " manage conceal text
 " set noequalalways               " do not resize all windows to equal size after closing/opening
 " set eadirection                 " Tells when the 'equalalways' option applies
@@ -358,6 +358,8 @@ nnoremap <leader>ip gg/import<CR>)Oimport pandas as pd<Esc><C-o><C-o>
 nnoremap <leader>ib gg/import<CR>)Ofrom beartype import beartype<Esc><C-o><C-o>
 nnoremap <leader>ic gg/import<CR>)Ofrom common.base import base<Esc><C-o><C-o>
 nnoremap <leader>it yiwgg/import<CR>ofrom typing import <C-r>"<Esc><C-o><C-o>
+nnoremap <leader>it yiwgg/import<CR>ofrom typing import <C-r>"<Esc><C-o><C-o>
+nnoremap od yyp
 
 " function! FindFiles()
 "     call inputsave()
@@ -630,6 +632,13 @@ if has('nvim')
     " Plug 'LudoPinelli/comment-box.nvim'
 
     " -------------------------------------------------------------------------- #
+    " ------------------ LLVM --------------------------------------------------- #
+    " -------------------------------------------------------------------------- #
+    " Plug 'David-Kunz/gen.nvim'
+    " Plug 'Robitx/gp.nvim'  " only chat gpt
+    Plug 'nomnivore/ollama.nvim'
+
+    " -------------------------------------------------------------------------- #
     " ------------------ theming ----------------------------------------------- #
     " -------------------------------------------------------------------------- #
     " Plug 'glepnir/dashboard-nvim'
@@ -657,6 +666,7 @@ if has('nvim')
     " Plug 'dstein64/nvim-scrollview'
     " Plug 'artart222/nvim-enfocado'                      " colorschee
     Plug 'mangelozzi/rgflow.nvim'                                " Grep tool
+    Plug 'gbprod/substitute.nvim'                        " substitution
 
 else
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}      " new community driven completion engine
@@ -668,12 +678,13 @@ else
     Plug 'luochen1990/rainbow'                             " rainbow parenthesis
     Plug 'nathom/filetype.nvim'                            " better startup ?
     Plug 'ryanoasis/vim-devicons'                          " add icon
+    Plug 'svermeulen/vim-subversive'                        " substitution
 endif
 
 " --------------------------------------------------------------
 " ---------------------- To config -----------------------------
 " --------------------------------------------------------------
-Plug 'wfxr/minimap.vim'
+" Plug 'wfxr/minimap.vim'
 Plug 'jessekelighine/vindent.vim'
 Plug 'itchyny/vim-gitbranch'                         " get current branch name
 Plug 'Matt-A-Bennett/surround-funk.vim'
@@ -705,12 +716,12 @@ Plug 'roxma/vim-tmux-clipboard'                         " share copied buffer wi
 " --------------------------------------------------------------------------- "
 " ---------------------- IDE ------------------------------------------------ #
 " --------------------------------------------------------------------------- "
+Plug 'andymass/vim-matchup'                             " extend %
 Plug 'mhinz/vim-grepper'                                " Grep tool
 Plug 'tpope/vim-sleuth'                                 " automatic indentation config
 " Plug 'brooth/far.vim'                                   " search and replace
 Plug 'chrisbra/NrrwRgn'                                 " allow working only on a selected region in a new buffer with :<range>NR
 Plug 'mattn/vim-findroot'                               " Auto change directory to project root directory of the file.
-Plug 'svermeulen/vim-subversive'                        " substitution
 Plug 'tpope/vim-repeat'                                 " repetition plugin
 Plug 'tpope/vim-surround'                              " surround oparator
 Plug 'chrisbra/csv.vim'
@@ -720,6 +731,9 @@ Plug 'chrisbra/csv.vim'
 " Plug 'flwyd/vim-conjoin'                                " better join lines
 " Plug 'fcpg/vim-shore'                                   " jump to first non-blak character when using j/k
 " Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
+" Plug 'maxboisvert/vim-simple-complete'                  " as-you-type keyword completion
+Plug 'ggandor/leap.nvim'                  " required by telepath
+Plug 'rasulomaroff/telepath.nvim'                  " make distant actions on objects without moving cursor
 
 " --------------------------------------------------------------------------- "
 " ---------------------- code completion / inspect -------------------------- "
@@ -755,7 +769,7 @@ Plug 'tpope/vim-fugitive'                               " git integration plugin
 " --------------------------------------------------------------
 Plug 'pgzzdiab/vim-unstack'                            " parse python callback from clipbord/tmux buffer into quickfix list
 Plug 'mgedmin/python_open_module.vim'                  " Python standard library source code
-Plug 'jeetsukumaran/vim-python-indent-black'
+"Plug 'jeetsukumaran/vim-python-indent-black'
 Plug 'kkoomen/vim-doge', {'do': { -> doge#install() }} " Docstring generator
 " Plug 'jmcantrell/vim-virtualenv'                       " Tool for python venv
 " Plug 'westurner/venv.vim'
@@ -791,12 +805,13 @@ Plug 'kana/vim-textobj-entire'                        " whole buffer opbject
 if has('nvim')
   Plug 'noib3/cokeline.nvim'                              " tabline
   Plug 'windwp/windline.nvim'                               " statusbar
-  Plug 'lukas-reineke/indent-blankline.nvim'
+" Plug 'lukas-reineke/indent-blankline.nvim'
+  Plug 'shellRaining/hlchunk.nvim'
 
   Plug 'projekt0n/caret.nvim'
   " Plug 'folke/tokyonight.nvim'
   " Plug 'bluz71/vim-nightfly-colors'
-  " Plug 'marko-cerovac/material.nvim'
+  Plug 'marko-cerovac/material.nvim'
   " Plug 'projekt0n/github-nvim-theme'
   " Plug 'rktjmp/lush.nvim'
   " Plug 'ellisonleao/gruvbox.nvim'
@@ -878,6 +893,11 @@ if has('nvim')
 endif
 
 " --------------------------------------------------------------
+" vim matchup
+" --------------------------------------------------------------
+let g:loaded_matchit = 1
+
+" --------------------------------------------------------------
 " minimap
 " --------------------------------------------------------------
 let g:minimap_width = 10
@@ -899,6 +919,17 @@ if has('nvim')
 " let g:indentLine_char = "▎"
 " let g:indentLine_conceallevel = 2
 endif
+
+" --------------------------------------------------------------
+" before
+" --------------------------------------------------------------
+if has('nvim')
+" left aligned fixed size box with left aligned text
+" centered adapted box with centered text
+nnoremap <C-h> <Cmd>lua require('before').jump_to_last_edit()<CR>
+nnoremap <C-l> <Cmd>lua require('before').jump_to_next_edit()<CR>
+endif
+
 
 " --------------------------------------------------------------
 " comment-box
@@ -947,6 +978,7 @@ endif
 " 	nnoremap <silent> <Leader>bd :BufferOrderByDirectory<CR>
 " 	nnoremap <silent> <Leader>bl :BufferOrderByLanguage<CR>
 " endif
+
 
 " -------------------------------------------------------------
 "  open-browser
@@ -1280,11 +1312,6 @@ else
 	let NERDTreeStatusline=""
 endif
 
-" --------------------------------------------------------------
-" submersive
-" --------------------------------------------------------------
-let g:subversivePromptWithCurrent=1
-let g:subversivePreserveCursorPosition=1 "cursor will not move when substitutions are applied
 
 " -------------------- theme ------------------------------------------------ "
 " if has('nvim')
@@ -1385,8 +1412,7 @@ let g:tex_flavor = 'latex'
 "    \ 'options' : [
 "        \   '-shell-escape',
 "        \   '-silent',
-"        \   '-gg',
-"        \   '-lualatex'
+       \   '-gg',
 "    \ ],
 "    \}
 ""
@@ -1522,7 +1548,7 @@ let b:quickrun_config = {
 
 " let g:quickrun_config['R'] = {'command': 'R', 'exec': ['%c -s --no-save -f %s', ':%s/.\b//g']}
 " stop quickrun with <Ctrl-c>
-nnoremap <expr><silent> <C-h> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-h>"
+" nnoremap <expr><silent> <C-h> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-h>"
 
 " --------------------------------------------------------------
 " fzf
@@ -1786,8 +1812,8 @@ xmap gn  <plug>(GrepperOperator)
 	nnoremap <space>b <cmd>Telescope buffers<cr>
 	" nnoremap <space>/ <cmd>lua require('telescope.builtin').search_history()<cr>
 	" nnoremap <space>m <cmd>lua require('telescope.builtin').marks()<cr>
-	nnoremap x <cmd>lua require('telescope.builtin').treesitter()<cr>
-	nnoremap <C-l> <cmd>lua require('telescope.builtin').loclist()<cr>
+	nnoremap xt <cmd>lua require('telescope.builtin').treesitter()<cr>
+	nnoremap <Leader>tl <cmd>lua require('telescope.builtin').loclist()<cr>
 
 	" nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
@@ -1830,8 +1856,8 @@ if has('nvim')
   " --------------------------------------------------------------------
   "  rnvimr
   " --------------------------------------------------------------------
-  nnoremap <silent> <space>r :RnvimrToggle<CR>
-  tnoremap <silent> <space>r <C-\><C-n>:RnvimrToggle<CR>
+  nnoremap <silent> rr :RnvimrToggle<CR>
+  tnoremap <silent> rr <C-\><C-n>:RnvimrToggle<CR>
 
   " Resize floating window by all preset layouts
   " tnoremap <silent> <leader>ri <C-\><C-n>:RnvimrResize<CR>
@@ -2036,20 +2062,25 @@ nnoremap <silent> <M-;> :ArgWrap<CR><Esc>
 " nmap ae <plug>(textobj-entire-a)
 " nmap <leader>ae <plug>(textobj-entire-i)
 
-" -------------------------------------------------------------------------- "
-" submersive
-" -------------------------------------------------------------------------- "
-nmap o <plug>(SubversiveSubstitute)
-nmap oo <plug>(SubversiveSubstituteLine)
-nmap O <plug>(SubversiveSubstituteToEndOfLine)
-" Substitute Over Range Motion
-nmap op <plug>(SubversiveSubstituteRange)
-xmap op <plug>(SubversiveSubstituteRange)
-nmap owp <plug>(SubversiveSubstituteWordRange)
-" need to confirm substitution
-nmap <leader>c <plug>(SubversiveSubstituteRangeConfirm)
-xmap <leader>c <plug>(SubversiveSubstituteRangeConfirm)
-nmap <leader>co <plug>(SubversiveSubstituteWordRangeConfirm)
+if has('nvim')
+else
+  " -------------------------------------------------------------------------- "
+  " subversive
+  " -------------------------------------------------------------------------- "
+  let g:subversivePromptWithCurrent=1
+  let g:subversivePreserveCursorPosition=1 "cursor will not move when substitutions are applied
+  nmap o <plug>(SubversiveSubstitute)
+  nmap oo <plug>(SubversiveSubstituteLine)
+  nmap O <plug>(SubversiveSubstituteToEndOfLine)
+  " Substitute Over Range Motion
+  nmap op <plug>(SubversiveSubstituteRange)
+  xmap op <plug>(SubversiveSubstituteRange)
+  nmap owp <plug>(SubversiveSubstituteWordRange)
+  " need to confirm substitution
+  nmap <leader>c <plug>(SubversiveSubstituteRangeConfirm)
+  xmap <leader>c <plug>(SubversiveSubstituteRangeConfirm)
+  nmap <leader>co <plug>(SubversiveSubstituteWordRangeConfirm)
+endif
 
 " -------------------------------------------------------------------------- "
 " latex
@@ -2238,7 +2269,10 @@ if has('nvim')
     " colorscheme enfocado
     " colorscheme ayu
     " colorscheme night-owl
-    colorscheme kanagawa
+    " colorscheme kanagawa
+    colorscheme material
+
+    " let g:material_style = "light"
     " colorscheme tokyonight-day
     " colorscheme caret
     " colorscheme nightfly
@@ -2257,7 +2291,7 @@ endif
 " set background=dark
 set background=light
 
-set cursorline                               " Highlight current line
+" set cursorline                               " Highlight current line
 " hi CursorLine guibg=#0D1016
 " hi TabLineFill guibg=#0D1016
 
